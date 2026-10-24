@@ -1,0 +1,35 @@
+# Command implementation detection
+
+## Principle
+
+Select documentation for the installed command implementation, not merely its host operating system. macOS can run GNU utilities; Linux can run BusyBox; FreeBSD and Apple commands are not interchangeable labels for every behavior.
+
+Homebrew installs GNU grep with a `g` prefix and offers a `gnubin` PATH location for unprefixed names. Consequently, `grep`, `ggrep`, and `/usr/bin/grep` can select different tools on the same machine. See [Homebrew grep](https://formulae.brew.sh/formula/grep).
+
+## Proposed precedence
+
+1. Explicit implementation override selects the requested documentation and labels it as an override.
+2. An explicit executable path constrains local detection.
+3. Resolve the command from PATH, inspect symlink/path evidence, and apply known command-specific identification rules.
+4. Use narrowly scoped version probes only under a documented policy; apply a short timeout and output limit, without shell evaluation.
+5. Fall back to a platform-associated default or common portable content, labeled as inferred/unknown.
+
+Platform override and implementation override serve different purposes. `--platform linux` requests a target environment, not a claim that the local command is GNU. Define how conflicting overrides are rejected before implementation.
+
+For every selection, expose command, resolved path if available, implementation/version if known, evidence, and confidence. A filename alone is weak evidence. Do not assume every command accepts `--version`; an unknown wrapper should not be executed just to guess its behavior. Provide a no-probe mode, and avoid loading arbitrary shell startup files.
+
+## Shell boundaries
+
+A standalone process cannot generally read unexported aliases/functions from its parent shell. Shell builtins may shadow executables. Distinguish executable lookup from actual interactive-shell resolution in the output. Do not claim complete shell awareness by launching a fresh login shell.
+
+Optional shell integration may explicitly pass command-resolution information. It should be a small reviewed adapter; normal use must not require it. During extraction from an existing bootstrap, remove or delegate the old explain function so it does not shadow the binary. Migration is future work and must not alter another repository without authorization.
+
+## Website behavior
+
+The static site cannot inspect a visitor's PATH, installed packages, aliases, or remote shell. Offer an explicit implementation selector and a portable default. Never infer an installed GNU/BSD tool from browser user-agent alone.
+
+## Initial matrix
+
+Validate at least macOS stock utilities, macOS with prefixed GNU tools, macOS with GNU tools first on PATH, Linux GNU tools, and an Alpine/BusyBox environment. Test missing executables, ambiguous wrappers, explicit paths, symlinks, shell builtins, failed probes, and user overrides. Add BSD variants only with a documented test/review environment.
+
+The project explains behavior; it does not install GNU alternatives, rewrite PATH, execute examples, or guarantee command safety. Flag known incompatibilities without silently rewriting the user's command.
