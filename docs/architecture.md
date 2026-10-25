@@ -32,7 +32,11 @@ Pipeline/script parsing is deferred. If introduced, use a proper parser such as 
 
 Use Astro's content collections/build-time loaders for shared Markdown metadata and static routes. Astro documents both Markdown rendering and collection schemas. See [content collections](https://docs.astro.build/en/guides/content-collections/) and [Markdown](https://docs.astro.build/en/guides/markdown-content/).
 
-Build command pages, a catalog, tag pages, and a browser search index as static artifacts. The public reference needs no accounts, database, server renderer, or lab provisioning. A host can serve the built files; hosting-provider selection and deployment are outside this documentation-only request.
+Build command pages, a catalog, tag pages, and a browser search index as static artifacts. The public reference needs no accounts, database, server renderer, or lab provisioning. Host the built files on GitHub Pages, with GitHub Actions building and deploying the Astro site. No Azure resources or paid cloud hosting are needed for this website.
+
+Keep stages 1–4 private and use local Astro previews. Publish on GitHub Pages in stage 5 after the repository becomes public. GitHub Free supports Pages from public repositories; private-source Pages requires a qualifying paid GitHub plan and is not part of this plan. See [GitHub Pages availability](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) and [Astro's Pages deployment guide](https://docs.astro.build/en/guides/deploy/github/).
+
+Configure shell-explain.ninegene.com as the Pages custom domain, verify domain ownership, and configure DNS and HTTPS during authorized publication. Keep Astro's canonical site URL and asset paths consistent with the custom domain rather than assuming a repository subpath. Deployment and DNS changes remain outside this documentation-only update.
 
 Provide explicit platform/implementation filters with shareable URLs. Default to a common portable view when possible. Browser OS detection must not claim to know which executable the visitor uses. Display version applicability, references, copyable examples, and links to related commands. Search/filter state should work with keyboard navigation and readable mobile layouts.
 

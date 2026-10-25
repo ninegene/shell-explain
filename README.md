@@ -4,7 +4,7 @@ Practical command explanations for the terminal and the web, maintained in one s
 
 - Repository: [ninegene/shell-explain](https://github.com/ninegene/shell-explain), private during development and iteration; planned public release in stage 5.
 - Planned executable: **`explain`**, for example `explain grep`.
-- Planned website: **shell-explain.ninegene.com**, built as a static Astro site.
+- Planned website: **shell-explain.ninegene.com**, built with Astro and hosted on GitHub Pages after the public release in stage 5.
 - Recommended CLI language: Go, with documentation embedded for offline use.
 - Status: **documentation only**. No CLI, installer, website implementation, release, or deployment exists yet.
 
@@ -13,6 +13,8 @@ Practical command explanations for the terminal and the web, maintained in one s
 Explain what a command does, show useful examples, explain common options and mistakes, and select documentation appropriate to the installed implementation. Beginners should be able to understand the examples; experienced users should be able to find an unfamiliar option quickly.
 
 The CLI and website must consume the same `.md` files. Neither keeps an independently edited copy of the explanations. Installation should eventually support downloadable binaries, a curl-based installer, Homebrew, and mise.
+
+Use local Astro previews during private development and iteration. After the repository becomes public, GitHub Actions will build and deploy the static site to GitHub Pages. No paid cloud hosting is planned for the website; domain registration remains separate.
 
 ## Documentation
 

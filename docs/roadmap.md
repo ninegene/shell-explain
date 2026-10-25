@@ -7,6 +7,7 @@
 | Repository | Private ninegene/shell-explain through stage 4; public in stage 5 |
 | Executable | explain |
 | Website | Static Astro site intended for shell-explain.ninegene.com |
+| Website hosting | GitHub Pages via GitHub Actions after public transition; local previews through stage 4 |
 | Source text | Shared Markdown files used by web and CLI |
 | Language | Go recommended; no implementation scaffold yet |
 | Normal lookup | Offline, curated content; no command execution |
@@ -56,7 +57,7 @@ Begin only after stage 4's iteration criteria are met. Keep public launch as a d
 3. Review the complete repository history, release artifacts, links, and configuration for secrets, personal information, private dependencies, and material that cannot be redistributed. Resolve findings before opening access.
 4. Change the existing GitHub repository from private to public after the publication review and owner authorization. Enable the intended issue/PR contribution channels and update the README to accurately describe public status and licensing.
 5. Publish tested immutable binaries/checksums and clear release notes. Validate curl/manual installation, a Homebrew tap, and mise in clean environments. Resolve command-name collisions without silently replacing other programs or shell functions.
-6. Publish the static Astro site at shell-explain.ninegene.com with HTTPS, matching content revision, installation guidance, license/attribution information, and links to report problems or contribute commands/examples. Select hosting and prepare domain/TLS configuration for separate deployment authorization.
+6. Publish the static Astro site to GitHub Pages using a GitHub Actions build/deploy workflow after the repository is public. Configure shell-explain.ninegene.com and HTTPS, verify domain ownership and DNS, and check routes/search/assets. Include matching content revision, installation guidance, license/attribution information, and links to report problems or contribute commands/examples. Prepare Pages/domain/TLS configuration for separate deployment authorization; no paid cloud website hosting is planned.
 
 The current request authorizes private repository setup and pushing documentation only. It does not authorize the future visibility change, website deployment, or DNS updates.
 

@@ -34,6 +34,12 @@ A central registry entry is only a convenience shorthand and may require adoptio
 
 ## Website publishing
 
-Build Astro to static HTML/assets and publish to a selected static host with HTTPS and the intended custom domain. DNS changes, hosting configuration, and cloud provisioning require separate authorization. Do not deploy a server solely to serve these reference files.
+Use **GitHub Pages** for the static Astro site at **shell-explain.ninegene.com**. Build and deploy with GitHub Actions following [Astro's GitHub Pages guide](https://docs.astro.build/en/guides/deploy/github/). No paid cloud provider, application server, or database is planned for website hosting. Domain registration remains a separate cost.
+
+During private stages 1–4, use local previews without publishing the website. In stage 5, make the repository public before enabling Pages. GitHub Free supports public-repository Pages; private-repository Pages requires a qualifying paid GitHub plan. See [Pages availability](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
+
+The publication checklist is to configure Pages with GitHub Actions as its publishing source, build/upload the static Astro artifact, deploy through the Pages environment with minimal workflow permissions, and verify routes/search/assets. Configure Astro's site URL for the custom domain; do not carry over a repository-name base path intended for a github.io project URL.
+
+Verify domain ownership, configure the repository's custom domain and DNS records, enable HTTPS, and test canonical URLs and redirects. Follow [GitHub's custom-domain guidance](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages). Pages settings, deployment, and DNS updates require separate authorization; this plan does not perform them. Store CLI downloads in GitHub Releases rather than bundling release archives into the website.
 
 The site should show its content revision, link matching CLI releases, and label unreleased installation instructions. Prefer tagged release content for reproducibility; if deploying newer content from the default branch, label the difference clearly. Do not silently claim parity with an older installed binary.

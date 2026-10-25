@@ -11,7 +11,7 @@ Documentation only. Do not scaffold Go, Astro, installers, workflows, or deploym
 ## Architecture conventions
 
 - One reviewed Markdown source collection must supply CLI and website explanations.
-- Recommended CLI implementation is Go with embedded offline content; website uses Astro static generation.
+- Recommended CLI implementation is Go with embedded offline content; website uses Astro static generation and GitHub Pages hosting via GitHub Actions after stage 5's public transition. Use local previews during private iteration; do not add paid cloud hosting for this site.
 - Generated data, HTML, search indexes, and embedded bundles are outputs, never a second authoring source.
 - Resolve documentation by command implementation/version, not OS alone. Make ambiguous selection visible and support overrides.
 - Never execute example/input command lines to explain them. Any supported version probes must be explicit, bounded, command-specific, and documented.
