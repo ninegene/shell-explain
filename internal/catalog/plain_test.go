@@ -67,3 +67,25 @@ func TestInlineCodePreservesWhitespace(t *testing.T) {
 		t.Fatalf("CommonMark code span normalization: %q", got)
 	}
 }
+
+func TestListContinuationIndentation(t *testing.T) {
+	for _, tt := range []struct {
+		name, markdown, want string
+		width                int
+	}{
+		{"unordered", "- alpha beta gamma delta", "- alpha beta\n  gamma delta\n", 14},
+		{"ordered", "10. alpha beta gamma delta", "10. alpha beta\n    gamma delta\n", 16},
+		{"nested", "- outer\n  - alpha beta gamma delta", "- outer\n  - alpha beta\n    gamma delta\n", 16},
+		{"loose", "- alpha beta gamma delta\n\n- second item", "- alpha beta\n  gamma delta\n\n- second item\n", 14},
+		{"unwrapped", "- outer\n  - alpha beta gamma delta", "- outer\n  - alpha beta gamma delta\n", 0},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			if _, _, err := RenderHTML(tt.markdown); err != nil {
+				t.Fatal(err)
+			}
+			if got := Plain(tt.markdown, tt.width); got != tt.want {
+				t.Fatalf("got %q, want %q", got, tt.want)
+			}
+		})
+	}
+}

@@ -73,14 +73,27 @@ func Plain(markdown string, width int) string {
 					idx++
 				}
 				out.WriteString(prefix + marker)
+				padding := prefix + strings.Repeat(" ", len(marker))
+				first := true
 				for item := c.FirstChild(); item != nil; item = item.NextSibling() {
-					if _, ok := item.(*ast.TextBlock); ok {
-						out.WriteString(wrap(inline(item), width-len(prefix+marker), ""))
+					switch item.(type) {
+					case *ast.TextBlock, *ast.Paragraph:
+						rendered := wrap(inline(item), width, padding)
+						if first {
+							rendered = strings.TrimPrefix(rendered, padding)
+						}
+						out.WriteString(rendered)
 						out.WriteByte('\n')
-					} else {
-						out.WriteByte('\n')
-						block(item, prefix+"  ")
+						if _, loose := item.(*ast.Paragraph); loose {
+							out.WriteByte('\n')
+						}
+					default:
+						if first {
+							out.WriteByte('\n')
+						}
+						block(item, padding)
 					}
+					first = false
 				}
 			}
 			out.WriteByte('\n')

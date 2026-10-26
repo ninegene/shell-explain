@@ -143,6 +143,10 @@ test(
         original
           .replace(/### Examples\n[\s\S]*?(?=\n### )/, `### Examples\n${body}`)
           .replace('### Option: -n', '### Line numbers')
+          .replace(
+            '## GNU',
+            '## GNU\n### Option: -n\nVariant-only homepage regression marker.\n',
+          )
           .replace('Find lines of text that match a pattern.', summary),
       );
       await until(async () => {
@@ -151,6 +155,7 @@ test(
         return (
           response.ok &&
           html.includes(summary) &&
+          !html.includes('Variant-only homepage regression marker.') &&
           (label === 'zero' || html.includes('one-block-marker'))
         );
       });

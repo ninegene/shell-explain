@@ -10,7 +10,10 @@ const examples = featured.data.sections.find(
 )!.code;
 const example = (examples[1] ?? examples[0])?.trim();
 const explanation =
-  featured.data.sections.find((section) => section.options.includes('-n')) ??
+  featured.data.sections.find(
+    (section) =>
+      section.implementation === 'common' && section.options.includes('-n'),
+  ) ??
   featured.data.sections.find(
     (section) =>
       section.implementation === 'common' && section.title === 'Overview',
