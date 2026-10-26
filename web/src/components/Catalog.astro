@@ -1,0 +1,134 @@
+---
+import { commands, labels } from '../lib/catalog';
+interface Props {
+  tag?: string;
+}
+const { tag } = Astro.props;
+const entries = (await commands()).filter(
+  (e) => !tag || e.data.tags.includes(tag),
+);
+---
+
+<div class="catalog" data-catalog>
+  <form class="search-form" role="search">
+    <div class="search-field">
+      <label for="query">Find a command or a use case</label>
+      <input
+        id="query"
+        name="q"
+        type="search"
+        placeholder="Try grep, replace, or directories…"
+        autocomplete="off"
+      />
+    </div>
+    <div>
+      <label for="implementation">Implementation coverage</label>
+      <select id="implementation" name="implementation">
+        <option value="">All implementations</option>
+        {Object.entries(labels)
+          .filter(([k]) => k !== 'common')
+          .map(([key, label]) => (
+            <option value={key}>{label}</option>
+          ))}
+      </select>
+    </div>
+    <button class="button" type="submit">
+      Search
+    </button>
+  </form>
+  <div class="catalog-heading">
+    <p id="result-count" role="status" aria-live="polite">
+      {entries.length} commands
+    </p>
+    <span>SMALL REFERENCE. USEFUL DETAILS.</span>
+  </div>
+  <div class="command-grid">
+    {entries.map((entry) => (
+      <article
+        class="command-card"
+        data-entry
+        data-search={[
+          entry.id,
+          entry.data.summary,
+          ...(entry.data.aliases ?? []),
+          ...entry.data.tags,
+        ]
+          .join(' ')
+          .toLowerCase()}
+        data-implementations={entry.data.implementations.join(' ')}
+      >
+        <div class="card-top">
+          <span class="prompt" aria-hidden="true">
+            $
+          </span>
+          <h2>
+            <a href={`/commands/${entry.id}/`}>{entry.data.title}</a>
+          </h2>
+          <span class="card-arrow" aria-hidden="true">
+            ↗
+          </span>
+        </div>
+        <p>{entry.data.summary}</p>
+        <div class="tags">
+          {entry.data.tags.map((t) => (
+            <a href={`/tags/${t}/`}>#{t}</a>
+          ))}
+        </div>
+        <div class="coverage">
+          {entry.data.implementations.map((i) => labels[i]).join(' / ')}
+        </div>
+      </article>
+    ))}
+  </div>
+  <p id="no-results" class="empty-state" hidden>
+    No matching commands yet. Try a shorter query or choose all implementations.
+  </p>
+</div>
+<script>
+  const catalog = document.querySelector<HTMLElement>('[data-catalog]');
+  if (catalog) {
+    const form = catalog.querySelector<HTMLFormElement>('form')!;
+    const query = catalog.querySelector<HTMLInputElement>('#query')!;
+    const impl = catalog.querySelector<HTMLSelectElement>('#implementation')!;
+    const cards = [...catalog.querySelectorAll<HTMLElement>('[data-entry]')];
+    const apply = () => {
+      const words = query.value
+        .toLowerCase()
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+      let count = 0;
+      for (const card of cards) {
+        const visible =
+          words.every((w) => card.dataset.search!.includes(w)) &&
+          (!impl.value ||
+            card.dataset.implementations!.split(' ').includes(impl.value));
+        card.hidden = !visible;
+        if (visible) count++;
+      }
+      catalog.querySelector('#result-count')!.textContent =
+        `${count} ${count === 1 ? 'command' : 'commands'}`;
+      catalog.querySelector<HTMLElement>('#no-results')!.hidden = count > 0;
+      const url = new URL(location.href);
+      if (query.value) url.searchParams.set('q', query.value);
+      else url.searchParams.delete('q');
+      if (impl.value) url.searchParams.set('implementation', impl.value);
+      else url.searchParams.delete('implementation');
+      history.replaceState(null, '', url);
+    };
+    const restore = () => {
+      const params = new URLSearchParams(location.search);
+      query.value = params.get('q') ?? '';
+      impl.value = params.get('implementation') ?? '';
+      apply();
+    };
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      apply();
+    });
+    query.addEventListener('input', apply);
+    impl.addEventListener('change', apply);
+    window.addEventListener('popstate', restore);
+    restore();
+  }
+</script>

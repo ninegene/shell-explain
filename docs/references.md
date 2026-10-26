@@ -53,6 +53,8 @@ The manual links above are authoring starting points, not proof that any propose
 - [GoReleaser](https://goreleaser.com/), a candidate release-automation tool.
 - [Homebrew tap maintenance](https://docs.brew.sh/How-to-Create-and-Maintain-a-Tap), [adding software](https://docs.brew.sh/Adding-Software-to-Homebrew), and [formula acceptance](https://docs.brew.sh/Acceptable-Formulae).
 - [mise GitHub backend](https://mise.jdx.dev/dev-tools/backends/github.html) and [registry contributions](https://mise.jdx.dev/contributing/registry.html).
+- [Alpine Linux releases](https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86_64/) and [BusyBox documentation](https://busybox.net/downloads/BusyBox.html): the optional local Linux smoke-check environment and applet reference.
+- [QEMU](https://www.qemu.org/): local test virtualization only, not website or production infrastructure.
 
 ## Evidence and licensing limits
 

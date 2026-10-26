@@ -6,7 +6,7 @@ Select documentation for the installed command implementation, not merely its ho
 
 Homebrew installs GNU grep with a `g` prefix and offers a `gnubin` PATH location for unprefixed names. Consequently, `grep`, `ggrep`, and `/usr/bin/grep` can select different tools on the same machine. See [Homebrew grep](https://formulae.brew.sh/formula/grep).
 
-## Proposed precedence
+## Implemented precedence
 
 1. Explicit implementation override selects the requested documentation and labels it as an override.
 2. An explicit executable path constrains local detection.
@@ -14,9 +14,11 @@ Homebrew installs GNU grep with a `g` prefix and offers a `gnubin` PATH location
 4. Use narrowly scoped version probes only under a documented policy; apply a short timeout and output limit, without shell evaluation.
 5. Fall back to a platform-associated default or common portable content, labeled as inferred/unknown.
 
-Platform override and implementation override serve different purposes. `--platform linux` requests a target environment, not a claim that the local command is GNU. Define how conflicting overrides are rejected before implementation.
+Platform override and implementation override serve different purposes. `--platform linux` requests portable common content, not a claim that the local command is GNU. `--platform macos` selects Apple content for external tools; `--platform bash` selects Bash builtin documentation. Combining platform and implementation overrides is rejected.
 
 For every selection, expose command, resolved path if available, implementation/version if known, evidence, and confidence. A filename alone is weak evidence. Do not assume every command accepts `--version`; an unknown wrapper should not be executed just to guess its behavior. Provide a no-probe mode, and avoid loading arbitrary shell startup files.
+
+Current probes apply only to native-format executables for the known grep/sed/find entries, run --version directly without a shell, use a 400 ms execution timeout, a 200 ms `WaitDelay` for output draining, and an 8 KiB output cap, and supply no input. On Linux and macOS each probe starts in its own process group. Timeout cancellation kills that group, and cleanup also kills remaining group members after the parent exits. `WaitDelay` bounds output waiting even when a descendant escapes the group and holds an inherited output pipe open. Process groups provide cleanup, not a security sandbox; escaped descendants are not guaranteed to be terminated. These deadlines bound execution/output waiting rather than OS process-start latency. Script wrappers are not probed. Apple system paths can provide labeled inference; a BusyBox-named symlink target provides labeled inference. A native executable is still code that runs during a probe; use --no-probe to disable all such execution. The Apple grep banner says GNU compatible, so the classifier checks the BSD identity before a GNU banner pattern.
 
 ## Shell boundaries
 

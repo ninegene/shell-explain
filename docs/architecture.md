@@ -6,19 +6,19 @@ Develop shell-explain in a private repository through stages 1–4, with a CLI e
 
 The initial experience is `explain grep`: what it does, common uses/options, examples, mistakes, and portability notes. It should work without network access after installation. Match documentation to the installed tool when feasible and expose manual selection.
 
-## Language recommendation
+## Language choice
 
-Go is the recommended CLI language. This workload is primarily content loading, command selection, search, and formatting, rather than performance-intensive computation. Go supports target-specific builds and embedded files without requiring an interpreter on the user's machine. Keep dependencies pure Go where practical to simplify cross-platform binaries. Rust is also viable; it is not required to meet these goals.
+Go is the implemented CLI language. This workload is primarily content loading, command selection, search, and formatting, rather than performance-intensive computation. Go supports target-specific builds and embedded files without requiring an interpreter on the user's machine. The parser uses the pinned pure-Go goldmark and YAML libraries. Rust was a viable alternative but is not needed to meet these goals.
 
 References: [Go build/environment documentation](https://pkg.go.dev/cmd/go#hdr-Environment_variables), [Go embed](https://pkg.go.dev/embed), and [Rust target support](https://doc.rust-lang.org/rustc/platform-support.html).
 
 ## Shared-source pipeline
 
-Proposed future layout: `content/` for authored command Markdown, a Go CLI and reusable internal selection/rendering packages, `web/` for Astro, and validation/build tooling. These directories are a plan, not an implemented skeleton.
+Implemented layout: `content/en/` contains authored command Markdown, `content/embed.go` embeds those exact files, `internal/catalog` validates and renders them, `internal/detect` selects implementations, `internal/cli` implements the interface, and `cmd/` provides the CLI and content exporter. `web/` contains Astro and browser tests; the root justfile exposes build/check commands.
 
-The build reads the same versioned Markdown into a normalized content model. Terminal rendering, JSON output, Astro pages, and static search data derive from it. If generated bundles are needed to satisfy Go embedding/package boundaries, generate them during the build and verify they match the authored content. Do not manually copy explanations into Go strings, Astro components, or a separate JSON database.
+The Go parser reads versioned Markdown into one normalized content model. Terminal rendering, JSON output, Astro pages, and static search data derive from it. The content exporter writes ignored web/src/data/catalog.json before Astro dev/build/check, and a Vite development plugin watches the original Markdown and regenerates it on saves/additions/deletions. Exports are serialized and atomically replaced; invalid edits retain the last valid catalog. Astro's file loader validates that generated model through a content collection; it does not independently parse the Markdown. Do not manually copy explanations into Go strings, Astro components, or a separate JSON database.
 
-Pin a schema version and content revision. Add shared fixtures that both consumers must interpret identically, including front matter, code fences, links, implementation sections, and unsupported syntax. Language-specific parsers can differ internally, but they must produce equivalent selections and visible explanations.
+Schema version 1 and a deterministic SHA-256 content revision identify the bundle. Go tests reject malformed metadata/unsupported Markdown and preserve code; browser tests compare every documented implementation page with CLI JSON, including exact code and HTML. This single-parser design resolves the earlier choice between independent parsers and a normalized artifact.
 
 ## CLI scope
 

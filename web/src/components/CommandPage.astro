@@ -1,0 +1,134 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import { labels } from '../lib/catalog';
+interface Props {
+  entry: CollectionEntry<'commands'>;
+  implementation?: string;
+}
+const { entry, implementation = 'common' } = Astro.props;
+const sections = entry.data.sections.filter(
+  (s) => s.implementation === 'common' || s.implementation === implementation,
+);
+const variants = ['common', ...entry.data.implementations];
+const variantURL = (id: string) =>
+  id === 'common' ? `/commands/${entry.id}/` : `/commands/${entry.id}/${id}/`;
+---
+
+<Layout
+  title={`${entry.data.title} · ${labels[implementation]}`}
+  description={entry.data.summary}
+>
+  <div class="page-intro compact">
+    <a class="back" href="/commands/">
+      ← All commands
+    </a>
+    <div class="eyebrow">THE COMMAND REFERENCE</div>
+    <h1>
+      <span class="prompt" aria-hidden="true">
+        $
+      </span>{' '}
+      {entry.data.title}
+    </h1>
+    <p class="lede">{entry.data.summary}</p>
+    <div class="tags">
+      {entry.data.tags.map((t) => (
+        <a href={`/tags/${t}/`}>#{t}</a>
+      ))}
+    </div>
+  </div>
+  <div class="reference-layout">
+    <aside class="reference-sidebar">
+      <h2>Choose your implementation</h2>
+      <nav class="variant-nav" aria-label="Implementation">
+        {variants.map((v) => (
+          <a
+            href={variantURL(v)}
+            aria-current={v === implementation ? 'page' : undefined}
+          >
+            {labels[v]}
+            <span aria-hidden="true">{v === implementation ? '●' : '↗'}</span>
+          </a>
+        ))}
+      </nav>
+      <p class="small">
+        Select the tool you actually use. This website cannot detect your
+        terminal or PATH.
+      </p>
+      <h2>On this page</h2>
+      <nav class="toc" aria-label="On this page">
+        {sections.map((s) => (
+          <a href={`#${s.id}`}>{s.title}</a>
+        ))}
+        <a href="#references">References</a>
+      </nav>
+      <div class="terminal-note">
+        <span class="eyebrow">ALSO OFFLINE</span>
+        <code>
+          explain {entry.id}
+          {` --implementation ${implementation}`}
+        </code>
+        <p>Local development CLI. Public binaries are not released yet.</p>
+      </div>
+    </aside>
+    <article
+      class="reference-body"
+      data-command={entry.id}
+      data-implementation={implementation}
+    >
+      <div class="variant-banner">
+        <strong>{labels[implementation]}</strong>
+        <p>{entry.data.version_policy}</p>
+      </div>
+      {sections.map((section) => (
+        <section
+          class="explanation-section"
+          id={section.id}
+          data-section-id={section.id}
+        >
+          <h2>{section.title}</h2>
+          <div class="prose" set:html={section.html} />
+        </section>
+      ))}
+      <section id="references" class="explanation-section">
+        <h2>References</h2>
+        <p>
+          Original explanations, with upstream documentation for further
+          reading. FreeBSD references are comparison material, not a claim of
+          Apple version equivalence.
+        </p>
+        <ul class="reference-links">
+          {entry.data.references.map((ref) => (
+            <li>
+              <a href={ref}>{ref}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <p class="copy-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+</Layout>
+<script>
+  for (const pre of document.querySelectorAll<HTMLPreElement>('.prose pre')) {
+    const code = pre.querySelector('code');
+    if (!code) continue;
+    const button = document.createElement('button');
+    button.className = 'copy-button';
+    button.type = 'button';
+    button.textContent = 'Copy';
+    button.setAttribute('aria-label', 'Copy code example');
+    button.addEventListener('click', async () => {
+      const status = document.querySelector('.copy-status')!;
+      try {
+        await navigator.clipboard.writeText(code.textContent ?? '');
+        button.textContent = 'Copied';
+        status.textContent = 'Example copied. Review it before running.';
+      } catch {
+        status.textContent =
+          'Clipboard unavailable. Select and copy the example manually.';
+      }
+    });
+    pre.append(button);
+  }
+</script>

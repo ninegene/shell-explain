@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Catalog from '../components/Catalog.astro';
+import { commands } from '../lib/catalog';
+const grep = (await commands()).find((entry) => entry.id === 'grep')!;
+const example = grep.data.sections
+  .find((section) => section.title === 'Examples')!
+  .code[1].trim();
+const option = grep.data.sections.find((section) =>
+  section.options.includes('-n'),
+)!;
+---
+
+<Layout title="Know what you type">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">LESS GUESSING. MORE UNDERSTANDING.</div>
+      <h1>
+        Know what you're
+        <br />
+        about to <em>type.</em>
+      </h1>
+      <p class="lede">
+        Small, practical explanations for shell commands.
+        <br />
+        Useful examples. Clear options. The right implementation.
+      </p>
+      <a class="text-link" href="#reference">
+        Explore the reference <span aria-hidden="true">↓</span>
+      </a>
+    </div>
+    <div class="hero-terminal" aria-label="Example of the local explain CLI">
+      <div class="terminal-bar">
+        <span></span>
+        <span></span>
+        <span></span>
+        <small>YOUR TERMINAL, EXPLAINED</small>
+      </div>
+      <div class="terminal-content">
+        <p>
+          <span>$</span> explain {grep.id}
+        </p>
+        <h2>{grep.data.summary}</h2>
+        <p class="terminal-muted">One command, step by step.</p>
+        <code>{example}</code>
+        <div class="terminal-rule"></div>
+        <div class="terminal-muted" set:html={option.html} />
+        <p class="terminal-caption">ONE MARKDOWN SOURCE · WEB + CLI</p>
+      </div>
+    </div>
+  </section>
+  <section id="reference" class="catalog-section">
+    <div class="eyebrow">START WITH A USE CASE</div>
+    <Catalog />
+  </section>
+</Layout>
