@@ -42,7 +42,7 @@ Actions that delete files or run other programs need special care and are not us
 
 ## GNU
 ### GNU examples
-Look in the current directory and one level below it:
+Find matching files up to two levels below the starting directory:
 
 ```sh
 find . -maxdepth 2 -type f -name '*.log'

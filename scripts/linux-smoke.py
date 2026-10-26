@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Optional local Linux/BusyBox/GNU check. Requires curl, Go, tar, and QEMU.
+"""Optional local Linux/BusyBox/GNU check. Requires curl, Go, bsdtar, and QEMU.
 
 Downloads Alpine from its official HTTPS mirror, verifies rootfs/ISO SHA-256,
 extracts GNU packages into a temporary RAM-only guest, and boots without networking.
@@ -99,6 +99,9 @@ def main():
     qemu = shutil.which("qemu-system-x86_64")
     if not qemu:
         raise SystemExit("Install QEMU separately before running this optional check.")
+    bsdtar = shutil.which("bsdtar")
+    if not bsdtar:
+        raise SystemExit("Install bsdtar (libarchive tools) to extract the Alpine ISO.")
     cache = ROOT / ".cache/linux-smoke"
     cache.mkdir(parents=True, exist_ok=True)
     for filename, digest in ARTIFACTS.items():
@@ -113,7 +116,7 @@ def main():
         root = work / "root"
         root.mkdir()
         unpack(cache / f"alpine-minirootfs-{RELEASE}-x86_64.tar.gz", root)
-        subprocess.run(["tar", "-xf", str(cache / f"alpine-virt-{RELEASE}-x86_64.iso"), "-C", str(work), "boot/vmlinuz-virt"], check=True)
+        subprocess.run([bsdtar, "-xf", str(cache / f"alpine-virt-{RELEASE}-x86_64.iso"), "-C", str(work), "boot/vmlinuz-virt"], check=True)
         index_file = download(f"{MIRROR}/{BRANCH}/main/x86_64/APKINDEX.tar.gz", work / "APKINDEX.tar.gz")
         with tarfile.open(index_file) as tar:
             index = tar.extractfile("APKINDEX").read().decode()

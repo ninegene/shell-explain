@@ -1,6 +1,7 @@
 package catalog
 
 import (
+	"context"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -9,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/ninegene/shell-explain/content"
+	"github.com/ninegene/shell-explain/internal/detect"
 )
 
 // Executes only this repository's reviewed examples in temporary fixtures.
@@ -18,71 +20,125 @@ func TestAuthoredExamples(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	implementations := []string{"bash"}
-	if runtime.GOOS == "darwin" {
-		implementations = append(implementations, "apple")
-	}
-	if _, err := os.Stat("/opt/homebrew/bin/ggrep"); err == nil {
-		implementations = append(implementations, "gnu")
-	} else if runtime.GOOS == "linux" {
-		implementations = append(implementations, "gnu")
-	}
+	implementations := []string{"bash", "apple", "gnu", "busybox"}
 	for _, impl := range implementations {
 		for _, entry := range c.Entries {
 			selected, err := entry.Select(impl, "")
 			if err != nil {
 				continue
 			}
-			for _, section := range selected {
-				for i, code := range section.Code {
-					t.Run(entry.ID+"/"+impl+"/"+section.ID+string(rune('a'+i)), func(t *testing.T) {
-						dir := t.TempDir()
-						for _, sub := range []string{"projects", "logs", "cache"} {
-							if err := os.Mkdir(filepath.Join(dir, sub), 0755); err != nil {
-								t.Fatal(err)
-							}
-						}
-						for name, value := range map[string]string{"app.log": "INFO ready\nERROR broken\nerror small\nexample.org\n", "logs/server.log": "ERROR broken\n", "notes.txt": "old old\nsecond\nthird\nfourth\nfifth\n"} {
-							if err := os.WriteFile(filepath.Join(dir, name), []byte(value), 0644); err != nil {
-								t.Fatal(err)
-							}
-						}
-						toolPath := "/usr/bin:/bin"
-						if impl == "gnu" && runtime.GOOS == "darwin" {
-							tools := t.TempDir()
-							for _, name := range []string{"grep", "sed", "find"} {
-								if err := os.Symlink("/opt/homebrew/bin/g"+name, filepath.Join(tools, name)); err != nil {
+			t.Run(entry.ID+"/"+impl, func(t *testing.T) {
+				shell := "/bin/sh"
+				executable := ""
+				if entry.ID == "cd" {
+					var err error
+					shell, err = exec.LookPath("bash")
+					if err != nil {
+						t.Skip("Bash is unavailable")
+					}
+				} else {
+					executable = exampleTool(detect.Detector{OS: runtime.GOOS, Path: os.Getenv("PATH")}, entry.ID, impl)
+					if executable == "" {
+						t.Skipf("%s %s is unavailable or unidentified", impl, entry.ID)
+					}
+				}
+				for _, section := range selected {
+					for i, code := range section.Code {
+						t.Run(section.ID+string(rune('a'+i)), func(t *testing.T) {
+							dir := t.TempDir()
+							for _, sub := range []string{"projects", "logs", "cache"} {
+								if err := os.Mkdir(filepath.Join(dir, sub), 0755); err != nil {
 									t.Fatal(err)
 								}
 							}
-							toolPath = tools + ":" + toolPath
-						}
-						cmd := exec.Command("/bin/bash", "--noprofile", "--norc", "-c", "cd .\n"+code)
-						cmd.Dir = dir
-						cmd.Env = []string{"PATH=" + toolPath, "HOME=" + dir, "OLDPWD=" + dir, "LC_ALL=C"}
-						output, err := cmd.CombinedOutput()
-						if err != nil {
-							t.Fatalf("%s: %v: %s", code, err, output)
-						}
-						if entry.ID == "sed" && strings.Contains(code, "-i") {
-							got, err := os.ReadFile(filepath.Join(dir, "notes.txt"))
-							if err != nil || !strings.HasPrefix(string(got), "new new") {
-								t.Fatal("in-place result", err, string(got))
+							for name, value := range map[string]string{"app.log": "INFO ready\nERROR broken\nerror small\nexample.org\n", "logs/server.log": "ERROR broken\n", "notes.txt": "old old\nsecond\nthird\nfourth\nfifth\n"} {
+								if err := os.WriteFile(filepath.Join(dir, name), []byte(value), 0644); err != nil {
+									t.Fatal(err)
+								}
 							}
-							backup, err := os.ReadFile(filepath.Join(dir, "notes.txt.bak"))
-							if err != nil || !strings.HasPrefix(string(backup), "old old") {
-								t.Fatal("backup not preserved")
+							toolPath := "/usr/bin:/bin"
+							if executable != "" {
+								tools := t.TempDir()
+								if err := os.Symlink(executable, filepath.Join(tools, entry.ID)); err != nil {
+									t.Fatal(err)
+								}
+								toolPath = tools + ":" + toolPath
 							}
-						}
-						if entry.ID == "grep" && strings.Contains(code, "-n -i") && string(output) != "2:ERROR broken\n3:error small\n" {
-							t.Fatalf("unexpected match result: %s", output)
-						}
-						if entry.ID == "sed" && strings.Contains(code, "2,4p") && string(output) != "second\nthird\nfourth\n" {
-							t.Fatal("range output", string(output))
-						}
-					})
+							cmd := exec.Command(shell, "-c", "cd .\n"+code)
+							cmd.Dir = dir
+							cmd.Env = []string{"PATH=" + toolPath, "HOME=" + dir, "OLDPWD=" + dir, "LC_ALL=C"}
+							output, err := cmd.CombinedOutput()
+							if err != nil {
+								t.Fatalf("%s: %v: %s", code, err, output)
+							}
+							if entry.ID == "sed" && strings.Contains(code, "-i") {
+								got, err := os.ReadFile(filepath.Join(dir, "notes.txt"))
+								if err != nil || !strings.HasPrefix(string(got), "new new") {
+									t.Fatal("in-place result", err, string(got))
+								}
+								backup, err := os.ReadFile(filepath.Join(dir, "notes.txt.bak"))
+								if err != nil || !strings.HasPrefix(string(backup), "old old") {
+									t.Fatal("backup not preserved")
+								}
+							}
+							if entry.ID == "grep" && strings.Contains(code, "-n -i") && string(output) != "2:ERROR broken\n3:error small\n" {
+								t.Fatalf("unexpected match result: %s", output)
+							}
+							if entry.ID == "sed" && strings.Contains(code, "2,4p") && string(output) != "second\nthird\nfourth\n" {
+								t.Fatal("range output", string(output))
+							}
+						})
+					}
 				}
-			}
+			})
 		}
+	}
+}
+
+// Identify each command independently; a prefix or the host OS is not proof of GNU.
+func exampleTool(d detect.Detector, command, implementation string) string {
+	candidates := []string{command}
+	if implementation == "gnu" {
+		candidates = []string{"g" + command, command}
+	}
+	if implementation == "apple" {
+		if d.OS != "darwin" {
+			return ""
+		}
+		candidates = []string{"/usr/bin/" + command}
+	}
+	for _, name := range candidates {
+		selected, err := d.Select(context.Background(), detect.Request{Name: name, Command: command})
+		if err == nil && selected.Implementation == implementation && selected.Executable != "" {
+			return selected.Executable
+		}
+	}
+	return ""
+}
+
+func TestExampleToolPartialInstallation(t *testing.T) {
+	dir := t.TempDir()
+	// A script is never probed, but its BusyBox-named target is labeled inference.
+	// This models Linux without GNU tools, plus a misleading GNU-prefixed name.
+	binary := filepath.Join(dir, "busybox")
+	if err := os.WriteFile(binary, []byte("#!/bin/sh\nexit 1\n"), 0755); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"grep", "ggrep"} {
+		if err := os.Symlink(binary, filepath.Join(dir, name)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	d := detect.Detector{OS: "linux", Path: dir}
+	if got := exampleTool(d, "grep", "busybox"); got != filepath.Join(dir, "grep") {
+		t.Fatalf("BusyBox grep: %q", got)
+	}
+	for _, command := range []string{"grep", "sed", "find"} {
+		if got := exampleTool(d, command, "gnu"); got != "" {
+			t.Fatalf("%s falsely selected as GNU: %s", command, got)
+		}
+	}
+	if got := exampleTool(d, "sed", "busybox"); got != "" {
+		t.Fatalf("missing sed inherited grep coverage: %s", got)
 	}
 }

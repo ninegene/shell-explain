@@ -8,7 +8,7 @@ Stages 1–3 now have a local implementation. The project remains private; stage
 
 - Go 1.24 or newer (module dependencies pinned in go.mod/go.sum).
 - Node.js 22.23.4 or newer and npm; the tested environment uses Node 26.
-- A local Bash for the authored-example checks. GNU/macOS examples run against available tools; unavailable real-tool integrations are skipped explicitly.
+- A local Bash for the authored-example checks. GNU/macOS/BusyBox examples run only when that individual command is identified as the requested implementation; unavailable or ambiguous tools are skipped explicitly. External-tool examples use /bin/sh; the cd examples require Bash.
 
 Install web dependencies from the lockfile:
 
@@ -96,7 +96,7 @@ The web test command first runs a development-server regression in a temporary r
 python3 scripts/linux-smoke.py
 ```
 
-Requires Python 3, curl, tar, Go, and a separately installed qemu-system-x86_64. This is not required for normal CLI use or the website. The script downloads the pinned Alpine 3.24.3 rootfs/virtual ISO from the official mirror and verifies their SHA-256 values, obtains GNU packages and dependency metadata over verified HTTPS, cross-compiles two static Linux test binaries, and boots a temporary RAM-only guest with networking disabled. It creates no host mounts, persistent VM disk, or cloud resources. Downloads are cached under ignored .cache/linux-smoke. APK package selection follows the branch's current index and prints exact versions; its checks are not a substitute for a signed release pipeline.
+Requires Python 3, curl, Go, bsdtar (libarchive tools), and a separately installed qemu-system-x86_64. Install bsdtar with the libarchive-tools package on Debian/Ubuntu; macOS includes it. GNU tar does not read ISO 9660 images. This is not required for normal CLI use or the website. The script downloads the pinned Alpine 3.24.3 rootfs/virtual ISO from the official mirror and verifies their SHA-256 values, obtains GNU packages and dependency metadata over verified HTTPS, cross-compiles two static Linux test binaries, and boots a temporary RAM-only guest with networking disabled. It creates no host mounts, persistent VM disk, or cloud resources. Downloads are cached under ignored .cache/linux-smoke. APK package selection follows the branch's current index and prints exact versions; its checks are not a substitute for a signed release pipeline.
 
 The guest tests actual BusyBox and GNU executable selection and runs every authored grep/sed/find code example inside temporary fixtures, including expected log output and sed backup preservation. It prints LINUX_SMOKE_PASS only after those checks succeed. The test helper cmd/compat-check is not a distributed command.
 
