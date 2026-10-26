@@ -1,0 +1,12 @@
+.DS_Store
+.cache/
+bin/
+node_modules/
+web/dist/
+web/.astro/
+web/src/data/catalog.json
+test-results/
+playwright-report/
+.env
+.env.*
+!.env.example

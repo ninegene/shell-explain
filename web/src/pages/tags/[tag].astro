@@ -1,0 +1,24 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Catalog from '../../components/Catalog.astro';
+import { commands } from '../../lib/catalog';
+export async function getStaticPaths() {
+  const tags = new Set((await commands()).flatMap((e) => e.data.tags));
+  return [...tags].map((tag) => ({ params: { tag }, props: { tag } }));
+}
+const { tag } = Astro.props;
+---
+
+<Layout title={`#${tag}`}>
+  <div class="page-intro">
+    <a class="back" href="/commands/">
+      ← All commands
+    </a>
+    <div class="eyebrow">BROWSE BY TOPIC</div>
+    <h1>#{tag}</h1>
+    <p class="lede">Practical commands for this part of your workflow.</p>
+  </div>
+  <section class="catalog-section">
+    <Catalog tag={tag} />
+  </section>
+</Layout>

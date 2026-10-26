@@ -1,0 +1,56 @@
+---
+import '../styles/global.css';
+import { revision } from '../lib/catalog';
+interface Props {
+  title: string;
+  description?: string;
+}
+const {
+  title,
+  description = 'Practical, implementation-aware shell command explanations. One Markdown source, on the web and offline in your terminal.',
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#152a2d" />
+    <title>{title} · Shell Explain</title>
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip" href="#main">
+      Skip to content
+    </a>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Shell Explain home">
+        <span class="brand-mark" aria-hidden="true">
+          &gt;_
+        </span>{' '}
+        shell explain<span class="brand-dot">.</span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="/commands/">Commands</a>
+        <a href="/about/">About</a>
+        <span class="pill">LOCAL PREVIEW</span>
+      </nav>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div>
+        <strong>Understand the command.</strong> Keep the knowledge.
+      </div>
+      <div>
+        Original Markdown · content <code>{revision.slice(0, 12)}</code> ·{' '}
+        <a href="/about/">Sources &amp; project status</a>
+      </div>
+    </footer>
+  </body>
+</html>

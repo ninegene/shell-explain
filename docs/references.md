@@ -47,9 +47,14 @@ The manual links above are authoring starting points, not proof that any propose
 - [Go build/environment variables](https://pkg.go.dev/cmd/go#hdr-Environment_variables) and [Go embed](https://pkg.go.dev/embed).
 - [Rust platform support](https://doc.rust-lang.org/rustc/platform-support.html), for the language comparison.
 - [Astro content collections](https://docs.astro.build/en/guides/content-collections/) and [Markdown support](https://docs.astro.build/en/guides/markdown-content/).
+- [Astro deployment to GitHub Pages](https://docs.astro.build/en/guides/deploy/github/): static build and GitHub Actions publishing workflow.
+- [GitHub Pages availability](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages): public/private repository plan requirements, rechecked 2026-10-24.
+- [GitHub Pages custom domains](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages): custom subdomain and ownership-verification guidance.
 - [GoReleaser](https://goreleaser.com/), a candidate release-automation tool.
 - [Homebrew tap maintenance](https://docs.brew.sh/How-to-Create-and-Maintain-a-Tap), [adding software](https://docs.brew.sh/Adding-Software-to-Homebrew), and [formula acceptance](https://docs.brew.sh/Acceptable-Formulae).
 - [mise GitHub backend](https://mise.jdx.dev/dev-tools/backends/github.html) and [registry contributions](https://mise.jdx.dev/contributing/registry.html).
+- [Alpine Linux releases](https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86_64/) and [BusyBox documentation](https://busybox.net/downloads/BusyBox.html): the optional local Linux smoke-check environment and applet reference.
+- [QEMU](https://www.qemu.org/): local test virtualization only, not website or production infrastructure.
 
 ## Evidence and licensing limits
 

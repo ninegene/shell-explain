@@ -7,20 +7,27 @@
 | Repository | Private ninegene/shell-explain through stage 4; public in stage 5 |
 | Executable | explain |
 | Website | Static Astro site intended for shell-explain.ninegene.com |
+| Website hosting | GitHub Pages via GitHub Actions after public transition; local previews through stage 4 |
 | Source text | Shared Markdown files used by web and CLI |
-| Language | Go recommended; no implementation scaffold yet |
+| Language | Go implemented; pinned pure-Go Markdown/YAML dependencies |
 | Normal lookup | Offline, curated content; no command execution |
 | Platform support | Initial macOS/Linux ARM64/AMD64 target matrix proposed |
 | Detection | Per-command implementation/version evidence plus explicit overrides |
 | Distribution | Release binaries, curl installer, Homebrew tap, mise GitHub backend |
 | Licensing | Choose and add code/content licenses in stage 5, before public release |
-| Current scope | Necessary documentation only; no website/CLI/deployment |
+| Current status | Stages 1–3 implemented locally; stage 4 iteration next; no public release/deployment |
+
+## Implementation evidence
+
+The shared format is schema version 1, parsed once in Go. Four original Markdown entries cover grep, sed, find, and the cd builtin. The Go CLI embeds the authored files; Astro consumes a generated normalized export through its content collection. The site provides command/tag pages, shareable implementation views, static search, copy buttons, and responsive keyboard-accessible layouts.
+
+Run the commands in [development and verification](development.md) to reproduce validation. Go tests cover content errors, selection, output, and available real-host examples; Chromium tests compare all implementation pages against CLI JSON and test search, copying, keyboard/mobile behavior, and accessibility. The optional QEMU smoke check validates actual Linux GNU/BusyBox selection and authored examples. Exact tested builds are documented rather than claiming universal version coverage.
 
 ## Stage 1: validate the shared format
 
-Finalize the minimal Markdown schema using original content. Record provenance and reuse constraints, and defer final code/content license selection to stage 5. Prototype original entries for grep, sed, and find to expose meaningful implementation differences, plus one shell builtin to expose resolution limitations. These entries are future work, not delivered content.
+Implemented the minimal Markdown schema using original content. Provenance and reuse constraints remain documented, and final code/content license selection stays in stage 5. The initial entries for grep, sed, find, and cd expose implementation differences and parent-shell resolution limitations.
 
-Demonstrate CLI and Astro rendering from the exact same files. Verify code fidelity, variant selection, option lookup, links, and JSON structure before expanding the corpus. Decide whether a normalized build artifact or independently validated loaders provide the simplest maintainable pipeline.
+The normalized Go export supplies both CLI JSON and Astro pages. Parity tests verify selected sections, code fidelity, HTML, references, revision, and variant URLs before corpus expansion. See the content-format and development documents for the implemented contract.
 
 ## Stage 2: build the CLI
 
@@ -56,9 +63,9 @@ Begin only after stage 4's iteration criteria are met. Keep public launch as a d
 3. Review the complete repository history, release artifacts, links, and configuration for secrets, personal information, private dependencies, and material that cannot be redistributed. Resolve findings before opening access.
 4. Change the existing GitHub repository from private to public after the publication review and owner authorization. Enable the intended issue/PR contribution channels and update the README to accurately describe public status and licensing.
 5. Publish tested immutable binaries/checksums and clear release notes. Validate curl/manual installation, a Homebrew tap, and mise in clean environments. Resolve command-name collisions without silently replacing other programs or shell functions.
-6. Publish the static Astro site at shell-explain.ninegene.com with HTTPS, matching content revision, installation guidance, license/attribution information, and links to report problems or contribute commands/examples. Select hosting and prepare domain/TLS configuration for separate deployment authorization.
+6. Publish the static Astro site to GitHub Pages using a GitHub Actions build/deploy workflow after the repository is public. Configure shell-explain.ninegene.com and HTTPS, verify domain ownership and DNS, and check routes/search/assets. Include matching content revision, installation guidance, license/attribution information, and links to report problems or contribute commands/examples. Prepare Pages/domain/TLS configuration for separate deployment authorization; no paid cloud website hosting is planned.
 
-The current request authorizes private repository setup and pushing documentation only. It does not authorize the future visibility change, website deployment, or DNS updates.
+The authorized implementation scope covers stages 1–3 in the private working tree. It does not authorize a commit/push, the future public visibility change, website deployment, or DNS updates.
 
 ## Acceptance criteria
 

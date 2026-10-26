@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { revision } from '../lib/catalog';
+---
+
+<Layout title="About">
+  <div class="page-intro">
+    <div class="eyebrow">UNDERSTAND. THEN USE.</div>
+    <h1>
+      One source.
+      <br />
+      Two ways to learn.
+    </h1>
+  </div>
+  <article class="about prose">
+    <h2>A small reference, built carefully</h2>
+    <p>
+      Shell Explain pairs original Markdown explanations with an offline Go CLI
+      and this static Astro website. The same validated content supplies both
+      interfaces.
+    </p>
+    <h2>Private development preview</h2>
+    <p>
+      The CLI and website are local development builds. No public binary,
+      installer, package-manager release, or deployed site is available yet. The
+      repository remains private during iteration. Public release and final
+      code/content licensing are scheduled for stage 5.
+    </p>
+    <p>
+      Content revision: <code>{revision}</code>
+    </p>
+    <h2>Choose the right tool</h2>
+    <p>
+      macOS can have GNU tools installed, and Linux can use BusyBox. Choose an
+      implementation explicitly on the website. The CLI can inspect executable
+      paths and use bounded version probes; it cannot see aliases or functions
+      inside your parent shell. Examples are not automatically executed.
+    </p>
+    <h2>Sources and inspiration</h2>
+    <p>
+      Every command page links upstream references. The prose and examples here
+      are original. This project takes inspiration from{' '}
+      <a href="https://github.com/tldr-pages/tldr">tldr-pages</a>,{' '}
+      <a href="https://explainshell.com/">ExplainShell</a>, and{' '}
+      <a href="https://github.com/srsudar/eg">eg</a>; it does not import their
+      text.
+    </p>
+    <h2>Contributing later</h2>
+    <p>
+      Once the project opens to the public, contributors will be able to propose
+      commands, examples, and portability corrections through reviewed Markdown
+      pull requests. Contribution terms and licenses will be finalized before
+      that launch.
+    </p>
+  </article>
+</Layout>

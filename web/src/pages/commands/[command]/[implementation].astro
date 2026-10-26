@@ -1,0 +1,15 @@
+---
+import { commands } from '../../../lib/catalog';
+import CommandPage from '../../../components/CommandPage.astro';
+export async function getStaticPaths() {
+  return (await commands()).flatMap((entry) =>
+    entry.data.implementations.map((implementation) => ({
+      params: { command: entry.id, implementation },
+      props: { entry, implementation },
+    })),
+  );
+}
+const { entry, implementation } = Astro.props;
+---
+
+<CommandPage entry={entry} implementation={implementation} />

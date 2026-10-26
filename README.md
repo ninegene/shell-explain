@@ -3,16 +3,18 @@
 Practical command explanations for the terminal and the web, maintained in one shared Markdown collection.
 
 - Repository: [ninegene/shell-explain](https://github.com/ninegene/shell-explain), private during development and iteration; planned public release in stage 5.
-- Planned executable: **`explain`**, for example `explain grep`.
-- Planned website: **shell-explain.ninegene.com**, built as a static Astro site.
-- Recommended CLI language: Go, with documentation embedded for offline use.
-- Status: **documentation only**. No CLI, installer, website implementation, release, or deployment exists yet.
+- Executable: **`explain`**, for example `./bin/explain grep` after a local build.
+- Planned website: **shell-explain.ninegene.com**, built with Astro and hosted on GitHub Pages after the public release in stage 5.
+- CLI language: Go, with original Markdown embedded for offline use.
+- Status: **stages 1–3 implemented locally**. Shared content validation, CLI, and static Astro site are ready for stage 4 iteration. No installer, public release, or deployment exists yet.
 
 ## Goal
 
 Explain what a command does, show useful examples, explain common options and mistakes, and select documentation appropriate to the installed implementation. Beginners should be able to understand the examples; experienced users should be able to find an unfamiliar option quickly.
 
 The CLI and website must consume the same `.md` files. Neither keeps an independently edited copy of the explanations. Installation should eventually support downloadable binaries, a curl-based installer, Homebrew, and mise.
+
+Use local Astro previews during private development and iteration. After the repository becomes public, GitHub Actions will build and deploy the static site to GitHub Pages. No paid cloud hosting is planned for the website; domain registration remains separate.
 
 ## Documentation
 
@@ -24,11 +26,32 @@ The CLI and website must consume the same `.md` files. Neither keeps an independ
 | [Distribution](docs/distribution.md) | Releases, curl, Homebrew, mise, and reproducibility |
 | [Related projects and references](docs/references.md) | tldr, ExplainShell, all projects in tldr's similar-projects list, and supporting tools |
 | [Roadmap](docs/roadmap.md) | Decisions, validation, and implementation stages |
+| [Development and verification](docs/development.md) | Build commands, local previews, test coverage, and known limits |
 | [Contributing](CONTRIBUTING.md) | Documentation contributions and source/licensing expectations |
 
-## Proposed usage
+## Local quick start
 
-These commands describe the intended interface; they are not available yet.
+Requires [just](https://github.com/casey/just), Go 1.24+, and Node 22.23.4+. Install the command runner with `brew install just` on macOS.
+
+Run `just` or `just help` to see all development commands and setup requirements. Plain `just` only displays help; it does not build or download dependencies.
+
+Build and use the offline CLI:
+
+```sh
+just build
+./bin/explain grep
+./bin/explain grep --implementation gnu --option=-n
+./bin/explain sed --implementation apple --format json
+```
+
+Build or preview the site from the same Markdown files:
+
+```sh
+npm ci --prefix web
+just web-dev
+```
+
+The currently implemented interface supports these forms once the binary is on PATH:
 
 ```console
 explain grep
@@ -51,7 +74,7 @@ GNU/BSD behavior must be selected per command, not inferred solely from the oper
 
 ## Development status and licensing
 
-There are no build/test commands yet. Validate documentation links, formatting, public-safe content, and consistency of proposed behavior. Add executable commands only when their implementation exists.
+Use `just test` for Go checks and reviewed examples, `just check` for Go vet and Astro diagnostics, `just web-build` for the static build, and `just web-test` for Chromium parity/usability/accessibility tests. See [development](docs/development.md) for setup and limitations. The initial corpus is grep, sed, find, and cd; exact version support is not certified universally.
 
 Research date: **2026-10-23**, America/Los_Angeles. Related-project descriptions come from published documentation, not independent trials. See [references](docs/references.md).
 

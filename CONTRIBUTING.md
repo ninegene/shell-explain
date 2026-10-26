@@ -1,6 +1,6 @@
 # Contributing
 
-The project is currently in planning and remains private through development and iteration. External contributions will open in stage 5, after code/content licenses and the contribution process are finalized. This document is draft guidance for that process; it does not imply a public contribution channel exists today. Executable implementation should follow the agreed roadmap.
+The project has a local shared-content, CLI, and Astro implementation and remains private through iteration. External contributions will open in stage 5, after code/content licenses and the contribution process are finalized. This document is draft guidance for that process; it does not imply a public contribution channel exists today.
 
 ## Planned process for new commands and examples
 
@@ -18,7 +18,7 @@ The public launch should include issue/PR templates and starter issues for addin
 
 Write original explanations with a concrete use case, understandable examples, option meanings, expected behavior, and relevant mistakes. State the command implementation and any tested version/platform. Never imply an example has been tested when it has only been reviewed.
 
-Use plain Markdown according to the [proposed format](docs/content-format.md). Keep examples safe to understand and distinguish read-only inspection from commands that modify data. Use synthetic paths/data. Do not include credentials or ask learners to paste secrets into examples.
+Use plain Markdown according to the [content format](docs/content-format.md). Keep examples safe to understand and distinguish read-only inspection from commands that modify data. Use synthetic paths/data. Do not include credentials or ask learners to paste secrets into examples.
 
 Describe shell behavior separately from tool options. Prefer quoted filenames/patterns and explain why quoting matters. Identify portability differences explicitly. Avoid undocumented assumptions about aliases, GNU utilities, or optional packages being installed.
 
@@ -28,6 +28,6 @@ Link to upstream manuals and useful related projects. Do not copy cheat sheets o
 
 ## Review
 
-Check relative Markdown links, front matter examples, consistent command spelling, and GNU/Apple/BSD distinctions. Once implemented, content validation must include CLI/web rendering parity, implementation-specific example checks, and accessible output. Do not execute destructive examples against a contributor's normal filesystem.
+Check relative Markdown links, front matter, consistent command spelling, and GNU/Apple/BSD distinctions. Content validation includes CLI/web rendering parity, implementation-specific example checks, and accessible output. Do not execute destructive examples against a contributor's normal filesystem.
 
-No test suite, package installation command, or contribution CI exists yet. Add accurate instructions alongside implementation rather than documenting commands that do not work.
+Follow [development and verification](docs/development.md): run `just test`, `just check`, and `just web-test` after installing web/test-browser dependencies. The latter builds the site and checks its selected sections against CLI output. Add a temporary fixture and expected result when adding an executable example. Contribution CI and public contribution terms remain stage-5 work.
