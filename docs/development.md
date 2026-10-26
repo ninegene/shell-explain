@@ -68,6 +68,7 @@ The --ignore-lock flag keeps an agent-driven preview in the foreground so it can
 ```sh
 just test
 just check
+python3 -B scripts/test_linux_smoke.py
 cd web
 npx playwright install chromium
 cd ..
@@ -96,8 +97,10 @@ The web test command first runs a development-server regression in a temporary r
 python3 scripts/linux-smoke.py
 ```
 
-Requires Python 3, curl, Go, bsdtar (libarchive tools), and a separately installed qemu-system-x86_64. Install bsdtar with the libarchive-tools package on Debian/Ubuntu; macOS includes it. GNU tar does not read ISO 9660 images. This is not required for normal CLI use or the website. The script downloads the pinned Alpine 3.24.3 rootfs/virtual ISO from the official mirror and verifies their SHA-256 values, obtains GNU packages and dependency metadata over verified HTTPS, cross-compiles two static Linux test binaries, and boots a temporary RAM-only guest with networking disabled. It creates no host mounts, persistent VM disk, or cloud resources. Downloads are cached under ignored .cache/linux-smoke. APK package selection follows the branch's current index and prints exact versions; its checks are not a substitute for a signed release pipeline.
+Requires Python 3, curl, Go, libarchive tar, and a separately installed qemu-system-x86_64. The script verifies the libarchive version banner and accepts bsdtar or macOS /usr/bin/tar, even when GNU tar comes first on PATH. Install bsdtar with the libarchive-tools package on Debian/Ubuntu. GNU tar does not read ISO 9660 images. This is not required for normal CLI use or the website. The script downloads the pinned Alpine 3.24.3 rootfs/virtual ISO from the official mirror and verifies their SHA-256 values, obtains GNU packages and dependency metadata over verified HTTPS, cross-compiles two static Linux test binaries, and boots a temporary RAM-only guest with networking disabled. It creates no host mounts, persistent VM disk, or cloud resources. Downloads are cached under ignored .cache/linux-smoke. APK package selection follows the branch's current index and prints exact versions; its checks are not a substitute for a signed release pipeline.
 
 The guest tests actual BusyBox and GNU executable selection and runs every authored grep/sed/find code example inside temporary fixtures, including expected log output and sed backup preservation. It prints LINUX_SMOKE_PASS only after those checks succeed. The test helper cmd/compat-check is not a distributed command.
+
+Run `python3 -B scripts/test_linux_smoke.py` for extractor-selection unit tests without downloads or QEMU. These cover explicit bsdtar, macOS system tar with GNU tar first on PATH, libarchive tar on PATH, and rejection of GNU tar.
 
 Verified locally on 2026-10-25: macOS system utilities; Homebrew GNU grep 3.12, sed 4.9, and findutils 4.10.0; Linux AMD64 under QEMU with Alpine 3.24.3, BusyBox 1.37.0, GNU grep 3.12, GNU sed 4.9, and GNU findutils 4.10.0. The Bash cd examples also run on the macOS host. Pure-Go cross-builds succeeded for darwin/arm64, darwin/amd64, linux/arm64, and linux/amd64; native execution was checked on darwin/arm64 and linux/amd64, not all four architectures. This records execution evidence, not a general version-support guarantee.

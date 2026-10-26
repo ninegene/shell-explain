@@ -129,6 +129,38 @@ test(
         'Find lines of text that match a pattern.',
       ),
     );
+    // These are valid shared documents: neither code-block count nor -n is required.
+    for (const [label, body] of [
+      [
+        'one',
+        "A single example:\n\n```sh\ngrep 'one-block-marker' app.log\n```\n",
+      ],
+      ['zero', 'Examples described in prose.\n'],
+    ]) {
+      const summary = `Homepage ${label} block regression marker.`;
+      await writeFile(
+        source,
+        original
+          .replace(/### Examples\n[\s\S]*?(?=\n### )/, `### Examples\n${body}`)
+          .replace('### Option: -n', '### Line numbers')
+          .replace('Find lines of text that match a pattern.', summary),
+      );
+      await until(async () => {
+        const response = await page('/');
+        const html = await response.text();
+        return (
+          response.ok &&
+          html.includes(summary) &&
+          (label === 'zero' || html.includes('one-block-marker'))
+        );
+      });
+    }
+    await writeFile(source, original);
+    await until(async () =>
+      (await (await page('/')).text()).includes(
+        'Find lines of text that match a pattern.',
+      ),
+    );
     const extra = path.join(fixture, 'content/en/demo.md');
     await writeFile(
       extra,
@@ -138,10 +170,54 @@ test(
         .replace('aliases: [ggrep]', 'aliases: []'),
     );
     await until(async () => (await page('/commands/demo/')).ok);
+    await rm(source);
+    await until(async () => (await page('/commands/grep/')).status === 404);
+    await until(async () => {
+      const response = await page('/');
+      return response.ok && (await response.text()).includes('explain cd');
+    });
+    await writeFile(source, original);
+    await until(async () => (await page('/commands/grep/')).ok);
     const renamed = path.join(fixture, 'content/en/renamed.md');
     await rename(extra, renamed);
     await until(async () => (await page('/commands/demo/')).ok);
     await rm(renamed);
     await until(async () => (await page('/commands/demo/')).status === 404);
+    // Build only after releasing the development server's content-store lock.
+    const exited = once(server, 'exit');
+    server.kill('SIGTERM');
+    await exited;
+    await writeFile(
+      source,
+      original
+        .replace(
+          /### Examples\n[\s\S]*?(?=\n### )/,
+          '### Examples\nExamples described in prose.\n',
+        )
+        .replace('### Option: -n', '### Line numbers'),
+    );
+    const exported = spawnSync(
+      'go',
+      [
+        'run',
+        './cmd/content-export',
+        '--source',
+        'content',
+        '--output',
+        'web/src/data/catalog.json',
+      ],
+      { cwd: fixture, encoding: 'utf8', timeout: 30000 },
+    );
+    assert.equal(exported.status, 0, exported.stdout + exported.stderr);
+    const build = spawnSync(
+      process.execPath,
+      [
+        path.join(root, 'web/node_modules/astro/bin/astro.mjs'),
+        'build',
+        '--ignore-lock',
+      ],
+      { cwd: path.join(fixture, 'web'), encoding: 'utf8', timeout: 30000 },
+    );
+    assert.equal(build.status, 0, build.stdout + build.stderr);
   },
 );

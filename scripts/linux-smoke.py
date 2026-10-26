@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Optional local Linux/BusyBox/GNU check. Requires curl, Go, bsdtar, and QEMU.
+"""Optional local Linux/BusyBox/GNU check. Requires curl, Go, libarchive tar, and QEMU.
 
 Downloads Alpine from its official HTTPS mirror, verifies rootfs/ISO SHA-256,
 extracts GNU packages into a temporary RAM-only guest, and boots without networking.
@@ -95,13 +95,28 @@ def cpio(root, destination):
     destination.write_bytes(gzip.compress(stream.getvalue(), mtime=0))
 
 
+def iso_tar():
+    """Find libarchive tar, including macOS's system executable name."""
+    for name in ("bsdtar", "/usr/bin/tar", "tar"):
+        candidate = shutil.which(name)
+        if not candidate:
+            continue
+        try:
+            result = subprocess.run([candidate, "--version"], check=True,
+                                    capture_output=True, text=True, timeout=5)
+        except (OSError, subprocess.SubprocessError):
+            continue
+        version = result.stdout.lower()
+        if "bsdtar" in version and "libarchive" in version:
+            return candidate
+    raise SystemExit("Install bsdtar (libarchive tools) to extract the Alpine ISO.")
+
+
 def main():
     qemu = shutil.which("qemu-system-x86_64")
     if not qemu:
         raise SystemExit("Install QEMU separately before running this optional check.")
-    bsdtar = shutil.which("bsdtar")
-    if not bsdtar:
-        raise SystemExit("Install bsdtar (libarchive tools) to extract the Alpine ISO.")
+    bsdtar = iso_tar()
     cache = ROOT / ".cache/linux-smoke"
     cache.mkdir(parents=True, exist_ok=True)
     for filename, digest in ARTIFACTS.items():

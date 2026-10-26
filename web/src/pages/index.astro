@@ -2,13 +2,19 @@
 import Layout from '../layouts/Layout.astro';
 import Catalog from '../components/Catalog.astro';
 import { commands } from '../lib/catalog';
-const grep = (await commands()).find((entry) => entry.id === 'grep')!;
-const example = grep.data.sections
-  .find((section) => section.title === 'Examples')!
-  .code[1].trim();
-const option = grep.data.sections.find((section) =>
-  section.options.includes('-n'),
-)!;
+const entries = await commands();
+const featured = entries.find((entry) => entry.id === 'grep') ?? entries[0];
+const examples = featured.data.sections.find(
+  (section) =>
+    section.implementation === 'common' && section.title === 'Examples',
+)!.code;
+const example = (examples[1] ?? examples[0])?.trim();
+const explanation =
+  featured.data.sections.find((section) => section.options.includes('-n')) ??
+  featured.data.sections.find(
+    (section) =>
+      section.implementation === 'common' && section.title === 'Overview',
+  )!;
 ---
 
 <Layout title="Know what you type">
@@ -38,13 +44,13 @@ const option = grep.data.sections.find((section) =>
       </div>
       <div class="terminal-content">
         <p>
-          <span>$</span> explain {grep.id}
+          <span>$</span> explain {featured.id}
         </p>
-        <h2>{grep.data.summary}</h2>
+        <h2>{featured.data.summary}</h2>
         <p class="terminal-muted">One command, step by step.</p>
-        <code>{example}</code>
+        {example && <code>{example}</code>}
         <div class="terminal-rule"></div>
-        <div class="terminal-muted" set:html={option.html} />
+        <div class="terminal-muted" set:html={explanation.html} />
         <p class="terminal-caption">ONE MARKDOWN SOURCE · WEB + CLI</p>
       </div>
     </div>
