@@ -1,13 +1,16 @@
 package catalog
 
 import (
+	"bufio"
 	"fmt"
+	"html"
 	"strings"
 	"unicode"
 	"unicode/utf8"
 
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
+	goldmarkhtml "github.com/yuin/goldmark/renderer/html"
 	"github.com/yuin/goldmark/text"
 )
 
@@ -23,12 +26,12 @@ func Plain(markdown string, width int) string {
 		for c := n.FirstChild(); c != nil; c = c.NextSibling() {
 			switch v := c.(type) {
 			case *ast.Text:
-				appendText(string(v.Segment.Value(source)))
+				appendText(plainText(v.Segment.Value(source), v.IsRaw()))
 				if v.SoftLineBreak() || v.HardLineBreak() {
 					appendText(" ")
 				}
 			case *ast.String:
-				appendText(string(v.Value))
+				appendText(plainText(v.Value, v.IsRaw() || v.IsCode()))
 			case *ast.CodeSpan:
 				var code strings.Builder
 				for child := c.FirstChild(); child != nil; child = child.NextSibling() {
@@ -89,6 +92,25 @@ func Plain(markdown string, width int) string {
 	}
 	block(doc, "")
 	return strings.TrimRight(out.String(), "\n") + "\n"
+}
+
+// Use the HTML renderer's single-pass CommonMark decoding, then remove only
+// the HTML escaping it adds. Code and raw text bypass Markdown decoding.
+func plainText(source []byte, raw bool) string {
+	if raw {
+		return string(source)
+	}
+	var rendered strings.Builder
+	w := bufio.NewWriter(&rendered)
+	goldmarkhtml.DefaultWriter.Write(w, source)
+	_ = w.Flush()
+	return strings.Map(func(r rune) rune {
+		// Entity references must not introduce terminal control sequences.
+		if unicode.IsControl(r) && r != '\n' && r != '\t' {
+			return '\uFFFD'
+		}
+		return r
+	}, html.UnescapeString(rendered.String()))
 }
 
 type inlineSpan struct {

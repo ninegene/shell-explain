@@ -1,9 +1,50 @@
 package catalog
 
 import (
+	"html"
 	"strings"
 	"testing"
 )
+
+func TestProseDecodingMatchesHTML(t *testing.T) {
+	for _, tt := range []struct{ markdown, want string }{
+		{`Use \* and A &amp; B.`, "Use * and A & B."},
+		{`A &#35; sign and &#x23; sign.`, "A # sign and # sign."},
+		{`&copy; &NotEqualTilde; &unknown;`, "© ≂̸ &unknown;"},
+		{`\&amp; &amp;amp; &#38;amp;`, "&amp; &amp; &amp;"},
+		{`\\* and &#92;*`, `\* and \*`},
+	} {
+		t.Run(tt.markdown, func(t *testing.T) {
+			rendered, _, err := RenderHTML(tt.markdown)
+			if err != nil {
+				t.Fatal(err)
+			}
+			web := html.UnescapeString(strings.TrimSuffix(strings.TrimPrefix(rendered, "<p>"), "</p>\n"))
+			if web != tt.want {
+				t.Fatalf("HTML text = %q, want %q", web, tt.want)
+			}
+			for _, width := range []int{0, 80} {
+				if got := Plain(tt.markdown, width); got != web+"\n" {
+					t.Fatalf("width %d: terminal = %q, HTML text = %q", width, got, web)
+				}
+			}
+		})
+	}
+	if got := Plain("A &amp; B", 5); got != "A & B\n" {
+		t.Fatalf("wrapping must use decoded text: %q", got)
+	}
+}
+
+func TestDecodingPreservesCodeAndBlocksTerminalControls(t *testing.T) {
+	literal := `\* &amp; &#35;`
+	markdown := "`" + literal + "`\n\n```sh\n" + literal + "\n```\n"
+	if got := Plain(markdown, 80); got != literal+"\n\n    "+literal+"\n" {
+		t.Fatalf("code changed: %q", got)
+	}
+	if got := Plain("&#27;[31mred&#x9b;31m", 80); got != "�[31mred�31m\n" {
+		t.Fatalf("entity introduced terminal controls: %q", got)
+	}
+}
 
 func TestInlineCodePreservesWhitespace(t *testing.T) {
 	command := "printf '%s\\n' 'a  b'"
