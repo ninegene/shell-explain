@@ -52,10 +52,30 @@ for (const entry of catalog.entries) {
       const path = `/commands/${entry.id}/${implementation === 'common' ? '' : implementation + '/'}`;
       await page.goto(path);
       await expect(page.locator('.terminal-note code')).toHaveText(
-        `explain ${entry.id} --implementation ${implementation}`,
+        `explain ${entry.id} --implementation ${implementation} --details`,
+      );
+      const exampleSections = response.sections.filter(
+        (s: { example_text?: string }) => s.example_text !== undefined,
+      );
+      const exampleText =
+        exampleSections
+          .map((s: { example_text: string }) =>
+            s.example_text.replace(/\n$/, ''),
+          )
+          .join('\n\n') + '\n';
+      const optionSections = response.sections.filter(
+        (s: { option_text?: string }) => s.option_text !== undefined,
+      );
+      const optionText =
+        optionSections
+          .map((s: { option_text: string }) => s.option_text.replace(/\n$/, ''))
+          .join('\n\n') + '\n';
+      const displaySections = response.sections.filter(
+        (s: { id: string; example_text?: string; option_text?: string }) =>
+          s.option_text === undefined || s.id === optionSections[0]?.id,
       );
       await expect(page.locator('[data-section-id]')).toHaveCount(
-        response.sections.length,
+        displaySections.length,
       );
       expect(
         await page
@@ -63,10 +83,52 @@ for (const entry of catalog.entries) {
           .evaluateAll((nodes) =>
             nodes.map((n) => n.getAttribute('data-section-id')),
           ),
-      ).toEqual(response.sections.map((s: { id: string }) => s.id));
+      ).toEqual(displaySections.map((s: { id: string }) => s.id));
+      await expect(page.locator('.prose pre')).toHaveCount(
+        exampleSections.reduce(
+          (count: number, s: { code: string[] }) => count + s.code.length,
+          0,
+        ) + (optionSections.length ? 1 : 0),
+      );
+      expect(
+        await page.locator('.prose pre code.language-sh').allTextContents(),
+      ).toEqual(exampleSections.flatMap((s: { code: string[] }) => s.code));
+      if (optionSections.length) {
+        expect(
+          await page
+            .locator('pre[data-copy-label="Copy options"] code')
+            .textContent(),
+        ).toBe(optionText);
+        for (const line of optionText.split('\n'))
+          expect(line.length).toBeLessThanOrEqual(100);
+        const cliDetails = execFileSync(
+          binary,
+          [
+            entry.id,
+            '--implementation',
+            implementation,
+            '--details',
+            '--width=0',
+          ],
+          { encoding: 'utf8' },
+        );
+        expect(cliDetails).toContain('Options\n' + optionText);
+      }
+      const cliExamples = execFileSync(
+        binary,
+        [entry.id, '--implementation', implementation, '--width=0'],
+        { encoding: 'utf8' },
+      );
+      expect(cliExamples).toContain(exampleText);
       for (const section of response.sections) {
+        await expect(page.locator(`[id="${section.id}"]`)).toHaveCount(1);
+      }
+      for (const section of displaySections) {
         const node = page.locator(`[data-section-id="${section.id}"]`);
-        await expect(node.locator('h2')).toHaveText(section.title);
+        await expect(node.locator('h2')).toHaveText(
+          section.option_text !== undefined ? 'Options' : section.title,
+        );
+        if (section.option_text !== undefined) continue;
         expect(await node.locator('pre code').allTextContents()).toEqual(
           section.code,
         );
@@ -110,15 +172,28 @@ test('copy preserves exact code and implementation links are shareable', async (
   await page.goto('/commands/sed/');
   await page.getByRole('link', { name: 'macOS / Apple' }).click();
   await expect(page).toHaveURL('/commands/sed/apple/');
-  const button = page
-    .getByRole('button', { name: 'Copy code example' })
-    .first();
-  const expected = await page.locator('pre code').first().textContent();
-  await button.click();
-  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
-    expected,
-  );
+  const buttons = page.getByRole('button', {
+    name: 'Copy code example',
+    exact: true,
+  });
+  const snippets = page.locator('pre code.language-sh');
+  await expect(buttons).toHaveCount(4);
+  for (let index = 0; index < (await buttons.count()); index++) {
+    const expected = await snippets.nth(index).textContent();
+    await buttons.nth(index).click();
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
+      expected,
+    );
+  }
   await expect(page.locator('.copy-status')).toContainText('Example copied');
+  const options = await page
+    .locator('pre[data-copy-label="Copy options"] code')
+    .textContent();
+  await page.getByRole('button', { name: 'Copy options', exact: true }).click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
+    options,
+  );
+  await expect(page.locator('.copy-status')).toHaveText('Options copied.');
 });
 
 test('desktop and mobile accessibility, keyboard navigation, and overflow', async ({
@@ -155,18 +230,29 @@ test('desktop and mobile accessibility, keyboard navigation, and overflow', asyn
 
 test('static pages work without JavaScript and use no third-party resources', async ({
   browser,
+  baseURL,
 }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    baseURL,
+  });
   const page = await context.newPage();
   const external: string[] = [];
   page.on('request', (r) => {
-    if (!r.url().startsWith('http://127.0.0.1:4321')) external.push(r.url());
+    if (new URL(r.url()).origin !== new URL(baseURL!).origin)
+      external.push(r.url());
   });
   await page.goto('/commands/find/gnu/');
   await expect(
-    page.getByRole('heading', { name: 'GNU examples' }),
+    page.getByRole('heading', { name: 'Examples', exact: true }),
   ).toBeVisible();
-  await expect(page.locator('pre code')).toHaveCount(3);
+  await expect(page.locator('pre code')).toHaveCount(4);
+  expect(
+    (await page.locator('pre code.language-sh').allTextContents()).join('\n'),
+  ).toContain('find . -maxdepth');
+  await expect(
+    page.getByRole('heading', { name: 'Options', exact: true }),
+  ).toBeVisible();
   expect(external).toEqual([]);
   await context.close();
 });

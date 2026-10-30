@@ -40,6 +40,7 @@ Build and use the offline CLI:
 ```sh
 just build
 ./bin/explain grep
+./bin/explain grep --details
 ./bin/explain grep --implementation gnu --option=-n
 ./bin/explain sed --implementation apple --format json
 ```
@@ -55,6 +56,7 @@ The currently implemented interface supports these forms once the binary is on P
 
 ```console
 explain grep
+explain grep --details
 explain ggrep
 explain grep --option=-n
 explain --implementation gnu grep
@@ -65,6 +67,8 @@ explain list
 ```
 
 `explain` provides information; it does not run the example command or install the command being explained. Full pipeline/script explanation is a possible later feature, not part of the first release.
+
+Text output shows example usages for the selected implementation by default, with a compact implementation/confidence heading. Descriptions use `# ` comments, commands have no added indentation, and a blank line separates examples. In the Markdown source and on the web, each example keeps its own code block and copy button so a single command can be copied. The CLI removes fences and renderer indentation, separates examples with one blank line, and prefixes descriptions with `# `. Detailed option explanations are grouped under `Options`, with each option spelling above its description. Descriptions wrap at 100 columns (including the `# ` prefix on example comments); authored commands and indivisible inline literals remain intact. Use `--details` before or after the command for the full overview, options, mistakes, portability notes, detection evidence, and references. Explicit `--option` lookup shows that option's explanation without requiring `--details`. JSON and the website retain the full selected reference.
 
 ## Project boundaries
 

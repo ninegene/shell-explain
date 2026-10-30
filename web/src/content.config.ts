@@ -10,6 +10,8 @@ const section = z.object({
   markdown: z.string(),
   html: z.string(),
   code: z.array(z.string()),
+  example_text: z.string().optional(),
+  option_text: z.string().optional(),
 });
 const commands = defineCollection({
   loader: file('src/data/catalog.json', {

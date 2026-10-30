@@ -7,8 +7,14 @@ interface Props {
   implementation?: string;
 }
 const { entry, implementation = 'common' } = Astro.props;
-const sections = entry.data.sections.filter(
+const selected = entry.data.sections.filter(
   (s) => s.implementation === 'common' || s.implementation === implementation,
+);
+const options = selected.filter((s) => s.option_text !== undefined);
+const optionText =
+  options.map((s) => s.option_text!.replace(/\n$/, '')).join('\n\n') + '\n';
+const sections = selected.filter(
+  (s) => s.option_text === undefined || s.id === options[0]?.id,
 );
 const variants = ['common', ...entry.data.implementations];
 const variantURL = (id: string) =>
@@ -58,7 +64,9 @@ const variantURL = (id: string) =>
       <h2>On this page</h2>
       <nav class="toc" aria-label="On this page">
         {sections.map((s) => (
-          <a href={`#${s.id}`}>{s.title}</a>
+          <a href={`#${s.id}`}>
+            {s.option_text !== undefined ? 'Options' : s.title}
+          </a>
         ))}
         <a href="#references">References</a>
       </nav>
@@ -66,7 +74,7 @@ const variantURL = (id: string) =>
         <span class="eyebrow">ALSO OFFLINE</span>
         <code>
           explain {entry.id}
-          {` --implementation ${implementation}`}
+          {` --implementation ${implementation} --details`}
         </code>
         <p>Local development CLI. Public binaries are not released yet.</p>
       </div>
@@ -86,8 +94,19 @@ const variantURL = (id: string) =>
           id={section.id}
           data-section-id={section.id}
         >
-          <h2>{section.title}</h2>
-          <div class="prose" set:html={section.html} />
+          <h2>
+            {section.option_text !== undefined ? 'Options' : section.title}
+          </h2>
+          {section.option_text !== undefined ? (
+            <div class="prose">
+              {options.slice(1).map((s) => (
+                <span id={s.id} />
+              ))}
+              <pre data-copy-label="Copy options"><code class="language-text">{optionText}</code></pre>
+            </div>
+          ) : (
+            <div class="prose" set:html={section.html} />
+          )}
         </section>
       ))}
       <section id="references" class="explanation-section">
@@ -117,13 +136,19 @@ const variantURL = (id: string) =>
     button.className = 'copy-button';
     button.type = 'button';
     button.textContent = 'Copy';
-    button.setAttribute('aria-label', 'Copy code example');
+    const options = pre.dataset.copyLabel === 'Copy options';
+    button.setAttribute(
+      'aria-label',
+      options ? 'Copy options' : 'Copy code example',
+    );
     button.addEventListener('click', async () => {
       const status = document.querySelector('.copy-status')!;
       try {
         await navigator.clipboard.writeText(code.textContent ?? '');
         button.textContent = 'Copied';
-        status.textContent = 'Example copied. Review it before running.';
+        status.textContent = options
+          ? 'Options copied.'
+          : 'Example copied. Review it before running.';
       } catch {
         status.textContent =
           'Clipboard unavailable. Select and copy the example manually.';

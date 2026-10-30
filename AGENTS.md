@@ -30,6 +30,20 @@ Stages 1–3 are implemented locally: original content in content/en, Go parser/
 - A standalone binary cannot automatically inspect parent-shell aliases/functions; optional shell integration must remain separate.
 - Avoid AI/network dependencies in normal offline command lookup.
 
+## Command content and output format
+
+Follow [docs/content-format.md](docs/content-format.md) when adding or updating a command. Author only the canonical `content/en/<command>.md`; generated JSON and rendered text are not authoring sources.
+
+- **Source structure:** declare metadata and implementation coverage, use level-two variant headings (`Common`, `GNU`, `Apple`, `BusyBox`, `Bash`), and put content in level-three sections. Common requires `Overview`, `Examples`, `Common mistakes`, and `Portability`. Name variant example sections `<implementation> examples`, such as `GNU examples`, so the compact CLI includes them.
+- **Examples in Markdown:** write a short use-case description followed by a separate fenced `sh` or `bash` block for each example. Keep one independently copyable command or coherent multiline example per block, with explicit closing fences. Do not combine unrelated examples into one block or include shell prompts. Preserve meaningful spaces, quoting, and multiline indentation.
+- **Examples on the web:** render the original separate code blocks, each with its own copy button that copies only that example. Do not concatenate examples into a single web block.
+- **Examples in the CLI:** default text output shows examples only, with a compact implementation/confidence heading. Render descriptions as `# ` comments, omit Markdown fences and renderer-added indentation, and separate examples with exactly one blank line. Preserve indentation authored inside multiline commands.
+- **Detailed output:** `--details`, before or after the command, includes overview, options, mistakes, portability notes, detection evidence, and references. Explicit `--option=-n` lookup shows the requested option directly without requiring `--details`. JSON and the website retain the full selected reference; do not prune JSON based on the text presentation mode.
+- **Options in Markdown:** author one level-three `Option: <spellings>` section per documented option, such as `### Option: -i, --ignore-case`, followed by its description. Use structured option spellings for lookup; do not replace these sections with a manually combined output block.
+- **Options in output:** group selected options under one `Options` heading. Put each option's spellings on their own line, its description immediately below, and one blank line between entries. The website uses one Options block with a dedicated copy button; CLI text has no fences or added indentation. Preserve source anchors when grouping sections.
+- **Description width:** use the shared `catalog.DescriptionWidth` limit of **100 columns**, including the `# ` prefix on CLI example comments. Option descriptions honor narrower CLI widths; `--width=0` retains the compact-description cap. Never split authored commands or indivisible inline literals just to meet the prose limit.
+- **Shared rendering:** derive compact `example_text` and `option_text` in Go from the same Markdown. Astro consumes generated content without introducing a second Markdown parser. Keep raw source/code fields intact, and verify exact command text, individual clipboard contents, description wrapping, implementation filtering, and CLI/web parity when changing this format.
+
 ## Publication and repository rules
 
 - Keep the repository private through stage 4. Stage 5 includes choosing code/content licenses, finalizing contribution guidance, changing visibility to public, and publishing the static site. Do not change visibility or deploy merely because these actions appear in the roadmap.
