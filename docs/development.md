@@ -25,6 +25,7 @@ Run `just` or `just help` for the command guide. The default recipe prints usage
 ```sh
 just build
 ./bin/explain grep
+./bin/explain grep --details
 ./bin/explain /usr/bin/grep
 ./bin/explain grep --implementation gnu --option=-n
 ./bin/explain sed --implementation apple --format json
@@ -33,7 +34,7 @@ just build
 ./bin/explain list
 ```
 
-The default output is plain text when redirected. `--color=always|never|auto`, NO_COLOR, `--width`, and COLUMNS control presentation. Width affects prose only; fenced code and inline code spans are never split or whitespace-collapsed. A long inline command can exceed the requested width. No pager is launched. `--no-probe` disables native version probes.
+Text output shows compact examples by default: `# ` descriptions, flush-left commands, and a blank line between examples. Both text modes use this format for example sections, preserving indentation authored inside multiline commands. The website preserves the separate code blocks authored in Markdown, each with its own copy button; option explanations remain grouped in a separate `Options` block. CLI examples contain no Markdown fences and use one blank line between examples. Compact descriptions have a 100-column cap; CLI option descriptions honor a smaller `--width`, while `--width=0` keeps the 100-column cap. Authored commands and indivisible inline literals are not split. Use `--details` for all selected sections, detection evidence and references, or `--option` to look up an option directly. JSON always includes all selected sections, independent of `--details`; list/search do not accept this command-lookup flag. Output is plain text when redirected. `--color=always|never|auto`, NO_COLOR, `--width`, and COLUMNS control presentation. Width affects prose only; fenced code and inline code spans are never split or whitespace-collapsed. A long inline command can exceed the requested width. No pager is launched. `--no-probe` disables native version probes.
 
 The source Markdown is embedded directly by the content package. Go's build invalidation picks up changes automatically. `--version` includes the deterministic SHA-256 content revision; release version defaults to dev and can later be supplied through a linker flag.
 

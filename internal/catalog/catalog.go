@@ -49,7 +49,14 @@ type Section struct {
 	Markdown       string   `json:"markdown"`
 	HTML           string   `json:"html"`
 	Code           []string `json:"code"`
+	ExampleText    string   `json:"example_text,omitempty"`
+	OptionText     string   `json:"option_text,omitempty"`
 }
+
+func (s Section) IsExamples() bool {
+	return s.Title == "Examples" || strings.HasSuffix(s.Title, " examples")
+}
+
 type Entry struct {
 	Metadata
 	VersionPolicy string    `json:"version_policy"`
@@ -178,6 +185,12 @@ func Parse(data []byte) (*Entry, error) {
 		}
 		section.HTML = html
 		section.Code = code
+		if section.IsExamples() {
+			section.ExampleText = ExampleText(md)
+		}
+		if len(section.Options) > 0 {
+			section.OptionText = OptionText(section, DescriptionWidth)
+		}
 		e.Sections = append(e.Sections, section)
 		lines = nil
 		return nil

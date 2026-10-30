@@ -77,3 +77,82 @@ func TestOptionLookupAndColor(t *testing.T) {
 		t.Fatal("color override missing")
 	}
 }
+
+func TestExamplesDefaultAndDetails(t *testing.T) {
+	c, err := catalog.Load(content.Files)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range c.Entries {
+		for _, impl := range append([]string{"common"}, e.Implementations...) {
+			t.Run(e.ID+"/"+impl, func(t *testing.T) {
+				args := []string{e.ID, "--implementation=" + impl, "--width=0"}
+				status, examples, stderr := run(t, args...)
+				if status != 0 || stderr != "" {
+					t.Fatalf("examples: status=%d stderr=%s", status, stderr)
+				}
+				status, details, stderr := run(t, append(args, "--details")...)
+				if status != 0 || stderr != "" {
+					t.Fatalf("details: status=%d stderr=%s", status, stderr)
+				}
+				for _, omitted := range []string{"\nOverview\n", "\nCommon mistakes\n", "\nPortability\n", "\nOption: ", "\nReferences\n", "\nSelection:"} {
+					if strings.Contains(examples, omitted) {
+						t.Errorf("default output contains detail %q", omitted)
+					}
+				}
+				for _, required := range []string{"Overview\n", "Common mistakes\n", "Portability\n", "References\n", "Selection:"} {
+					if !strings.Contains(details, required) {
+						t.Errorf("full output missing %q", required)
+					}
+				}
+				selected, _ := e.Select(impl, "")
+				for _, section := range selected {
+					for _, code := range section.Code {
+						for _, line := range strings.Split(strings.TrimSuffix(code, "\n"), "\n") {
+							if !strings.Contains(examples, "\n"+line+"\n") {
+								t.Errorf("missing or changed example: %q", line)
+							}
+						}
+					}
+				}
+				for _, ref := range e.References {
+					if strings.Contains(examples, ref) || !strings.Contains(details, ref) {
+						t.Errorf("reference visibility: %s", ref)
+					}
+				}
+			})
+		}
+	}
+}
+
+func TestDetailsFlagPositionsAndJSONContract(t *testing.T) {
+	_, after, _ := run(t, "ggrep", "--implementation=gnu", "--details")
+	status, before, stderr := run(t, "--details", "ggrep", "--implementation=gnu")
+	if status != 0 || stderr != "" || before != after {
+		t.Fatal("details flag must work before and after the command")
+	}
+	_, normalJSON, _ := run(t, "sed", "--implementation=apple", "--format=json")
+	status, detailedJSON, stderr := run(t, "sed", "--implementation=apple", "--format=json", "--details")
+	if status != 0 || stderr != "" || detailedJSON != normalJSON {
+		t.Fatal("details changed the full JSON contract")
+	}
+	for _, args := range [][]string{{"list", "--details"}, {"search", "logs", "--details"}} {
+		if status, _, _ := run(t, args...); status != 2 {
+			t.Fatalf("details must be limited to command lookup: %v", args)
+		}
+	}
+}
+
+func TestGroupedOptions(t *testing.T) {
+	status, out, stderr := run(t, "grep", "--implementation=common", "--details", "--width=72")
+	if status != 0 || stderr != "" || strings.Count(out, "\nOptions\n") != 1 || strings.Contains(out, "Option: -") {
+		t.Fatalf("options were not grouped: %d %s %s", status, out, stderr)
+	}
+	if !strings.Contains(out, "\n-n\nPrint each matching line") || !strings.Contains(out, "\n\n-i\nIgnore letter case") {
+		t.Fatalf("options are missing their spelling or description: %s", out)
+	}
+	status, out, stderr = run(t, "grep", "--implementation=common", "--option=-i")
+	if status != 0 || stderr != "" || !strings.Contains(out, "Options\n-i\n") || strings.Contains(out, "\n-n\n") {
+		t.Fatalf("single option lookup included unrelated options: %d %s %s", status, out, stderr)
+	}
+}

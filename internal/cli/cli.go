@@ -26,13 +26,16 @@ Flags (may appear before or after COMMAND):
   --implementation common|gnu|apple|busybox|bash  Select documentation
   --platform macos|linux|bash                   Target platform, not detection
   --option=-n                                  Show a documented option
+  --details                                    Show full explanations, options and references
   --format text|json                           Output format (default text)
-  --width N                                    Prose width, 0 disables wrapping
+  --width N                                    Prose width; compact descriptions capped at 100
   --color auto|always|never                     Heading color (default auto)
   --no-probe                                   Disable native --version probes
   --help                                      Show this help
   --version                                   Show binary and content versions
 
+Text output shows example usages by default. --option selects an option directly.
+JSON always includes the full selected reference, independently of --details.
 Examples are never executed. PATH detection cannot see parent-shell aliases/functions.
 `
 
@@ -45,7 +48,7 @@ type Config struct {
 type options struct {
 	implementation, platform, option, format, color string
 	width                                           int
-	noProbe, help, version                          bool
+	noProbe, help, version, details                 bool
 	args                                            []string
 }
 type response struct {
@@ -74,7 +77,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 	}
 	switch op.args[0] {
 	case "list", "search":
-		if op.implementation != "" || op.platform != "" || op.option != "" {
+		if op.implementation != "" || op.platform != "" || op.option != "" || op.details {
 			return failure(out, errOut, op.format, fmt.Errorf("selection flags apply to command lookup only"))
 		}
 		entries := c.Entries
@@ -126,6 +129,27 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 			fmt.Fprintln(out, s)
 		}
 	}
+	if !op.details {
+		heading(fmt.Sprintf("%s — %s (%s)", e.Title, sel.Implementation, sel.Confidence))
+		fmt.Fprintln(out)
+		if op.option != "" {
+			heading("Options")
+			fmt.Fprint(out, catalog.OptionsText(sections, op.width))
+			return 0
+		}
+		for _, s := range sections {
+			if op.option == "" && !s.IsExamples() {
+				continue
+			}
+			if s.IsExamples() {
+				fmt.Fprintln(out, s.ExampleText)
+			} else {
+				heading(s.Title)
+				fmt.Fprintln(out, catalog.Plain(s.Markdown, op.width))
+			}
+		}
+		return 0
+	}
 	heading(e.Title + " — " + e.Summary)
 	fmt.Fprintf(out, "\nDocumentation: %s (%s)\n", sel.Implementation, sel.Confidence)
 	if sel.Executable != "" {
@@ -140,9 +164,22 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 		fmt.Fprint(out, catalog.Plain("Note: "+warning, op.width))
 	}
 	fmt.Fprintln(out)
+	optionsShown := false
 	for _, s := range sections {
+		if len(s.Options) > 0 {
+			if !optionsShown {
+				heading("Options")
+				fmt.Fprintln(out, catalog.OptionsText(sections, op.width))
+				optionsShown = true
+			}
+			continue
+		}
 		heading(s.Title)
-		fmt.Fprintln(out, catalog.Plain(s.Markdown, op.width))
+		if s.IsExamples() {
+			fmt.Fprintln(out, s.ExampleText)
+		} else {
+			fmt.Fprintln(out, catalog.Plain(s.Markdown, op.width))
+		}
 	}
 	heading("References")
 	for _, ref := range e.References {
@@ -192,6 +229,9 @@ func parse(args []string, width int) (options, error) {
 			continue
 		case "--no-probe":
 			o.noProbe = true
+			continue
+		case "--details":
+			o.details = true
 			continue
 		}
 		key, val, has := strings.Cut(a, "=")
