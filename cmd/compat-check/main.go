@@ -3,7 +3,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -14,6 +13,7 @@ import (
 
 	"github.com/ninegene/shell-explain/content"
 	"github.com/ninegene/shell-explain/internal/catalog"
+	"github.com/ninegene/shell-explain/internal/examplecheck"
 )
 
 func main() {
@@ -74,32 +74,15 @@ func check() error {
 						return err
 					}
 					defer os.RemoveAll(dir)
-					for _, sub := range []string{"logs", "cache"} {
-						if err = os.Mkdir(filepath.Join(dir, sub), 0755); err != nil {
-							return err
-						}
-					}
-					for file, value := range map[string]string{"app.log": "INFO ready\nERROR broken\nerror small\nexample.org\n", "logs/server.log": "ERROR broken\n", "notes.txt": "old old\nsecond\nthird\nfourth\nfifth\n"} {
-						if err = os.WriteFile(filepath.Join(dir, file), []byte(value), 0644); err != nil {
-							return err
-						}
+					if err = examplecheck.Setup(dir); err != nil {
+						return err
 					}
 					output, err := run("/bin/sh", []string{"-c", code}, dir, tools)
 					if err != nil {
 						return fmt.Errorf("%s/%s example %s: %w %s", impl, name, code, err, output)
 					}
-					if name == "sed" && bytes.Contains([]byte(code), []byte("-i")) {
-						changed, err := os.ReadFile(filepath.Join(dir, "notes.txt"))
-						if err != nil || !bytes.HasPrefix(changed, []byte("new new")) {
-							return fmt.Errorf("%s sed did not edit expected contents", impl)
-						}
-						backup, err := os.ReadFile(filepath.Join(dir, "notes.txt.bak"))
-						if err != nil || !bytes.HasPrefix(backup, []byte("old old")) {
-							return fmt.Errorf("%s sed backup incorrect", impl)
-						}
-					}
-					if name == "grep" && bytes.Contains([]byte(code), []byte("-n -i")) && string(output) != "2:ERROR broken\n3:error small\n" {
-						return fmt.Errorf("%s grep matching output incorrect: %s", impl, output)
+					if err = examplecheck.Verify(code, dir, string(output)); err != nil {
+						return fmt.Errorf("%s/%s example: %w", impl, name, err)
 					}
 				}
 			}

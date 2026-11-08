@@ -34,17 +34,62 @@ Print only lines 2 through 4:
 sed -n '2,4p' notes.txt
 ```
 
+Delete the lines that match a pattern from the output:
+
+```sh
+sed '/second/d' notes.txt
+```
+
+Print only the lines that match a pattern:
+
+```sh
+sed -n '/third/p' notes.txt
+```
+
+Skip the first line, for example a header:
+
+```sh
+sed '1d' notes.txt
+```
+
+Print only the last line:
+
+```sh
+sed -n '$p' notes.txt
+```
+
+Apply two rules in order:
+
+```sh
+sed -e 's/old/new/' -e 's/second/2nd/' notes.txt
+```
+
+Use another delimiter when the pattern contains slashes:
+
+```sh
+echo '/usr/local/bin' | sed 's#/usr/local#/opt#'
+```
+
+Use an extended regular expression to replace runs of digits:
+
+```sh
+echo 'a1b22' | sed -E 's/[0-9]+/N/g'
+```
+
 ### Option: -n
 Suppress automatic printing. Pair it with a rule such as `p` to explicitly print selected lines.
 
 ### Option: -e
 Add an editing rule. Repeat `-e` to apply multiple rules in order.
 
+### Option: -E
+Use extended regular expressions, so `+`, `?`, `|`, and `()` work without backslashes. GNU, macOS, and BusyBox sed all accept `-E`.
+
 ### Common mistakes
 The substitution flag `g` changes every match on a line, not the number of files edited. Replacement text treats `&` specially: it expands to the matched text. Preview rules containing punctuation carefully.
 
 ### Portability
-In-place editing is not uniform across implementations. The examples below create backup files rather than discarding the original. Version-sensitive extensions are outside the common examples.
+In-place editing is not uniform across implementations. The examples below create backup files rather than discarding the original. Version-sensitive extensions are outside the common examples. The Common examples were executed on GNU sed 4.10, macOS sed, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
 ### GNU examples

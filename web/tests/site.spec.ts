@@ -9,6 +9,17 @@ const catalog = JSON.parse(
   readFileSync(new URL('../src/data/catalog.json', import.meta.url), 'utf8'),
 );
 
+// Number of code blocks a page for entry/implementation shows (common + variant).
+function codeBlockCount(id: string, implementation: string) {
+  const entry = catalog.entries.find((e: { id: string }) => e.id === id);
+  return entry.sections
+    .filter(
+      (s: { implementation: string }) =>
+        s.implementation === 'common' || s.implementation === implementation,
+    )
+    .reduce((n: number, s: { code: string[] }) => n + s.code.length, 0);
+}
+
 test('search, aliases, tags, implementation filter, and empty state', async ({
   page,
 }) => {
@@ -177,7 +188,7 @@ test('copy preserves exact code and implementation links are shareable', async (
     exact: true,
   });
   const snippets = page.locator('pre code.language-sh');
-  await expect(buttons).toHaveCount(4);
+  await expect(buttons).toHaveCount(codeBlockCount('sed', 'apple'));
   for (let index = 0; index < (await buttons.count()); index++) {
     const expected = await snippets.nth(index).textContent();
     await buttons.nth(index).click();
@@ -246,7 +257,10 @@ test('static pages work without JavaScript and use no third-party resources', as
   await expect(
     page.getByRole('heading', { name: 'Examples', exact: true }),
   ).toBeVisible();
-  await expect(page.locator('pre code')).toHaveCount(4);
+  // Example blocks, plus the one grouped Options block.
+  await expect(page.locator('pre code')).toHaveCount(
+    codeBlockCount('find', 'gnu') + 1,
+  );
   expect(
     (await page.locator('pre code.language-sh').allTextContents()).join('\n'),
   ).toContain('find . -maxdepth');
