@@ -15,7 +15,7 @@
 | Detection | Per-command implementation/version evidence plus explicit overrides |
 | Distribution | Release binaries, curl installer, Homebrew tap, mise GitHub backend |
 | Licensing | Choose and add code/content licenses in stage 5, before public release |
-| Current status | Stages 1–3 implemented locally; stage 4 iteration next; no public release/deployment |
+| Current status | Stages 1–3 implemented; current CLI/web usability accepted; stage 4 command collection next; no public release/deployment |
 
 ## Implementation evidence
 
@@ -39,24 +39,19 @@ Do not start by implementing arbitrary script interpretation, AI inference, auto
 
 Implement Astro catalog/detail/tag pages, explicit implementation filters, static search, copyable examples, and accessible mobile layouts. Link command pages to applicable CLI versions and upstream references. Verify that no server-side dependency or browser OS guess is needed for basic reference use.
 
-## Stage 4: iterate on the shared format, CLI, and static site
+## Stage 4: build the commonly used command collection
 
-Treat stages 1–3 as an iterative loop, not a one-time sequence. Review the same command entries in the CLI and local Astro preview, collect feedback from beginners and experienced users, and use the findings to improve the content format and both interfaces together.
+The current shared format, CLI output, and static site usability are good enough to proceed. Do not keep stage 4 open for another broad usability iteration or restrict it to the initial four commands. Remaining non-blocking usability work moves to the future backlog below.
 
-For each iteration:
+The next step is the [command collection checklist](command-collection.md): inventory all commands exposed by the reference explain helper, its cheat sheets, GNU catalog, tool listing, and lookup aliases. Add original explanations, commonly used examples and options, and applicable implementation variants for each command. GNU, Apple/macOS, BusyBox, shell builtins, and other upstream implementations are distinct coverage targets, not interchangeable OS labels.
 
-1. Try representative tasks: discover a command, understand an example, find an option, and select or compare implementations.
-2. Record unclear explanations, missing metadata, rendering differences, detection mistakes, search problems, and accessibility issues.
-3. Return to stage 1 for schema/content changes, stage 2 for CLI changes, and stage 3 for site changes as needed. Update both consumers when the shared contract changes.
-4. Rerun shared fixtures and relevant checks, then repeat the tasks to verify the changes helped without introducing regressions.
+Work in reviewed batches, beginning with everyday commands and the existing grep/sed/find/cd pages. Extend the shared schema/selection only where the collection requires it, including upstream tools and symbolic command spellings. Keep the established Markdown/code-copy/compact-output format and use local builds/previews. Record upstream references, implementation/version coverage, and actual test evidence; do not claim unsupported variants or copy the reference corpus without compatible licensing.
 
-Keep a small representative corpus during this stage so format changes remain inexpensive. Review offline CLI use, terminal widths, keyboard/mobile navigation, and GNU/Apple/BusyBox differences. Use local builds and previews; public distribution or website deployment is not required to gather feedback.
-
-Repeat until representative tasks are understandable, both outputs preserve the same explanations and examples, and no known blocking format, usability, detection, or rendering issues remain. Document remaining limitations and stabilize the initial schema/JSON contract before advancing to distribution and publishing.
+Stage 4 is complete when every required command in the checklist has reviewed common use cases/options and applicable implementation coverage, lookup aliases and non-command topics have explicit dispositions, both consumers expose the same content, and content/Go/web checks pass with no known blocking accuracy or rendering regressions. Completion of this collection is the stage's exit gate; the deferred usability tasks are not extra gates. Mark the stage complete only after the inventory and exit review are checked off.
 
 ## Stage 5: license, open contributions, distribute, and publish
 
-Begin only after stage 4's iteration criteria are met. Keep public launch as a deliberate release step:
+Begin only after stage 4's command collection and exit review are complete. Keep public launch as a deliberate release step:
 
 1. Select an open-source code license and an appropriate content/documentation license. Document which paths each covers, add license texts and attribution notices, and confirm imported material is compatible. Do not assume code and explanation text need the same license.
 2. Finalize CONTRIBUTING.md with working setup/validation commands, new-command and new-example instructions, implementation/version coverage requirements, and the accepted contribution licensing terms. Prepare issue/PR templates, maintainer review expectations, and a small set of suitable starter issues. Verify a new contributor can follow the process.
@@ -65,7 +60,7 @@ Begin only after stage 4's iteration criteria are met. Keep public launch as a d
 5. Publish tested immutable binaries/checksums and clear release notes. Validate curl/manual installation, a Homebrew tap, and mise in clean environments. Resolve command-name collisions without silently replacing other programs or shell functions.
 6. Publish the static Astro site to GitHub Pages using a GitHub Actions build/deploy workflow after the repository is public. Configure shell-explain.ninegene.com and HTTPS, verify domain ownership and DNS, and check routes/search/assets. Include matching content revision, installation guidance, license/attribution information, and links to report problems or contribute commands/examples. Prepare Pages/domain/TLS configuration for separate deployment authorization; no paid cloud website hosting is planned.
 
-The authorized implementation scope covers stages 1–3 in the private working tree. It does not authorize a commit/push, the future public visibility change, website deployment, or DNS updates.
+Roadmap tasks do not themselves authorize a commit/push, the future public visibility change, website deployment, or DNS updates. Keep those actions subject to explicit authorization.
 
 ## Acceptance criteria
 
@@ -80,6 +75,15 @@ The authorized implementation scope covers stages 1–3 in the private working t
 - Licenses, provenance, and attribution are documented before reusing third-party material.
 - Before public release, code/content licenses are selected, contribution instructions are verified, and publication review is complete.
 - Public repository content includes no secrets, personal information, or private project details.
+
+## Future usability backlog (not stage 4 blockers)
+
+- Recruit beginners and experienced users for structured task sessions; record a feedback log for discovering commands, understanding/copying examples, looking up options, and selecting/comparing implementations.
+- Broaden manual offline/narrow-terminal, keyboard/mobile, assistive-technology, and mixed-installation usability testing beyond current automated checks.
+- Revisit search, explanations, metadata, implementation-comparison UX, and detection based on observed feedback. Return to stages 1–3 as needed and verify improvements in both consumers.
+- Formalize stronger public schema/JSON compatibility and migration guarantees as consumers emerge. Keep current schema versioning and regression checks during expansion.
+
+These replace the unfinished broad iteration tasks from the previous stage 4. Schedule them after the command collection or from real user feedback; fix any blocking correctness/accessibility regressions when discovered.
 
 ## Later possibilities
 

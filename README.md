@@ -6,7 +6,7 @@ Practical command explanations for the terminal and the web, maintained in one s
 - Executable: **`explain`**, for example `./bin/explain grep` after a local build.
 - Planned website: **shell-explain.ninegene.com**, built with Astro and hosted on GitHub Pages after the public release in stage 5.
 - CLI language: Go, with original Markdown embedded for offline use.
-- Status: **stages 1–3 implemented locally**. Shared content validation, CLI, and static Astro site are ready for stage 4 iteration. No installer, public release, or deployment exists yet.
+- Status: **stages 1–3 implemented locally**. Current CLI and web usability are accepted as sufficient. Stage 4 next expands the command collection, common examples/options, and applicable implementation coverage. No installer, public release, or deployment exists yet.
 
 ## Goal
 
@@ -25,6 +25,7 @@ Use local Astro previews during private development and iteration. After the rep
 | [Implementation detection](docs/detection.md) | GNU/BSD/Apple/BusyBox selection and shell limitations |
 | [Distribution](docs/distribution.md) | Releases, curl, Homebrew, mise, and reproducibility |
 | [Related projects and references](docs/references.md) | tldr, ExplainShell, all projects in tldr's similar-projects list, and supporting tools |
+| [Command collection checklist](docs/command-collection.md) | Stage 4 inventory, implementation coverage, and completion criteria |
 | [Roadmap](docs/roadmap.md) | Decisions, validation, and implementation stages |
 | [Development and verification](docs/development.md) | Build commands, local previews, test coverage, and known limits |
 | [Contributing](CONTRIBUTING.md) | Documentation contributions and source/licensing expectations |
@@ -72,7 +73,7 @@ Text output shows example usages for the selected implementation by default, wit
 
 ## Project boundaries
 
-This project is being developed as a reusable reference tool, with public availability planned after iteration. It is not an interactive lab host. Other applications can eventually install a pinned binary or consume its documented JSON output. Lesson-specific hints, grading, accounts, and progress belong to those applications.
+This project is being developed as a reusable reference tool, with public availability planned for stage 5. It is not an interactive lab host. Other applications can eventually install a pinned binary or consume its documented JSON output. Lesson-specific hints, grading, accounts, and progress belong to those applications.
 
 GNU/BSD behavior must be selected per command, not inferred solely from the operating system. The website cannot inspect the visitor's terminal; it must offer explicit implementation/platform selection.
 
@@ -82,4 +83,4 @@ Use `just test` for Go checks and reviewed examples, `just check` for Go vet and
 
 Research date: **2026-10-23**, America/Los_Angeles. Related-project descriptions come from published documentation, not independent trials. See [references](docs/references.md).
 
-Code and content license selection is pending and belongs to stage 5, after the iteration stage. Before opening the repository and publishing the website, select and add the applicable licenses and finalize the contribution process for new commands and examples. Public visibility alone does not grant reuse permission; do not import third-party content before checking its license and attribution requirements.
+Code and content license selection is pending and belongs to stage 5, after the stage 4 command collection. Before opening the repository and publishing the website, select and add the applicable licenses and finalize the contribution process for new commands and examples. Public visibility alone does not grant reuse permission; do not import third-party content before checking its license and attribution requirements.
