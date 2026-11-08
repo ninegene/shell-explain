@@ -28,20 +28,28 @@ Done in the stage 4 batch 1 schema change, with Go, CLI, detection, and web test
 - Symbolic lookup names such as `[` are aliases of a safe canonical ID (`test`), so filenames, web routes, and JSON IDs keep the lowercase-letter rule.
 - Shell-only entries and single-implementation `upstream` entries are selected without PATH probing.
 
-Still open: detection currently probes only grep/sed/find. New pages must work with portable/common content or explicit supported selection first. Add bounded, command-specific detection only with tests and an explicit policy; do not probe every new executable with `--version` or infer implementation from OS alone. Reviewing the existing grep, sed, find, and cd pages against the per-command criteria is also still open.
+Still open: detection probes only the commands in `detect.probed` (grep, sed, find, cat, head, tail, wc, sort, uniq, cut, tr; see [detection](detection.md)). New pages must work with portable/common content or explicit supported selection first. Add bounded, command-specific detection only with tests and an explicit policy; do not probe every new executable with `--version` or infer implementation from OS alone.
 
 ## Completed-page evidence
 
-Reviewed and executed on 2026-11-08. Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+Reviewed and executed on 2026-11-08 (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
 
 | Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
 | --- | --- | --- | --- | --- | --- |
 | `grep` | 11 common, 1 GNU | system grep 2.6.0-FreeBSD, executed | grep 3.12, executed | BusyBox 1.37.0 and GNU 3.12, executed | n/a |
 | `sed` | 10 common, backup edits per variant | system sed, executed | sed 4.10, executed | BusyBox 1.37.0 and GNU 4.9, executed | n/a |
 | `find` | 8 common, 1 GNU | system find, executed | findutils 4.10.0, executed | BusyBox 1.37.0 and GNU 4.10.0, executed | n/a |
+| `cat` | 5 common | system `/bin/cat`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `head` | 5 common, 1 GNU | system head, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `tail` | 5 common run, 1 reviewed only (`tail -f` never ends) | system tail, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `wc` | 6 common, 1 GNU | system wc, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `sort` | 6 common | system sort (2.3-Apple), executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `uniq` | 6 common | system uniq, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `cut` | 6 common, 1 GNU | system cut, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `tr` | 7 common | system tr, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
-Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
+Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
 
 ## Suggested order
 
@@ -64,7 +72,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `base64`
 - [ ] `basename`
 - [ ] `basenc`
-- [ ] `cat`
+- [x] `cat` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `chcon`
 - [ ] `chgrp`
 - [ ] `chmod`
@@ -75,7 +83,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `coreutils`
 - [ ] `cp`
 - [ ] `csplit`
-- [ ] `cut`
+- [x] `cut` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `date`
 - [ ] `dd`
 - [ ] `df`
@@ -92,7 +100,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `fmt`
 - [ ] `fold`
 - [ ] `groups`
-- [ ] `head`
+- [x] `head` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `hostid`
 - [ ] `hostname`
 - [ ] `id`
@@ -137,7 +145,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `shred`
 - [ ] `shuf`
 - [ ] `sleep`
-- [ ] `sort`
+- [x] `sort` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `split`
 - [ ] `stat`
 - [ ] `stdbuf`
@@ -145,24 +153,24 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `sum`
 - [ ] `sync`
 - [ ] `tac`
-- [ ] `tail`
+- [x] `tail` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `tee`
 - [ ] `test`
 - [ ] `timeout`
 - [ ] `touch`
-- [ ] `tr`
+- [x] `tr` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `true`
 - [ ] `truncate`
 - [ ] `tsort`
 - [ ] `tty`
 - [ ] `uname`
 - [ ] `unexpand`
-- [ ] `uniq`
+- [x] `uniq` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `unlink`
 - [ ] `uptime`
 - [ ] `users`
 - [ ] `vdir`
-- [ ] `wc`
+- [x] `wc` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `who`
 - [ ] `whoami`
 - [ ] `yes`

@@ -17,6 +17,15 @@ import (
 	"time"
 )
 
+// probed lists the commands whose native executables may run `--version` to
+// identify an implementation. Add a command only after checking that GNU,
+// BSD/Apple and BusyBox builds reject or answer the flag without side effects
+// and without waiting for input; do not probe commands outside this list.
+var probed = []string{"grep", "sed", "find", "cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr"}
+
+// appleSystemDirs hold macOS's own executables; coreutils such as cat live in /bin.
+var appleSystemDirs = []string{"/usr/bin", "/bin"}
+
 type Selection struct {
 	Implementation string   `json:"implementation"`
 	Executable     string   `json:"executable,omitempty"`
@@ -109,7 +118,7 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 		s.Confidence = "inferred"
 		s.Evidence = "Executable resolves to a BusyBox-named binary"
 	}
-	if !r.NoProbe && nativeExecutable(real) && slices.Contains([]string{"grep", "sed", "find"}, r.Command) {
+	if !r.NoProbe && nativeExecutable(real) && slices.Contains(probed, r.Command) {
 		probeCtx, cancel := context.WithTimeout(ctx, 400*time.Millisecond)
 		defer cancel()
 		cmd := exec.CommandContext(probeCtx, resolved, "--version")
@@ -125,7 +134,8 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 		banner := out.String()
 		if probeCtx.Err() == nil && !errors.Is(err, exec.ErrWaitDelay) {
 			switch {
-			case d.OS == "darwin" && strings.Contains(banner, "BSD grep"):
+			case d.OS == "darwin" && (strings.Contains(banner, "BSD grep") || strings.Contains(strings.SplitN(banner, "\n", 2)[0], "-Apple")):
+				// Apple's banners can say "GNU compatible" or "(GNU sort) ...-Apple".
 				s.Implementation = "apple"
 			case strings.Contains(banner, "BusyBox"):
 				s.Implementation = "busybox"
@@ -145,7 +155,7 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 	} else if !r.NoProbe && !nativeExecutable(real) {
 		s.Warnings = append(s.Warnings, "Version probe skipped: scripts and unknown executable formats are not executed.")
 	}
-	if s.Implementation == "common" && d.OS == "darwin" && resolved == "/usr/bin/"+r.Command {
+	if s.Implementation == "common" && d.OS == "darwin" && isAppleSystemPath(resolved, r.Command) {
 		s.Implementation = "apple"
 		s.Confidence = "inferred"
 		s.Evidence = "macOS system executable path (not version-certified)"
@@ -155,6 +165,14 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 		s.Warnings = append(s.Warnings, "Use --implementation for variant-specific help; PATH lookup cannot see parent-shell aliases or functions.")
 	}
 	return s, nil
+}
+func isAppleSystemPath(resolved, command string) bool {
+	for _, dir := range appleSystemDirs {
+		if resolved == dir+"/"+command {
+			return true
+		}
+	}
+	return false
 }
 func resolve(name, path string) (string, error) {
 	candidates := []string{name}
