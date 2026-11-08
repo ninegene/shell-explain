@@ -45,8 +45,11 @@ func TestAuthoredExamples(t *testing.T) {
 				for _, section := range selected {
 					for i, code := range section.Code {
 						t.Run(section.ID+string(rune('a'+i)), func(t *testing.T) {
+							if examplecheck.NotRun(code) {
+								t.Skip("reviewed only: the example never ends")
+							}
 							dir := t.TempDir()
-							if err := examplecheck.Setup(dir); err != nil {
+							if err := examplecheck.Setup(dir, entry.ID); err != nil {
 								t.Fatal(err)
 							}
 							toolPath := "/usr/bin:/bin"
@@ -85,7 +88,7 @@ func exampleTool(d detect.Detector, command, implementation string) string {
 		if d.OS != "darwin" {
 			return ""
 		}
-		candidates = []string{"/usr/bin/" + command}
+		candidates = []string{"/usr/bin/" + command, "/bin/" + command}
 	}
 	for _, name := range candidates {
 		selected, err := d.Select(context.Background(), detect.Request{Name: name, Command: command})

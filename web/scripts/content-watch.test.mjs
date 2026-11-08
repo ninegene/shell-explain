@@ -4,6 +4,7 @@ import { once } from 'node:events';
 import {
   cp,
   mkdtemp,
+  readdir,
   readFile,
   rm,
   symlink,
@@ -177,9 +178,15 @@ test(
     await until(async () => (await page('/commands/demo/')).ok);
     await rm(source);
     await until(async () => (await page('/commands/grep/')).status === 404);
+    // The homepage falls back to the first command alphabetically.
+    const fallback = (await readdir(path.join(fixture, 'content/en')))
+      .map((name) => name.replace(/\.md$/, ''))
+      .sort((a, b) => a.localeCompare(b))[0];
     await until(async () => {
       const response = await page('/');
-      return response.ok && (await response.text()).includes('explain cd');
+      return (
+        response.ok && (await response.text()).includes(`explain ${fallback}`)
+      );
     });
     await writeFile(source, original);
     await until(async () => (await page('/commands/grep/')).ok);

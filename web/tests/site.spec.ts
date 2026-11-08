@@ -26,7 +26,9 @@ test('search, aliases, tags, implementation filter, and empty state', async ({
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('/commands/');
-  await expect(page.locator('[data-entry]:visible')).toHaveCount(4);
+  await expect(page.locator('[data-entry]:visible')).toHaveCount(
+    catalog.entries.length,
+  );
   await page.getByLabel('Find a command or a use case').fill('ggrep');
   await expect(page.locator('[data-entry]:visible')).toHaveCount(1);
   await expect(page.getByRole('status')).toHaveText('1 command');
@@ -46,7 +48,10 @@ test('search, aliases, tags, implementation filter, and empty state', async ({
   await expect(
     page.getByRole('heading', { name: '#logs', exact: true }),
   ).toBeVisible();
-  await expect(page.locator('[data-entry]:visible')).toHaveCount(1);
+  await expect(page.locator('[data-entry]:visible')).toHaveCount(
+    catalog.entries.filter((e: { tags: string[] }) => e.tags.includes('logs'))
+      .length,
+  );
   expect(errors).toEqual([]);
 });
 

@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"time"
 
 	"github.com/ninegene/shell-explain/content"
@@ -34,7 +35,7 @@ func check() error {
 			return err
 		}
 		defer os.RemoveAll(tools)
-		for _, name := range []string{"grep", "sed", "find"} {
+		for _, name := range applicable(c, impl) {
 			target := "/bin/busybox"
 			if impl == "gnu" {
 				target, err = exec.LookPath(name)
@@ -46,7 +47,7 @@ func check() error {
 				return err
 			}
 		}
-		for _, name := range []string{"grep", "sed", "find"} {
+		for _, name := range applicable(c, impl) {
 			data, err := run("/explain", []string{name, "--format=json"}, "/", tools)
 			if err != nil {
 				return fmt.Errorf("%s/%s CLI: %w %s", impl, name, err, data)
@@ -69,12 +70,15 @@ func check() error {
 			}
 			for _, section := range sections {
 				for _, code := range section.Code {
+					if examplecheck.NotRun(code) {
+						continue
+					}
 					dir, err := os.MkdirTemp("", "example-")
 					if err != nil {
 						return err
 					}
 					defer os.RemoveAll(dir)
-					if err = examplecheck.Setup(dir); err != nil {
+					if err = examplecheck.Setup(dir, name); err != nil {
 						return err
 					}
 					output, err := run("/bin/sh", []string{"-c", code}, dir, tools)
@@ -89,6 +93,17 @@ func check() error {
 		}
 	}
 	return nil
+}
+
+// applicable lists the entries that declare impl and are not shell builtins.
+func applicable(c *catalog.Catalog, impl string) []string {
+	var names []string
+	for _, e := range c.Entries {
+		if !e.ShellOnly() && slices.Contains(e.Implementations, impl) {
+			names = append(names, e.ID)
+		}
+	}
+	return names
 }
 func run(name string, args []string, dir, tools string) ([]byte, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

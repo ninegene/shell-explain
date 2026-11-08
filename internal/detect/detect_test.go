@@ -19,6 +19,10 @@ func TestMain(m *testing.M) {
 			fmt.Println("grep (GNU grep) 3.12")
 		case "apple":
 			fmt.Println("grep (BSD grep, GNU compatible) 2.6.0-FreeBSD")
+		case "apple-version":
+			fmt.Println("2.3-Apple (199)")
+		case "gnu-coreutils":
+			fmt.Println("sort (GNU coreutils) 9.11")
 		case "busybox":
 			fmt.Println("grep: unrecognized option --version\nBusyBox v1.37.0 multi-call binary")
 		case "timeout":
@@ -59,6 +63,43 @@ func TestNativeProbeResultsAndTimeout(t *testing.T) {
 				t.Fatal("probe timeout did not bound execution")
 			}
 		})
+	}
+}
+
+func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
+	t.Setenv("GORACE", "atexit_sleep_ms=0")
+	executable, err := os.Executable()
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := t.TempDir()
+	for _, name := range []string{"sort", "ls"} {
+		if err = os.Symlink(executable, filepath.Join(dir, name)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	d := Detector{OS: "darwin", Path: dir}
+	for _, tt := range []struct{ mode, impl, version string }{
+		{"apple-version", "apple", "2.3"}, {"gnu-coreutils", "gnu", "9.11"},
+	} {
+		t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", tt.mode)
+		s, err := d.Select(context.Background(), Request{Name: "sort", Command: "sort"})
+		if err != nil || s.Implementation != tt.impl || s.Confidence != "detected" || s.Version != tt.version {
+			t.Fatalf("%s: %+v %v", tt.mode, s, err)
+		}
+	}
+	// Commands outside the probe list are never executed, even with a GNU-looking banner.
+	t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", "gnu-coreutils")
+	if s, err := d.Select(context.Background(), Request{Name: "ls", Command: "ls"}); err != nil || s.Implementation != "common" || s.Confidence != "unknown" {
+		t.Fatalf("unlisted command probed: %+v %v", s, err)
+	}
+	for _, path := range []string{"/usr/bin/grep", "/bin/cat"} {
+		if !isAppleSystemPath(path, filepath.Base(path)) {
+			t.Errorf("%s not recognized as an Apple system path", path)
+		}
+	}
+	if isAppleSystemPath("/opt/homebrew/bin/cat", "cat") || isAppleSystemPath("/usr/local/bin/cat", "cat") {
+		t.Error("third-party path treated as Apple system")
 	}
 }
 

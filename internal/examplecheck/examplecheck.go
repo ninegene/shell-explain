@@ -5,6 +5,7 @@ package examplecheck
 
 import (
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 	"slices"
@@ -19,14 +20,27 @@ var Files = map[string]string{
 	"notes.txt":       "old old\nsecond\nthird\nfourth\nfifth\n",
 }
 
-// Setup creates the fixture inside dir.
-func Setup(dir string) error {
+// textFiles are extra fixture files for the text-processing pages. They are not
+// part of the base fixture so file-listing examples (find, ls) keep stable results.
+var textFiles = map[string]string{
+	"fruit.txt": "banana\napple\ncherry\napple\nbanana\napple\n",
+	"nums.txt":  "10\n9\n2\n33\n1\n",
+	"data.csv":  "name,qty\napple,3\nbanana,12\ncherry,7\n",
+}
+var textEntries = []string{"cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr"}
+
+// Setup creates the base fixture, plus any extra files the entry's examples need.
+func Setup(dir, entry string) error {
 	for _, sub := range Dirs {
 		if err := os.Mkdir(filepath.Join(dir, sub), 0755); err != nil {
 			return err
 		}
 	}
-	for name, value := range Files {
+	files := maps.Clone(Files)
+	if slices.Contains(textEntries, entry) {
+		maps.Copy(files, textFiles)
+	}
+	for name, value := range files {
 		if err := os.WriteFile(filepath.Join(dir, name), []byte(value), 0644); err != nil {
 			return err
 		}
@@ -39,6 +53,12 @@ func Setup(dir string) error {
 type expectation struct {
 	output    string
 	unordered bool
+	// spaces compares output with runs of blanks collapsed and edges trimmed per
+	// line, for tools whose column padding differs between implementations.
+	spaces bool
+	// notRun marks examples that block or never end (such as following a file);
+	// they are reviewed but not executed.
+	notRun bool
 }
 
 var expected = map[string]expectation{
@@ -78,6 +98,57 @@ var expected = map[string]expectation{
 	"find . -type d":                                          {output: ".\n./cache\n./logs\n./projects\n", unordered: true},
 	"find . -type f -name '*.log' -exec grep -l 'ERROR' {} +": {output: "./app.log\n./logs/server.log\n", unordered: true},
 	"find . -maxdepth 2 -type f -name '*.log'":                {output: "./app.log\n./logs/server.log\n", unordered: true},
+	// text tools
+	"cat notes.txt":                             {output: "old old\nsecond\nthird\nfourth\nfifth\n"},
+	"cat app.log notes.txt":                     {output: "INFO ready\nERROR broken\nerror small\nexample.org\nold old\nsecond\nthird\nfourth\nfifth\n"},
+	"cat -n notes.txt":                          {output: "1 old old\n2 second\n3 third\n4 fourth\n5 fifth\n", spaces: true},
+	"echo 'from stdin' | cat - notes.txt":       {output: "from stdin\nold old\nsecond\nthird\nfourth\nfifth\n"},
+	"cat notes.txt > copy.txt":                  {output: ""},
+	"head notes.txt":                            {output: "old old\nsecond\nthird\nfourth\nfifth\n"},
+	"head -n 2 notes.txt":                       {output: "old old\nsecond\n"},
+	"head -n 1 app.log logs/server.log":         {output: "==> app.log <==\nINFO ready\n\n==> logs/server.log <==\nERROR broken\n"},
+	"head -c 5 notes.txt":                       {output: "old o"},
+	"printf '1\\n2\\n3\\n4\\n' | head -n 2":     {output: "1\n2\n"},
+	"head -n -2 notes.txt":                      {output: "old old\nsecond\nthird\n"},
+	"tail notes.txt":                            {output: "old old\nsecond\nthird\nfourth\nfifth\n"},
+	"tail -n 2 notes.txt":                       {output: "fourth\nfifth\n"},
+	"tail -n +3 notes.txt":                      {output: "third\nfourth\nfifth\n"},
+	"tail -c 6 notes.txt":                       {output: "fifth\n"},
+	"tail -n 1 app.log logs/server.log":         {output: "==> app.log <==\nexample.org\n\n==> logs/server.log <==\nERROR broken\n"},
+	"tail -f app.log":                           {output: "", notRun: true},
+	"wc notes.txt":                              {output: "5 6 34 notes.txt", spaces: true},
+	"wc -l notes.txt":                           {output: "5 notes.txt", spaces: true},
+	"wc -w notes.txt":                           {output: "6 notes.txt", spaces: true},
+	"wc -c notes.txt":                           {output: "34 notes.txt", spaces: true},
+	"cat notes.txt | wc -l":                     {output: "5", spaces: true},
+	"wc -l app.log logs/server.log":             {output: "4 app.log\n1 logs/server.log\n5 total", spaces: true},
+	"wc -L notes.txt":                           {output: "7 notes.txt\n"},
+	"sort fruit.txt":                            {output: "apple\napple\napple\nbanana\nbanana\ncherry\n"},
+	"sort -r fruit.txt":                         {output: "cherry\nbanana\nbanana\napple\napple\napple\n"},
+	"sort -n nums.txt":                          {output: "1\n2\n9\n10\n33\n"},
+	"sort -u fruit.txt":                         {output: "apple\nbanana\ncherry\n"},
+	"sort -t, -k2,2n data.csv":                  {output: "name,qty\napple,3\ncherry,7\nbanana,12\n"},
+	"sort -rn nums.txt | head -n 1":             {output: "33\n"},
+	"sort fruit.txt | uniq":                     {output: "apple\nbanana\ncherry\n"},
+	"sort fruit.txt | uniq -c":                  {output: "3 apple\n2 banana\n1 cherry", spaces: true},
+	"sort fruit.txt | uniq -d":                  {output: "apple\nbanana\n"},
+	"sort fruit.txt | uniq -u":                  {output: "cherry\n"},
+	"sort fruit.txt | uniq -c | sort -rn":       {output: "3 apple\n2 banana\n1 cherry", spaces: true},
+	"uniq fruit.txt":                            {output: "banana\napple\ncherry\napple\nbanana\napple\n"},
+	"cut -d, -f1 data.csv":                      {output: "name\napple\nbanana\ncherry\n"},
+	"cut -d, -f2 data.csv":                      {output: "qty\n3\n12\n7\n"},
+	"cut -d, -f1,2 data.csv":                    {output: "name,qty\napple,3\nbanana,12\ncherry,7\n"},
+	"cut -d, -f2- data.csv":                     {output: "qty\n3\n12\n7\n"},
+	"cut -c1-3 notes.txt":                       {output: "old\nsec\nthi\nfou\nfif\n"},
+	"echo 'a b c' | cut -d' ' -f2":              {output: "b\n"},
+	"cut --complement -d, -f1 data.csv":         {output: "qty\n3\n12\n7\n"},
+	"echo 'hello' | tr 'a-z' 'A-Z'":             {output: "HELLO\n"},
+	"echo 'hello' | tr '[:lower:]' '[:upper:]'": {output: "HELLO\n"},
+	"echo 'a   b    c' | tr -s ' '":             {output: "a b c\n"},
+	"echo 'hello world' | tr -d 'o'":            {output: "hell wrld\n"},
+	"echo 'abc123' | tr -cd '0-9'":              {output: "123"},
+	"echo 'a:b:c' | tr ':' '\\n'":               {output: "a\nb\nc\n"},
+	"tr ',' '\\t' < data.csv":                   {output: "name\tqty\napple\t3\nbanana\t12\ncherry\t7\n"},
 	// cd: only success is checked; the printed directory is a temporary path.
 	"cd projects":        {},
 	"cd ..":              {},
@@ -87,6 +158,9 @@ var expected = map[string]expectation{
 	"cd -":               {},
 	"cd -P projects":     {},
 }
+
+// NotRun reports whether code is reviewed only and must not be executed.
+func NotRun(code string) bool { return expected[strings.TrimSpace(code)].notRun }
 
 // HasExpectation reports whether code has a recorded expectation.
 func HasExpectation(code string) bool {
@@ -114,7 +188,13 @@ func Verify(code, dir, output string) error {
 		}
 		return nil
 	}
-	if strings.HasPrefix(code, "cd") {
+	if want.notRun || strings.HasPrefix(code, "cd") {
+		return nil
+	}
+	if want.spaces {
+		if collapse(output) != collapse(want.output) {
+			return fmt.Errorf("output %q, want %q after collapsing blanks", output, want.output)
+		}
 		return nil
 	}
 	if want.unordered {
@@ -127,6 +207,14 @@ func Verify(code, dir, output string) error {
 		return fmt.Errorf("output %q, want %q", output, want.output)
 	}
 	return nil
+}
+
+func collapse(s string) string {
+	lines := strings.Split(strings.TrimSuffix(s, "\n"), "\n")
+	for i, line := range lines {
+		lines[i] = strings.Join(strings.Fields(line), " ")
+	}
+	return strings.Join(lines, "\n")
 }
 
 func sortedLines(s string) []string {
