@@ -1,6 +1,6 @@
 # Contributing
 
-The project has a local shared-content, CLI, and Astro implementation and remains private through iteration. External contributions will open in stage 5, after code/content licenses and the contribution process are finalized. This document is draft guidance for that process; it does not imply a public contribution channel exists today.
+The project has a local shared-content, CLI, and Astro implementation and remains private through stage 4. External contributions will open in stage 5, after code/content licenses and the contribution process are finalized. This document is draft guidance for that process; it does not imply a public contribution channel exists today.
 
 ## Planned process for new commands and examples
 

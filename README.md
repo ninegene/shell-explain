@@ -73,7 +73,7 @@ Text output shows example usages for the selected implementation by default, wit
 
 ## Project boundaries
 
-This project is being developed as a reusable reference tool, with public availability planned after iteration. It is not an interactive lab host. Other applications can eventually install a pinned binary or consume its documented JSON output. Lesson-specific hints, grading, accounts, and progress belong to those applications.
+This project is being developed as a reusable reference tool, with public availability planned for stage 5. It is not an interactive lab host. Other applications can eventually install a pinned binary or consume its documented JSON output. Lesson-specific hints, grading, accounts, and progress belong to those applications.
 
 GNU/BSD behavior must be selected per command, not inferred solely from the operating system. The website cannot inspect the visitor's terminal; it must offer explicit implementation/platform selection.
 
@@ -83,4 +83,4 @@ Use `just test` for Go checks and reviewed examples, `just check` for Go vet and
 
 Research date: **2026-10-23**, America/Los_Angeles. Related-project descriptions come from published documentation, not independent trials. See [references](docs/references.md).
 
-Code and content license selection is pending and belongs to stage 5, after the iteration stage. Before opening the repository and publishing the website, select and add the applicable licenses and finalize the contribution process for new commands and examples. Public visibility alone does not grant reuse permission; do not import third-party content before checking its license and attribution requirements.
+Code and content license selection is pending and belongs to stage 5, after the stage 4 command collection. Before opening the repository and publishing the website, select and add the applicable licenses and finalize the contribution process for new commands and examples. Public visibility alone does not grant reuse permission; do not import third-party content before checking its license and attribution requirements.

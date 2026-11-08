@@ -1,6 +1,6 @@
 # Shared Markdown content format
 
-Schema version 1 is implemented in internal/catalog and used by the CLI and Astro export. It is an initial contract for stage 4 iteration, not a frozen public API.
+Schema version 1 is implemented in internal/catalog and used by the CLI and Astro export. It is an initial contract that stage 4 may extend for the command collection, not a frozen public API.
 
 ## Authoring source
 
