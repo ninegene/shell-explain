@@ -111,7 +111,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 	if !ok {
 		return failure(out, errOut, op.format, fmt.Errorf("no reference for %q; try explain list or explain search", name))
 	}
-	sel, err := cfg.Detector.Select(ctx, detect.Request{Name: name, Command: e.ID, Implementation: op.implementation, Platform: op.platform, NoProbe: op.noProbe, ShellBuiltin: e.ShellOnly(), Single: singleImplementation(e)})
+	sel, err := cfg.Detector.Select(ctx, detect.Request{Name: name, Command: e.ID, Implementation: op.implementation, Platform: op.platform, NoProbe: op.noProbe, ShellBuiltin: e.ShellOnly(), Shells: e.ShellImplementations(), Single: singleImplementation(e)})
 	if err != nil {
 		return failure(out, errOut, op.format, err)
 	}

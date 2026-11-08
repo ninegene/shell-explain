@@ -31,10 +31,20 @@ type Request struct {
 	// ShellBuiltin marks entries documented only as shell builtins; PATH and
 	// version probes cannot describe what the user's shell runs.
 	ShellBuiltin bool
+	// Shells lists the shell implementations the entry documents; empty means bash.
+	Shells []string
 	// Single names the only implementation an entry documents (such as
 	// "upstream"), so selection needs no detection.
 	Single string
 }
+
+func (r Request) shells() []string {
+	if len(r.Shells) == 0 {
+		return []string{"bash"}
+	}
+	return r.Shells
+}
+
 type Detector struct{ OS, Path string }
 
 func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
@@ -56,8 +66,8 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 			}
 		case "linux":
 		case "bash":
-			if !r.ShellBuiltin {
-				return s, fmt.Errorf("bash platform applies only to shell builtins")
+			if !r.ShellBuiltin || !slices.Contains(r.shells(), "bash") {
+				return s, fmt.Errorf("bash platform applies only to Bash builtins")
 			}
 			s.Implementation = "bash"
 		default:
@@ -81,7 +91,7 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 	}
 	if r.ShellBuiltin {
 		s.Evidence = "Shell builtin: parent-shell implementation cannot be inspected"
-		s.Warnings = append(s.Warnings, "This entry documents Bash; use --implementation bash to include Bash-specific sections.")
+		s.Warnings = append(s.Warnings, "This entry documents "+strings.Join(r.shells(), " and ")+"; use --implementation "+strings.Join(r.shells(), " or ")+" to include shell-specific sections.")
 		return s, nil
 	}
 	resolved, err := resolve(r.Name, d.Path)

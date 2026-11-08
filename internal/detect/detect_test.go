@@ -100,6 +100,14 @@ func TestShellBuiltinAndSingleImplementation(t *testing.T) {
 	if s, err = d.Select(context.Background(), Request{Name: "type", Command: "type", ShellBuiltin: true, Platform: "bash"}); err != nil || s.Implementation != "bash" {
 		t.Fatal(s, err)
 	}
+	zsh := Request{Name: "where", Command: "where", ShellBuiltin: true, Shells: []string{"zsh"}}
+	if s, err = d.Select(context.Background(), zsh); err != nil || !strings.Contains(strings.Join(s.Warnings, " "), "--implementation zsh") || strings.Contains(strings.Join(s.Warnings, " "), "bash") {
+		t.Fatal("zsh-only entry must not mention bash", s, err)
+	}
+	zsh.Platform = "bash"
+	if _, err = d.Select(context.Background(), zsh); err == nil {
+		t.Fatal("bash platform accepted for a zsh-only entry")
+	}
 	for _, platform := range []string{"", "macos", "linux"} {
 		if s, err = d.Select(context.Background(), Request{Name: "jq", Command: "jq", Single: "upstream", Platform: platform}); err != nil || s.Implementation != "upstream" || len(s.Warnings) != 0 {
 			t.Fatalf("platform %q: %+v %v", platform, s, err)
