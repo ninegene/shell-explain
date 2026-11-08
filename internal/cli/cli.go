@@ -15,7 +15,7 @@ import (
 	"github.com/ninegene/shell-explain/internal/detect"
 )
 
-const Help = `explain — practical, offline command help
+var Help = `explain — practical, offline command help
 
 Usage:
   explain COMMAND [flags]
@@ -23,7 +23,7 @@ Usage:
   explain search WORDS [--format json]
 
 Flags (may appear before or after COMMAND):
-  --implementation common|gnu|apple|busybox|bash  Select documentation
+  --implementation ID                          Select documentation (see below)
   --platform macos|linux|bash                   Target platform, not detection
   --option=-n                                  Show a documented option
   --details                                    Show full explanations, options and references
@@ -34,10 +34,13 @@ Flags (may appear before or after COMMAND):
   --help                                      Show this help
   --version                                   Show binary and content versions
 
+Implementations: ` + implementationList + `.
 Text output shows example usages by default. --option selects an option directly.
 JSON always includes the full selected reference, independently of --details.
 Examples are never executed. PATH detection cannot see parent-shell aliases/functions.
 `
+
+var implementationList = catalog.ImplementationIDs(", ")
 
 type Config struct {
 	Detector detect.Detector
@@ -108,7 +111,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 	if !ok {
 		return failure(out, errOut, op.format, fmt.Errorf("no reference for %q; try explain list or explain search", name))
 	}
-	sel, err := cfg.Detector.Select(ctx, detect.Request{Name: name, Command: e.ID, Implementation: op.implementation, Platform: op.platform, NoProbe: op.noProbe})
+	sel, err := cfg.Detector.Select(ctx, detect.Request{Name: name, Command: e.ID, Implementation: op.implementation, Platform: op.platform, NoProbe: op.noProbe, ShellBuiltin: e.ShellOnly(), Single: singleImplementation(e)})
 	if err != nil {
 		return failure(out, errOut, op.format, err)
 	}
@@ -186,6 +189,15 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 		fmt.Fprintln(out, ref)
 	}
 	return 0
+}
+
+// singleImplementation returns the only non-shell implementation an entry
+// documents when that implementation is "upstream".
+func singleImplementation(e *catalog.Entry) string {
+	if len(e.Implementations) == 1 && e.Implementations[0] == "upstream" {
+		return "upstream"
+	}
+	return ""
 }
 func encode(w io.Writer, v any) int {
 	enc := json.NewEncoder(w)

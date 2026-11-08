@@ -28,6 +28,12 @@ type Selection struct {
 type Request struct {
 	Name, Command, Implementation, Platform string
 	NoProbe                                 bool
+	// ShellBuiltin marks entries documented only as shell builtins; PATH and
+	// version probes cannot describe what the user's shell runs.
+	ShellBuiltin bool
+	// Single names the only implementation an entry documents (such as
+	// "upstream"), so selection needs no detection.
+	Single string
 }
 type Detector struct{ OS, Path string }
 
@@ -45,26 +51,35 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 	if r.Platform != "" {
 		switch r.Platform {
 		case "macos":
-			if r.Command != "cd" {
+			if !r.ShellBuiltin && r.Single == "" {
 				s.Implementation = "apple"
 			}
 		case "linux":
 		case "bash":
-			if r.Command != "cd" {
+			if !r.ShellBuiltin {
 				return s, fmt.Errorf("bash platform applies only to shell builtins")
 			}
 			s.Implementation = "bash"
 		default:
 			return s, fmt.Errorf("unknown platform %q (use macos, linux, or bash)", r.Platform)
 		}
+		if r.Single != "" {
+			s.Implementation = r.Single
+		}
 		s.Confidence = "target"
 		s.Evidence = "Requested target platform, not local detection"
-		if r.Platform == "linux" {
+		if r.Platform == "linux" && r.Single == "" {
 			s.Warnings = append(s.Warnings, "Linux does not imply GNU tools; select gnu or busybox explicitly for their extensions.")
 		}
 		return s, nil
 	}
-	if r.Command == "cd" {
+	if r.Single != "" {
+		s.Implementation = r.Single
+		s.Confidence = "inferred"
+		s.Evidence = "Entry documents a single upstream implementation; no detection needed"
+		return s, nil
+	}
+	if r.ShellBuiltin {
 		s.Evidence = "Shell builtin: parent-shell implementation cannot be inspected"
 		s.Warnings = append(s.Warnings, "This entry documents Bash; use --implementation bash to include Bash-specific sections.")
 		return s, nil

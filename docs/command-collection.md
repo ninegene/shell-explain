@@ -22,9 +22,13 @@ An unchecked command needs an original or expanded page, applicable implementati
 
 ## Implementation prerequisites
 
-The current schema accepts only `gnu`, `apple`, `busybox`, and `bash` variants, and IDs/aliases must start with a lowercase letter. Before adding affected pages, extend the shared schema, implementation selection, CLI/web filters, and tests for real upstream variants and command names such as `[`. Define a safe canonical filename/ID versus display/lookup spelling if needed. Do not mislabel Git, curl, Python, or other upstream tools just to satisfy the current schema.
+Done in the stage 4 batch 1 schema change, with Go, CLI, detection, and web tests:
 
-Detection currently probes only grep/sed/find. New pages must work with portable/common content or explicit supported selection first. Add bounded, command-specific detection only with tests and an explicit policy; do not probe every new executable with `--version` or infer implementation from OS alone.
+- Implementations come from one registry (`catalog.Implementations`): gnu, apple, busybox, bash, zsh, and upstream. Git, curl, jq, and similar tools use `upstream` instead of a mislabeled GNU/BusyBox variant.
+- Symbolic lookup names such as `[` are aliases of a safe canonical ID (`test`), so filenames, web routes, and JSON IDs keep the lowercase-letter rule.
+- Shell-only entries and single-implementation `upstream` entries are selected without PATH probing.
+
+Still open: detection currently probes only grep/sed/find. New pages must work with portable/common content or explicit supported selection first. Add bounded, command-specific detection only with tests and an explicit policy; do not probe every new executable with `--version` or infer implementation from OS alone. Reviewing the existing grep, sed, find, and cd pages against the per-command criteria is also still open.
 
 ## Suggested order
 
@@ -40,7 +44,7 @@ Detection currently probes only grep/sed/find. New pages must work with portable
 
 ### coreutils
 
-- [ ] `[`
+- [ ] `[` (alias of `test`; add the `test` page)
 - [ ] `arch`
 - [ ] `b2sum`
 - [ ] `base32`
