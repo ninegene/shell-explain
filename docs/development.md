@@ -1,6 +1,6 @@
 # Development and verification
 
-Stages 1–3 now have a local implementation. The project remains private; stage 4 is the next iteration phase. No public binaries, installer, Homebrew tap, mise release, GitHub Pages deployment, or DNS configuration has been published.
+Stages 1–3 now have a local implementation. The project remains private; stage 4 next expands the command collection per [the checklist](command-collection.md). Current CLI/web usability is accepted; broader usability studies are deferred. No public binaries, installer, Homebrew tap, mise release, GitHub Pages deployment, or DNS configuration has been published.
 
 ## Prerequisites
 
@@ -80,11 +80,11 @@ Go tests cover schema errors, unsupported/unsafe Markdown, deterministic revisio
 
 Authored code examples run only inside isolated temporary fixture directories as an explicit test operation. This is not a CLI execution feature. The tests verify concrete output for log matching/range printing and verify that sed in-place examples preserve backup content.
 
-The web test command first runs a development-server regression in a temporary repository copy, verifying live Markdown edits, added/deleted entries, and recovery after invalid content. Run it alone with `npm --prefix web run test:dev`. It does not alter the authored collection. Browser tests then build a fresh CLI and production site, compare every command/implementation page with the CLI's selected model and exact code text, exercise search/filter/tag navigation and clipboard copying, check canonical URLs, test no-JavaScript content, run desktop/mobile axe checks, verify no horizontal page overflow, and check keyboard access. They save desktop/mobile screenshots under the system temporary directory for visual review. Automated accessibility checks do not replace broader user testing in stage 4. The source formatter is pinned; use npm --prefix web run format to apply it and just check to verify formatting and types.
+The web test command first runs a development-server regression in a temporary repository copy, verifying live Markdown edits, added/deleted entries, and recovery after invalid content. Run it alone with `npm --prefix web run test:dev`. It does not alter the authored collection. Browser tests then build a fresh CLI and production site, compare every command/implementation page with the CLI's selected model and exact code text, exercise search/filter/tag navigation and clipboard copying, check canonical URLs, test no-JavaScript content, run desktop/mobile axe checks, verify no horizontal page overflow, and check keyboard access. They save desktop/mobile screenshots under the system temporary directory for visual review. Automated accessibility checks do not replace broader user testing, now tracked in the roadmap’s future usability backlog. The source formatter is pinned; use npm --prefix web run format to apply it and just check to verify formatting and types.
 
 ## Known limits
 
-- The corpus is intentionally four original entries: grep, sed, find, and cd. Unknown commands/options return an explicit error rather than generated help.
+- The current corpus has four original entries; stage 4 will expand it: grep, sed, find, and cd. Unknown commands/options return an explicit error rather than generated help.
 - macOS system and Homebrew GNU examples are exercised when available. An optional real Linux smoke check also validates BusyBox/GNU selection and examples. These checks cover concrete tool builds, not every BusyBox configuration or historical version.
 - FreeBSD/OpenBSD variants are not shipped. FreeBSD manual links are comparative references, not Apple version guarantees.
 - Version banners are evidence for implementation selection, not proof of every documented option's availability. Every page states this limitation.

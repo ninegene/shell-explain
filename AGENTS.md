@@ -6,7 +6,7 @@ Command-reference project, private through development and iteration, with a pub
 
 ## Current state
 
-Stages 1–3 are implemented locally: original content in content/en, Go parser/CLI in internal and cmd, and an Astro static site in web. Stage 4 is the next iteration phase. Do not create installers, release/deployment workflows, change repository visibility, or publish without authorization.
+Stages 1–3 are implemented locally: original content in content/en, Go parser/CLI in internal and cmd, and an Astro static site in web. Current CLI/web usability is accepted as sufficient. Stage 4 next expands the command collection using docs/command-collection.md; complete its inventory and exit review before marking the stage done. Broader usability studies are deferred in docs/roadmap.md. Do not create installers, release/deployment workflows, change repository visibility, or publish without authorization.
 
 ## Commands and implementation
 
