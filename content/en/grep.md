@@ -36,6 +36,54 @@ Match a literal string rather than treating punctuation as a regular expression:
 grep -F 'example.org' app.log
 ```
 
+Show the lines that do not match:
+
+```sh
+grep -v 'ERROR' app.log
+```
+
+Count matching lines instead of printing them:
+
+```sh
+grep -c 'ERROR' app.log
+```
+
+List the names of files that contain a match:
+
+```sh
+grep -l 'ERROR' app.log logs/server.log
+```
+
+Match whole words only, so `error` does not match inside a longer word:
+
+```sh
+grep -w 'error' app.log
+```
+
+Match either of two patterns with an extended regular expression:
+
+```sh
+grep -E 'ERROR|INFO' app.log
+```
+
+Combine several patterns without regular-expression syntax by repeating `-e`:
+
+```sh
+grep -e 'INFO' -e 'example' app.log
+```
+
+Show one line of context before and after each match:
+
+```sh
+grep -C 1 'ERROR' app.log
+```
+
+Search every file under a directory:
+
+```sh
+grep -r 'ERROR' logs
+```
+
 ### Option: -n
 Print each matching line with its line number. This helps you locate a result in the original file.
 
@@ -48,13 +96,34 @@ Treat the pattern as fixed text rather than a regular expression.
 ### Option: -v
 Select lines that do not match the pattern.
 
+### Option: -c
+Print only the number of matching lines for each file, instead of the lines. With several files, each count is prefixed by the filename.
+
+### Option: -l
+Print only the names of files that contain at least one match, once each.
+
+### Option: -w
+Require the match to be a whole word: it must not be preceded or followed by a letter, digit, or underscore.
+
+### Option: -E
+Use extended regular expressions, so `|`, `+`, `?`, and `()` work without backslashes. Quote the pattern.
+
+### Option: -e
+Give a pattern explicitly. Repeat it to match any of several patterns, or use it for a pattern that starts with a dash.
+
+### Option: -C
+Print the given number of lines of context before and after each match. The value is the next argument, as in `-C 1`.
+
+### Option: -r
+Search directories recursively. Name the directory explicitly so the command is portable: without one, GNU grep and macOS grep search the current directory but print paths differently (`a.txt` versus `./a.txt`), and other builds are untested here.
+
 ### Common mistakes
 Quote the pattern so the shell does not expand special characters before `grep` sees them. A pattern beginning with a dash can look like an option; use `grep -e '-value' file.txt`.
 
 An exit status of 1 means no lines matched; it does not necessarily mean the command failed to read the file.
 
 ### Portability
-The examples in Common use options supported by the documented variants. Optional regex engines and recursive-search details differ. Implementation detection does not guarantee every installed version supports every feature; inspect the installed manual for version-specific behavior.
+The examples in Common use options that GNU grep, macOS grep, and BusyBox grep all accept; they were executed on GNU grep 3.12, macOS grep (BSD) 2.6.0-FreeBSD, and BusyBox 1.37.0 (see the development guide for the exact check). Optional regex engines and recursive-search details differ. Implementation detection does not guarantee every installed version supports every feature; inspect the installed manual for version-specific behavior.
 
 ## GNU
 ### GNU examples

@@ -6,11 +6,11 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"testing"
 
 	"github.com/ninegene/shell-explain/content"
 	"github.com/ninegene/shell-explain/internal/detect"
+	"github.com/ninegene/shell-explain/internal/examplecheck"
 )
 
 // Executes only this repository's reviewed examples in temporary fixtures.
@@ -46,15 +46,8 @@ func TestAuthoredExamples(t *testing.T) {
 					for i, code := range section.Code {
 						t.Run(section.ID+string(rune('a'+i)), func(t *testing.T) {
 							dir := t.TempDir()
-							for _, sub := range []string{"projects", "logs", "cache"} {
-								if err := os.Mkdir(filepath.Join(dir, sub), 0755); err != nil {
-									t.Fatal(err)
-								}
-							}
-							for name, value := range map[string]string{"app.log": "INFO ready\nERROR broken\nerror small\nexample.org\n", "logs/server.log": "ERROR broken\n", "notes.txt": "old old\nsecond\nthird\nfourth\nfifth\n"} {
-								if err := os.WriteFile(filepath.Join(dir, name), []byte(value), 0644); err != nil {
-									t.Fatal(err)
-								}
+							if err := examplecheck.Setup(dir); err != nil {
+								t.Fatal(err)
 							}
 							toolPath := "/usr/bin:/bin"
 							if executable != "" {
@@ -71,21 +64,8 @@ func TestAuthoredExamples(t *testing.T) {
 							if err != nil {
 								t.Fatalf("%s: %v: %s", code, err, output)
 							}
-							if entry.ID == "sed" && strings.Contains(code, "-i") {
-								got, err := os.ReadFile(filepath.Join(dir, "notes.txt"))
-								if err != nil || !strings.HasPrefix(string(got), "new new") {
-									t.Fatal("in-place result", err, string(got))
-								}
-								backup, err := os.ReadFile(filepath.Join(dir, "notes.txt.bak"))
-								if err != nil || !strings.HasPrefix(string(backup), "old old") {
-									t.Fatal("backup not preserved")
-								}
-							}
-							if entry.ID == "grep" && strings.Contains(code, "-n -i") && string(output) != "2:ERROR broken\n3:error small\n" {
-								t.Fatalf("unexpected match result: %s", output)
-							}
-							if entry.ID == "sed" && strings.Contains(code, "2,4p") && string(output) != "second\nthird\nfourth\n" {
-								t.Fatal("range output", string(output))
+							if err := examplecheck.Verify(code, dir, string(output)); err != nil {
+								t.Fatalf("%s: %v", code, err)
 							}
 						})
 					}
@@ -140,5 +120,23 @@ func TestExampleToolPartialInstallation(t *testing.T) {
 	}
 	if got := exampleTool(d, "sed", "busybox"); got != "" {
 		t.Fatalf("missing sed inherited grep coverage: %s", got)
+	}
+}
+
+// Every authored example needs a recorded expected result, even when the host
+// lacks the tool to run it, so new examples cannot ship unchecked.
+func TestEveryExampleHasExpectation(t *testing.T) {
+	c, err := Load(content.Files)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range c.Entries {
+		for _, s := range e.Sections {
+			for _, code := range s.Code {
+				if !examplecheck.HasExpectation(code) {
+					t.Errorf("%s/%s: no expected result for %q", e.ID, s.ID, code)
+				}
+			}
+		}
 	}
 }

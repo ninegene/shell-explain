@@ -8,7 +8,7 @@ Inventory recorded on 2026-10-30 from the local reference's `config/shell/explai
 
 Include commands exposed by the dispatcher, tool listing, generated GNU helpers, and named lookup aliases. Internal implementation plumbing in `explain.sh` is not an extra content requirement. Dynamic fallback to any executable on a user's PATH is not a finite inventory. Review the inventory against the reference again before closing stage 4 and record any scope changes.
 
-An unchecked command needs an original or expanded page, applicable implementation coverage, and validation. Existing `grep`, `sed`, and `find` pages are starting points and remain unchecked pending this expansion review; preserve and review the existing `cd` page too. Package/topic helpers and lookup aliases have separate dispositions below.
+An unchecked command needs an original or expanded page, applicable implementation coverage, and validation. The existing `grep`, `sed`, `find`, and `cd` pages were expanded and reviewed first (checked below). Package/topic helpers and lookup aliases have separate dispositions below.
 
 ## Per-command completion criteria
 
@@ -29,6 +29,19 @@ Done in the stage 4 batch 1 schema change, with Go, CLI, detection, and web test
 - Shell-only entries and single-implementation `upstream` entries are selected without PATH probing.
 
 Still open: detection currently probes only grep/sed/find. New pages must work with portable/common content or explicit supported selection first. Add bounded, command-specific detection only with tests and an explicit policy; do not probe every new executable with `--version` or infer implementation from OS alone. Reviewing the existing grep, sed, find, and cd pages against the per-command criteria is also still open.
+
+## Completed-page evidence
+
+Reviewed and executed on 2026-11-08. Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+
+| Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
+| --- | --- | --- | --- | --- | --- |
+| `grep` | 11 common, 1 GNU | system grep 2.6.0-FreeBSD, executed | grep 3.12, executed | BusyBox 1.37.0 and GNU 3.12, executed | n/a |
+| `sed` | 10 common, backup edits per variant | system sed, executed | sed 4.10, executed | BusyBox 1.37.0 and GNU 4.9, executed | n/a |
+| `find` | 8 common, 1 GNU | system find, executed | findutils 4.10.0, executed | BusyBox 1.37.0 and GNU 4.10.0, executed | n/a |
+| `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
+
+Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
 
 ## Suggested order
 
@@ -163,7 +176,7 @@ Still open: detection currently probes only grep/sed/find. New pages must work w
 
 ### findutils
 
-- [ ] `find` — existing page; expand/review coverage
+- [x] `find` — expanded and reviewed 2026-11-08 (see completed-page evidence)
 - [ ] `locate`
 - [ ] `updatedb`
 - [ ] `xargs`
@@ -178,7 +191,7 @@ Still open: detection currently probes only grep/sed/find. New pages must work w
 
 - [ ] `egrep`
 - [ ] `fgrep`
-- [ ] `grep` — existing page; expand/review coverage
+- [x] `grep` — expanded and reviewed 2026-11-08 (see completed-page evidence)
 
 ### gzip
 
@@ -203,7 +216,7 @@ Still open: detection currently probes only grep/sed/find. New pages must work w
 
 ### sed
 
-- [ ] `sed` — existing page; expand/review coverage
+- [x] `sed` — expanded and reviewed 2026-11-08 (see completed-page evidence)
 
 ### tar
 
@@ -278,7 +291,7 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 
 ## Existing additional entry
 
-- [ ] `cd` — retain Bash builtin coverage and review alongside the expanded collection.
+- [x] `cd` — Bash builtin coverage reviewed and expanded 2026-11-08 (see completed-page evidence)
 
 ## Lookup names to account for
 
