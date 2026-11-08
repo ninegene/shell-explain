@@ -28,7 +28,58 @@ const VersionPolicy = "Implementation-level reference; examples are not certifie
 
 var names = regexp.MustCompile(`^[a-z][a-z0-9-]*$`)
 var optionName = regexp.MustCompile(`^--?[A-Za-z0-9][A-Za-z0-9-]*$`)
-var variants = map[string]string{"Common": "common", "GNU": "gnu", "Apple": "apple", "BusyBox": "busybox", "Bash": "bash"}
+
+// symbolicNames are lookup spellings that cannot be IDs, filenames or URL
+// segments. Add a spelling here only for a real command name, such as test's `[`.
+var symbolicNames = map[string]bool{"[": true}
+
+// Implementation is one selectable documentation view. Implementations are
+// distinct upstream projects or shells, never operating-system guesses.
+type Implementation struct {
+	ID      string `json:"id"`
+	Heading string `json:"heading"`
+	Label   string `json:"label"`
+	Shell   bool   `json:"shell"`
+}
+
+// Implementations is the single registry used by the parser, CLI and website.
+var Implementations = []Implementation{
+	{ID: "common", Heading: "Common", Label: "Portable / common"},
+	{ID: "gnu", Heading: "GNU", Label: "GNU"},
+	{ID: "apple", Heading: "Apple", Label: "macOS / Apple"},
+	{ID: "busybox", Heading: "BusyBox", Label: "BusyBox"},
+	{ID: "bash", Heading: "Bash", Label: "Bash builtin", Shell: true},
+	{ID: "zsh", Heading: "Zsh", Label: "Zsh builtin", Shell: true},
+	{ID: "upstream", Heading: "Upstream", Label: "Upstream project"},
+}
+
+// LookupImplementation returns a registered implementation by ID.
+func LookupImplementation(id string) (Implementation, bool) {
+	for _, impl := range Implementations {
+		if impl.ID == id {
+			return impl, true
+		}
+	}
+	return Implementation{}, false
+}
+
+// ImplementationIDs lists registered IDs in display order, separated by sep.
+func ImplementationIDs(sep string) string {
+	ids := make([]string, len(Implementations))
+	for i, impl := range Implementations {
+		ids[i] = impl.ID
+	}
+	return strings.Join(ids, sep)
+}
+
+func variantForHeading(heading string) (string, bool) {
+	for _, impl := range Implementations {
+		if impl.Heading == heading {
+			return impl.ID, true
+		}
+	}
+	return "", false
+}
 
 type Metadata struct {
 	SchemaVersion   int      `yaml:"schema_version" json:"schema_version"`
@@ -53,6 +104,9 @@ type Section struct {
 	OptionText     string   `json:"option_text,omitempty"`
 }
 
+// IsLookupName reports whether s is a valid command ID or symbolic alias spelling.
+func IsLookupName(s string) bool { return names.MatchString(s) || symbolicNames[s] }
+
 func (s Section) IsExamples() bool {
 	return s.Title == "Examples" || strings.HasSuffix(s.Title, " examples")
 }
@@ -62,10 +116,29 @@ type Entry struct {
 	VersionPolicy string    `json:"version_policy"`
 	Sections      []Section `json:"sections"`
 }
+
+// ShellImplementations lists the entry's declared shell-builtin views.
+func (e *Entry) ShellImplementations() []string {
+	shells := []string{}
+	for _, id := range e.Implementations {
+		if impl, ok := LookupImplementation(id); ok && impl.Shell {
+			shells = append(shells, id)
+		}
+	}
+	return shells
+}
+
+// ShellOnly reports whether every declared implementation is a shell builtin,
+// so no executable on PATH can describe what the user's shell runs.
+func (e *Entry) ShellOnly() bool {
+	return len(e.Implementations) > 0 && len(e.ShellImplementations()) == len(e.Implementations)
+}
+
 type Catalog struct {
-	SchemaVersion int     `json:"schema_version"`
-	Revision      string  `json:"revision"`
-	Entries       []Entry `json:"entries"`
+	SchemaVersion   int              `json:"schema_version"`
+	Revision        string           `json:"revision"`
+	Implementations []Implementation `json:"implementations"`
+	Entries         []Entry          `json:"entries"`
 }
 
 func Load(files fs.FS) (*Catalog, error) {
@@ -76,7 +149,7 @@ func Load(files fs.FS) (*Catalog, error) {
 	if len(paths) == 0 {
 		return nil, fmt.Errorf("no command Markdown files found")
 	}
-	c := &Catalog{SchemaVersion: SchemaVersion, Entries: []Entry{}}
+	c := &Catalog{SchemaVersion: SchemaVersion, Implementations: Implementations, Entries: []Entry{}}
 	hash := sha256.New()
 	seen := map[string]bool{}
 	for _, p := range paths {
@@ -205,7 +278,7 @@ func Parse(data []byte) (*Entry, error) {
 			}
 			title = ""
 			var ok bool
-			view, ok = variants[strings.TrimPrefix(line, "## ")]
+			view, ok = variantForHeading(strings.TrimPrefix(line, "## "))
 			if !ok {
 				return nil, fmt.Errorf("unknown variant heading %q", line)
 			}
@@ -307,19 +380,26 @@ func validateMetadata(m Metadata) error {
 	if len(m.Tags) == 0 || len(m.Implementations) == 0 || len(m.References) == 0 {
 		return fmt.Errorf("tags, implementations and references are required")
 	}
-	for _, list := range [][]string{m.Aliases, m.Tags, m.Implementations} {
+	for i, list := range [][]string{m.Aliases, m.Tags, m.Implementations} {
+		valid := names.MatchString
+		if i == 0 {
+			valid = IsLookupName
+		}
 		seen := map[string]bool{}
 		for _, n := range list {
-			if !names.MatchString(n) || seen[n] {
+			if !valid(n) || seen[n] {
 				return fmt.Errorf("invalid or duplicate name %q", n)
 			}
 			seen[n] = true
 		}
 	}
 	for _, v := range m.Implementations {
-		if v == "common" || !slices.Contains([]string{"gnu", "apple", "busybox", "bash"}, v) {
+		if _, ok := LookupImplementation(v); v == "common" || !ok {
 			return fmt.Errorf("unsupported implementation %q", v)
 		}
+	}
+	if slices.Contains(m.Implementations, "upstream") && len(m.Implementations) > 1 {
+		return fmt.Errorf("upstream documents a single-implementation tool and cannot be combined with other implementations")
 	}
 	for _, ref := range m.References {
 		if !safeURL(ref) {
