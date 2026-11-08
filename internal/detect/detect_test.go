@@ -73,7 +73,7 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		t.Fatal(err)
 	}
 	dir := t.TempDir()
-	for _, name := range []string{"sort", "ls"} {
+	for _, name := range []string{"sort", "chmod"} {
 		if err = os.Symlink(executable, filepath.Join(dir, name)); err != nil {
 			t.Fatal(err)
 		}
@@ -90,7 +90,7 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 	}
 	// Commands outside the probe list are never executed, even with a GNU-looking banner.
 	t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", "gnu-coreutils")
-	if s, err := d.Select(context.Background(), Request{Name: "ls", Command: "ls"}); err != nil || s.Implementation != "common" || s.Confidence != "unknown" {
+	if s, err := d.Select(context.Background(), Request{Name: "chmod", Command: "chmod"}); err != nil || s.Implementation != "common" || s.Confidence != "unknown" {
 		t.Fatalf("unlisted command probed: %+v %v", s, err)
 	}
 	for _, path := range []string{"/usr/bin/grep", "/bin/cat"} {
