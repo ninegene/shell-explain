@@ -15,6 +15,9 @@ references:
 ### Overview
 `cp` copies files. With two names it copies the first to the second; with more, the last must be an existing directory that receives the copies. It overwrites an existing target file without asking.
 
+### Background
+A `cp` command appeared in Version 1 Unix, according to the FreeBSD and macOS manuals. Today the name covers GNU cp, the cp that macOS ships, and the cp applet in BusyBox. They agree on `-R` and `-p`, and differ on archive mode `-a`, no-clobber `-n`, and update `-u`.
+
 ### Examples
 Copy a file to a new name and show the copy:
 
@@ -59,6 +62,9 @@ Preserve the modification time, access time and permission bits where possible.
 Only `-R` and `-p` are in the Common examples. Archive mode `-a`, no-clobber `-n` and update `-u` differ in meaning or availability between GNU, BSD and BusyBox. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
+### About GNU cp
+GNU cp is part of GNU coreutils, and this page's checks ran coreutils 9.11. It adds `-t` to name the destination directory first.
+
 ### GNU examples
 Name the destination directory first with `-t`, which suits `xargs` pipelines. This option is a GNU extension:
 
@@ -67,9 +73,15 @@ cp -t logs notes.txt app.log && ls logs
 ```
 
 ## Apple
+### About macOS cp
+This is the cp in `/bin` on macOS. It has no `-t`, so the destination goes last. It adds `-c` to clone files on APFS, which GNU and BusyBox do not have.
+
 ### Apple notes
 macOS `cp` is the BSD implementation. It has no `-t`; put the destination last. It adds `-c` to clone files on APFS, which GNU and BusyBox do not have.
 
 ## BusyBox
+### About BusyBox cp
+BusyBox bundles cp as an applet, and anything beyond the common options depends on how it was built. This page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox notes
 BusyBox `cp` supports `-R`, `-p` and `-a`; other options and GNU long spellings depend on the build.

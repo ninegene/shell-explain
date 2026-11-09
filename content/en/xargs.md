@@ -15,6 +15,9 @@ references:
 ### Overview
 `xargs` reads words from standard input and runs a command with them as arguments. It starts as many runs as it needs to stay under the system's argument-length limit. By default words are split on blanks and newlines, so names with spaces need `-0`.
 
+### Background
+The `xargs` utility appeared in PWB Unix, the Programmer's Workbench, according to the FreeBSD and macOS manuals. It builds command lines from its input. Today the name covers GNU xargs from the findutils package, the xargs that macOS ships, and the xargs applet in BusyBox. They agree on `-n`, `-I`, `-0`, and `-r`, and differ on parallel runs with `-P` and the `-d` delimiter.
+
 ### Examples
 Pass every input line to one command call:
 
@@ -71,6 +74,9 @@ Without `-0`, a name with a space becomes two arguments. Without `-r`, GNU `xarg
 The Common examples use `-n`, `-I`, `-0` and `-r`. Parallel runs with `-P` and the line-based `-d` delimiter are not portable. The Common examples were executed on GNU findutils 4.10.0, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
+### About GNU xargs
+GNU xargs comes from the GNU findutils package, which also provides `find`. This page's checks ran findutils 4.10.0. It adds extensions such as `-d` to choose the input delimiter.
+
 ### GNU examples
 Split input on commas with `-d`. This option is a GNU extension:
 
@@ -79,9 +85,15 @@ printf 'a,b,c' | xargs -d , -n 1 echo
 ```
 
 ## Apple
+### About macOS xargs
+This is the xargs in `/usr/bin` on macOS. It does not run the command for empty input and accepts `-r` silently. It has no `-d`, so convert the delimiter with `tr` first.
+
 ### Apple notes
 macOS `xargs` is the BSD implementation. It does not run the command for empty input and it accepts `-r` silently. It has no `-d`; convert the delimiter with `tr` first.
 
 ## BusyBox
+### About BusyBox xargs
+BusyBox bundles xargs as an applet, and anything beyond the common options depends on how it was built. This page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox notes
 BusyBox `xargs` supported the options in the common examples in the tested build (1.37.0); other options depend on the build.
