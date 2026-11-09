@@ -38,6 +38,8 @@ The symbols are short. Here are the ones to learn first.
 
 The `>` symbol replaces the file's old contents without asking, so it needs care. Use `>>` to add to the end instead.
 
+A pipe or a `>` carries only standard output. Standard error is a separate stream, and it does not go into the pipe or the file. So when a command in a pipeline reports a problem, the message still reaches your screen, and the data that flows on stays clean. The previous guide explains why errors travel on their own route.
+
 ## A picture
 Read the picture from left to right. Each command's output is the next command's input, and only the last command's output reaches the screen.
 
