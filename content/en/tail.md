@@ -15,6 +15,9 @@ references:
 ### Overview
 `tail` prints the end of each file you name, ten lines by default. It is the usual tool for reading the newest log lines, and with `-f` it keeps watching a file as it grows.
 
+### Background
+A `tail` command appeared in PWB Unix, the Programmer's Workbench, according to the FreeBSD and macOS manuals. Today the name covers GNU tail, the tail that macOS ships, and the tail applet in BusyBox. They agree on `-n`, `-c`, and `-f`, and differ on long options and on `-F`.
+
 ### Examples
 Print the last ten lines (all of a short file):
 
@@ -68,13 +71,22 @@ Keep the file open and print new data as it is appended. It never exits on its o
 `-n`, `-c`, and `-f` are in the Common examples. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check). The `-f` example is reviewed but not executed here because it never ends.
 
 ## GNU
+### About GNU tail
+GNU tail is part of GNU coreutils, and this page's checks ran coreutils 9.11. It adds long options such as `--follow` and `--lines`.
+
 ### GNU notes
 GNU `tail` adds long options such as `--follow` and `--lines`. Confirm other builds support an option before relying on it.
 
 ## Apple
+### About macOS tail
+This is the tail in `/usr/bin` on macOS. It supports `-F`, but some GNU long options such as `--follow` are not available.
+
 ### Apple notes
 macOS `tail` is the BSD implementation. `-F` is supported; some GNU long options such as `--follow` are not.
 
 ## BusyBox
+### About BusyBox tail
+BusyBox bundles tail as an applet that supports `-n`, `-c`, and `-f`. Other features such as `-F` depend on how it was built, and this page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox notes
 BusyBox `tail` supports `-n`, `-c`, and `-f`; `-F` and other features depend on the build configuration.

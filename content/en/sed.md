@@ -15,6 +15,9 @@ references:
 ### Overview
 Use `sed` to print transformed text without changing the original file. A substitution rule has the form `s/pattern/replacement/`. Preview the result before choosing an in-place edit.
 
+### Background
+The name is short for stream editor: `sed` edits text as it flows from a file or pipe instead of opening it in an editor. A `sed` command, written by L. E. McMahon, appeared in Version 7 Unix, according to the FreeBSD and macOS manuals. Today the name covers separate programs: GNU sed, the sed that macOS ships, and the compact sed inside BusyBox. They agree on the substitution and printing examples below and differ on in-place editing, extensions, and regular-expression details.
+
 ### Examples
 Replace the first occurrence of old on each line:
 
@@ -92,6 +95,9 @@ The substitution flag `g` changes every match on a line, not the number of files
 In-place editing is not uniform across implementations. The examples below create backup files rather than discarding the original. Version-sensitive extensions are outside the common examples. The Common examples were executed on GNU sed 4.10, macOS sed, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
+### About GNU sed
+GNU sed is the GNU Project's sed. This page's checks ran GNU sed 4.10 on macOS (Homebrew) and 4.9 on Alpine Linux. It accepts `-i` with or without a backup suffix.
+
 ### GNU examples
 Edit a disposable copy in place and retain the previous contents as notes.txt.bak:
 
@@ -103,6 +109,9 @@ sed -i.bak 's/old/new/g' notes.txt
 Write changes back to the file. GNU accepts `-i` without a backup suffix, but use a backup while learning. An existing backup path can be overwritten; practice in a temporary directory.
 
 ## Apple
+### About macOS sed
+This is the sed in `/usr/bin` on macOS. Its manual carries the same Version 7 history note as the FreeBSD manual, but this page does not claim that it matches any particular FreeBSD version. The difference that matters most in practice is that `-i` always takes a backup-suffix argument, and an empty one means no backup.
+
 ### Apple examples
 Retain a backup while editing a disposable file:
 
@@ -114,6 +123,9 @@ sed -i '.bak' 's/old/new/g' notes.txt
 Apple sed expects an argument for the backup suffix. The empty argument in `-i ''` means no backup; it is not the same syntax as GNU's usual suffix-free form. Use a backup until you have verified the edit.
 
 ## BusyBox
+### About BusyBox sed
+BusyBox bundles a compact sed as an applet. Which extensions it has depends on how BusyBox was built; this page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox examples
 Keep a backup while editing a disposable file:
 

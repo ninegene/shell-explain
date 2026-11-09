@@ -15,6 +15,9 @@ references:
 ### Overview
 Give `find` a starting directory followed by tests. A dot means the current directory. Combining tests lets you select a file by both its type and its name.
 
+### Background
+A simple `find` command appeared in Version 1 Unix and was removed in Version 3. It was rewritten for Version 5 and later enhanced for the Programmer's Workbench, according to the FreeBSD and macOS manuals. Today the name covers separate programs: GNU find from the findutils package, the find that macOS ships, and the find applet in BusyBox. They agree on starting paths, `-name` and `-type`, and differ on traversal limits, time units, and extra tests.
+
 ### Examples
 Find regular files whose names end in .log:
 
@@ -89,6 +92,9 @@ Always include a starting directory for portable commands. `find . -name '*.log'
 Actions that delete files need special care and are not used here; the one `-exec` example runs a read-only command. The Common examples were executed on GNU findutils 4.10.0, macOS find, and BusyBox 1.37.0 (see the development guide for the exact check). Features such as traversal limits, time units, and regex matching differ between implementations and versions.
 
 ## GNU
+### About GNU find
+GNU find comes from the GNU findutils package, which also provides `xargs`. This page's checks ran findutils 4.10.0. It adds extensions such as `-maxdepth`, shown below.
+
 ### GNU examples
 Find matching files up to two levels below the starting directory:
 
@@ -100,9 +106,15 @@ find . -maxdepth 2 -type f -name '*.log'
 Limit traversal depth; the starting directory is depth 0. Put this traversal option before matching tests. This is an extension, not a universal POSIX option.
 
 ## Apple
+### About macOS find
+This is the find in `/usr/bin` on macOS. The shared examples avoid GNU-only options, and the installed manual (`man find`) is the authority for anything beyond them.
+
 ### Apple notes
 Use an explicit starting path with macOS find. The common examples avoid GNU-only assumptions. Check `man find` on the installed macOS release before adopting an extended expression.
 
 ## BusyBox
+### About BusyBox find
+BusyBox bundles find as an applet, and the tests and actions it supports depend on how BusyBox was built. This page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox notes
 The available tests/actions depend on BusyBox's build configuration. The common name/type examples provide a small baseline; extended predicates need confirmation from the installed help.
