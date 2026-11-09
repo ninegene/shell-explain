@@ -21,7 +21,7 @@ import (
 // identify an implementation. Add a command only after checking that GNU,
 // BSD/Apple and BusyBox builds reject or answer the flag without side effects
 // and without waiting for input; do not probe commands outside this list.
-var probed = []string{"grep", "sed", "find", "cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "ls", "mkdir", "cp", "mv", "rm"}
+var probed = []string{"grep", "sed", "find", "cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "ls", "mkdir", "cp", "mv", "rm", "chmod", "xargs", "gzip", "tar"}
 
 // appleSystemDirs hold macOS's own executables; coreutils such as cat live in /bin.
 var appleSystemDirs = []string{"/usr/bin", "/bin"}
@@ -132,14 +132,16 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 		err := cmd.Run()
 		cleanup()
 		banner := out.String()
+		first := strings.SplitN(banner, "\n", 2)[0]
 		if probeCtx.Err() == nil && !errors.Is(err, exec.ErrWaitDelay) {
 			switch {
-			case d.OS == "darwin" && (strings.Contains(banner, "BSD grep") || strings.Contains(strings.SplitN(banner, "\n", 2)[0], "-Apple")):
-				// Apple's banners can say "GNU compatible" or "(GNU sort) ...-Apple".
+			case d.OS == "darwin" && (strings.Contains(banner, "BSD grep") || strings.Contains(first, "-Apple") || strings.HasPrefix(first, "Apple ")):
+				// Apple's banners can say "GNU compatible", "(GNU sort) ...-Apple" or "Apple gzip 479".
 				s.Implementation = "apple"
 			case strings.Contains(banner, "BusyBox"):
 				s.Implementation = "busybox"
-			case strings.Contains(strings.SplitN(banner, "\n", 2)[0], "(GNU "):
+			case strings.Contains(first, "(GNU ") || (strings.HasPrefix(first, "gzip ") && strings.Contains(banner, "Free Software Foundation")):
+				// GNU gzip prints "gzip 1.13" plus a Free Software Foundation notice.
 				s.Implementation = "gnu"
 			default:
 				banner = ""

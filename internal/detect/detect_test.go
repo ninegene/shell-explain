@@ -21,6 +21,10 @@ func TestMain(m *testing.M) {
 			fmt.Println("grep (BSD grep, GNU compatible) 2.6.0-FreeBSD")
 		case "apple-version":
 			fmt.Println("2.3-Apple (199)")
+		case "apple-gzip":
+			fmt.Println("Apple gzip 479.100.4")
+		case "gnu-gzip":
+			fmt.Println("gzip 1.13\nCopyright (C) 2023 Free Software Foundation, Inc.")
 		case "gnu-coreutils":
 			fmt.Println("sort (GNU coreutils) 9.11")
 		case "busybox":
@@ -73,7 +77,7 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		t.Fatal(err)
 	}
 	dir := t.TempDir()
-	for _, name := range []string{"sort", "chmod"} {
+	for _, name := range []string{"sort", "gzip", "stat"} {
 		if err = os.Symlink(executable, filepath.Join(dir, name)); err != nil {
 			t.Fatal(err)
 		}
@@ -88,9 +92,18 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 			t.Fatalf("%s: %+v %v", tt.mode, s, err)
 		}
 	}
+	for _, tt := range []struct{ mode, impl, version string }{
+		{"apple-gzip", "apple", "479.100.4"}, {"gnu-gzip", "gnu", "1.13"},
+	} {
+		t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", tt.mode)
+		s, err := d.Select(context.Background(), Request{Name: "gzip", Command: "gzip"})
+		if err != nil || s.Implementation != tt.impl || s.Confidence != "detected" || s.Version != tt.version {
+			t.Fatalf("%s: %+v %v", tt.mode, s, err)
+		}
+	}
 	// Commands outside the probe list are never executed, even with a GNU-looking banner.
 	t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", "gnu-coreutils")
-	if s, err := d.Select(context.Background(), Request{Name: "chmod", Command: "chmod"}); err != nil || s.Implementation != "common" || s.Confidence != "unknown" {
+	if s, err := d.Select(context.Background(), Request{Name: "stat", Command: "stat"}); err != nil || s.Implementation != "common" || s.Confidence != "unknown" {
 		t.Fatalf("unlisted command probed: %+v %v", s, err)
 	}
 	for _, path := range []string{"/usr/bin/grep", "/bin/cat"} {

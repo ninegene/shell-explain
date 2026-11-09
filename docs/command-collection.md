@@ -28,7 +28,7 @@ Done in the stage 4 batch 1 schema change, with Go, CLI, detection, and web test
 - Symbolic lookup names such as `[` are aliases of a safe canonical ID (`test`), so filenames, web routes, and JSON IDs keep the lowercase-letter rule.
 - Shell-only entries and single-implementation `upstream` entries are selected without PATH probing.
 
-Still open: detection probes only the commands in `detect.probed` (grep, sed, find, cat, head, tail, wc, sort, uniq, cut, tr, ls, mkdir, cp, mv, rm; see [detection](detection.md)). New pages must work with portable/common content or explicit supported selection first. Add bounded, command-specific detection only with tests and an explicit policy; do not probe every new executable with `--version` or infer implementation from OS alone.
+Still open: detection probes only the commands in `detect.probed` (grep, sed, find, cat, head, tail, wc, sort, uniq, cut, tr, ls, mkdir, cp, mv, rm, chmod, xargs, gzip, tar; see [detection](detection.md)). New pages must work with portable/common content or explicit supported selection first. Add bounded, command-specific detection only with tests and an explicit policy; do not probe every new executable with `--version` or infer implementation from OS alone.
 
 ## Completed-page evidence
 
@@ -52,6 +52,10 @@ Reviewed and executed on 2026-11-08 (macOS Homebrew coreutils 9.11 was exercised
 | `cp` | 5 common, 1 GNU | system cp, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `mv` | 5 common, 1 GNU | system mv, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `rm` | 4 common, 1 GNU | system rm, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `chmod` | 6 common, 1 GNU | system `/bin/chmod`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `xargs` | 6 common, 1 GNU | system xargs, executed | findutils 4.10.0, executed | BusyBox 1.37.0 and findutils 4.10.0, executed | n/a |
+| `gzip` | 5 common, 1 GNU | system gzip (Apple gzip 479), executed | gzip 1.14, executed (with Homebrew gzip first on PATH, because a version-manager wrapper script is never probed) | BusyBox 1.37.0 and Alpine GNU gzip, executed | n/a |
+| `tar` | 6 common, 1 GNU | system bsdtar 3.5.3, executed | GNU tar, executed | BusyBox 1.37.0 and Alpine GNU tar, executed | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -80,7 +84,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `cat` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `chcon`
 - [ ] `chgrp`
-- [ ] `chmod`
+- [x] `chmod` (stage 4 batch 2c, 2026-11-08; see completed-page evidence)
 - [ ] `chown`
 - [ ] `chroot`
 - [ ] `cksum`
@@ -192,7 +196,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `find` — expanded and reviewed 2026-11-08 (see completed-page evidence)
 - [ ] `locate`
 - [ ] `updatedb`
-- [ ] `xargs`
+- [x] `xargs` (stage 4 batch 2c, 2026-11-08; see completed-page evidence)
 
 ### gawk
 
@@ -210,7 +214,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 
 - [ ] `gunzip`
 - [ ] `gzexe`
-- [ ] `gzip`
+- [x] `gzip` (stage 4 batch 2c, 2026-11-08; see completed-page evidence)
 - [ ] `uncompress`
 - [ ] `zcat`
 - [ ] `zcmp`
@@ -234,7 +238,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 ### tar
 
 - [ ] `rmt`
-- [ ] `tar`
+- [x] `tar` (stage 4 batch 2c, 2026-11-08; see completed-page evidence)
 
 ### wget
 
