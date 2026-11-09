@@ -68,22 +68,25 @@ func TestInvalidContent(t *testing.T) {
 	}
 	valid := string(raw)
 	tests := map[string]string{
-		"unknown field":     strings.Replace(valid, "summary:", "surprise: true\nsummary:", 1),
-		"duplicate YAML":    strings.Replace(valid, "id: grep", "id: grep\nid: grep", 1),
-		"bad schema":        strings.Replace(valid, "schema_version: 1", "schema_version: 2", 1),
-		"bad id":            strings.Replace(valid, "id: grep", "id: ../grep", 1),
-		"empty tags":        strings.Replace(valid, "tags: [text, search, logs]", "tags: []", 1),
-		"unsafe ref":        strings.Replace(valid, "https://www.gnu.org/software/grep/manual/", "javascript:alert(1)", 1),
-		"unknown variant":   strings.Replace(valid, "## GNU", "## Other", 1),
-		"missing coverage":  strings.Replace(valid, "implementations: [gnu, apple, busybox]", "implementations: [gnu, apple, busybox, bash]", 1),
-		"duplicate variant": valid + "\n## GNU\n### Again\nText.\n",
-		"duplicate section": valid + "\n### BusyBox notes\nText.\n",
-		"HTML":              strings.Replace(valid, "Use `grep`", "<script>alert(1)</script>\n\nUse `grep`", 1),
-		"unsafe link":       strings.Replace(valid, "Use `grep`", "[click](javascript:alert) Use `grep`", 1),
-		"image":             strings.Replace(valid, "Use `grep`", "![picture](https://example.org/a.png) Use `grep`", 1),
-		"unclosed fence":    valid + "\n```sh\necho hello\n",
-		"escape":            valid + "\x1b[0m",
-		"empty section":     valid + "\n### Empty\n",
+		"unknown field":         strings.Replace(valid, "summary:", "surprise: true\nsummary:", 1),
+		"duplicate YAML":        strings.Replace(valid, "id: grep", "id: grep\nid: grep", 1),
+		"bad schema":            strings.Replace(valid, "schema_version: 1", "schema_version: 2", 1),
+		"bad id":                strings.Replace(valid, "id: grep", "id: ../grep", 1),
+		"empty tags":            strings.Replace(valid, "tags: [text, search, logs]", "tags: []", 1),
+		"unsafe ref":            strings.Replace(valid, "https://www.gnu.org/software/grep/manual/", "javascript:alert(1)", 1),
+		"unknown variant":       strings.Replace(valid, "## GNU", "## Other", 1),
+		"missing coverage":      strings.Replace(valid, "implementations: [gnu, apple, busybox]", "implementations: [gnu, apple, busybox, bash]", 1),
+		"duplicate variant":     valid + "\n## GNU\n### Again\nText.\n",
+		"duplicate section":     valid + "\n### BusyBox notes\nText.\n",
+		"HTML":                  strings.Replace(valid, "Use `grep`", "<script>alert(1)</script>\n\nUse `grep`", 1),
+		"unsafe link":           strings.Replace(valid, "Use `grep`", "[click](javascript:alert) Use `grep`", 1),
+		"image":                 strings.Replace(valid, "Use `grep`", "![picture](https://example.org/a.png) Use `grep`", 1),
+		"unclosed fence":        valid + "\n```sh\necho hello\n",
+		"escape":                valid + "\x1b[0m",
+		"empty section":         valid + "\n### Empty\n",
+		"Background in variant": strings.Replace(valid, "### GNU examples", "### Background\nHistory.\n\n### GNU examples", 1),
+		"About in Common":       strings.Replace(valid, "### Examples", "### About gawk\nText.\n\n### Examples", 1),
+		"two About sections":    valid + "\n### About one\nText.\n\n### About two\nText.\n",
 	}
 	for name, s := range tests {
 		t.Run(name, func(t *testing.T) {
@@ -167,7 +170,7 @@ func TestFenceDelimitersPreserveLiteralHeadings(t *testing.T) {
 			if len(entry.Sections) != len(original.Sections) {
 				t.Fatal("literal headings changed the section structure")
 			}
-			if got := entry.Sections[1].Code[0]; got != tt.code {
+			if got := examplesSection(entry).Code[0]; got != tt.code {
 				t.Fatalf("code changed: got %q, want %q", got, tt.code)
 			}
 		})
@@ -195,7 +198,7 @@ func TestFencesInListContainers(t *testing.T) {
 		if err != nil {
 			t.Fatalf("list fence rejected: %v\n%s", err, block)
 		}
-		if got := e.Sections[1].Code[0]; got != "echo hello\n### literal text\n" {
+		if got := examplesSection(e).Code[0]; got != "echo hello\n### literal text\n" {
 			t.Fatalf("list code changed: %q", got)
 		}
 	}
@@ -218,7 +221,18 @@ func TestSectionPreservesFenceIndentation(t *testing.T) {
 		t.Fatal(err)
 	}
 	// CommonMark removes the opener's three-space indent, leaving one space.
-	if got := e.Sections[1].Code[0]; got != " echo hello\n" {
+	if got := examplesSection(e).Code[0]; got != " echo hello\n" {
 		t.Fatalf("section trimming changed code indentation: %q", got)
 	}
+}
+
+// examplesSection finds the Common Examples section by title, so tests do not
+// depend on which sections precede it.
+func examplesSection(e *Entry) Section {
+	for _, sec := range e.Sections {
+		if sec.Title == "Examples" {
+			return sec
+		}
+	}
+	return Section{Code: []string{""}}
 }
