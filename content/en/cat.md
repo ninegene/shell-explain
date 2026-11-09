@@ -15,6 +15,9 @@ references:
 ### Overview
 `cat` writes the contents of the files you name to standard output, in order. With no file, or with `-`, it copies standard input. Use it to view a short file, join files, or feed a pipeline.
 
+### Background
+The name is short for concatenate: `cat` joins files and writes them to standard output. A `cat` utility appeared in Version 1 Unix, and Dennis Ritchie designed and wrote the first manual page, according to the FreeBSD and macOS manuals. Today the name covers GNU cat, the cat that macOS ships, and the cat applet in BusyBox. They agree on plain concatenation and the numbering example below, which ran on all three, and differ on options such as `-A` and `-s`.
+
 ### Examples
 Print a file:
 
@@ -56,13 +59,22 @@ Redirecting to a file you are also reading, as in `cat notes.txt > notes.txt`, e
 Only the options listed here are in the Common examples. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check). Options such as `-s`, `-A`, `-e`, and `-t` are not uniform; check the installed manual.
 
 ## GNU
+### About GNU cat
+GNU cat is part of GNU coreutils, and this page's checks ran coreutils 9.11. It has the extra options named in the notes below.
+
 ### GNU notes
 GNU `cat` adds options such as `-A` (show line ends and tabs), `-s` (squeeze repeated blank lines), and long spellings like `--number`. Confirm that a macOS or BusyBox build provides an option before relying on it.
 
 ## Apple
+### About macOS cat
+This is the cat in `/bin` on macOS. GNU cat from a package manager may be installed as `gcat`, so the executable path, not the operating system, tells you which one you are running.
+
 ### Apple notes
 macOS `cat` is the BSD implementation, normally `/bin/cat`; GNU `cat` installed by a package manager may be named `gcat`. Long options such as `--number` are GNU only; use the short spellings.
 
 ## BusyBox
+### About BusyBox cat
+BusyBox bundles cat as an applet, and options beyond plain concatenation depend on how it was built. This page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox notes
 BusyBox `cat` options such as `-n` depend on the build configuration. Run `cat --help` in the actual environment before relying on anything beyond plain concatenation.

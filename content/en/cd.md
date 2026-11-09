@@ -13,6 +13,9 @@ references:
 ### Overview
 `cd` is a shell builtin because changing directory must affect the current shell. A separate executable cannot change its parent shell's directory. This reference documents Bash behavior; another shell can differ.
 
+### Background
+`cd` is a shell builtin, not a separate program: the Bash manual lists it among the Bourne shell builtins. It has to be built in because the working directory belongs to the shell process, and a separate program could only change its own. Each shell supplies its own `cd`, so behaviour such as `cd -` and `-P` is a property of the shell, not of the operating system.
+
 ### Examples
 Move into a project directory:
 
@@ -51,6 +54,9 @@ Quote directory names containing spaces: `cd 'project notes'`. Chain with `&&` r
 A standalone explain binary cannot inspect your parent shell's aliases, functions, or exact builtin implementation. Zsh and dash builtins also exist and are not covered or tested here. Choose Bash explicitly when needed; a detected SHELL environment variable is not proof of the active shell.
 
 ## Bash
+### About Bash cd
+These examples describe the `cd` built into Bash and were executed on Bash 5.2.37. Other shells such as zsh and dash have their own `cd`, which this page has not checked.
+
 ### Bash examples
 Return to the previous directory:
 

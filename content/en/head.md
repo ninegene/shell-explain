@@ -15,6 +15,9 @@ references:
 ### Overview
 `head` prints the beginning of each file you name, ten lines by default. Use it to peek at a large file or to keep the first results of a pipeline.
 
+### Background
+The `head` command appeared in PWB Unix, the Programmer's Workbench, according to the FreeBSD and macOS manuals. Today the name covers GNU head, the head that macOS ships, and the head applet in BusyBox. They agree on `-n` and `-c` with a positive count, and differ on negative counts and header options.
+
 ### Examples
 Print the first ten lines (all of a short file):
 
@@ -59,6 +62,9 @@ A count like `-n 2` is a number of lines, not a line number. When several files 
 Only `-n` and `-c` with a positive count are in the Common examples. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
+### About GNU head
+GNU head is part of GNU coreutils, and this page's checks ran coreutils 9.11. It accepts a negative count such as `-n -2`, which means everything except the last two lines.
+
 ### GNU examples
 Print everything except the last two lines. A negative count is a GNU extension:
 
@@ -67,9 +73,15 @@ head -n -2 notes.txt
 ```
 
 ## Apple
+### About macOS head
+This is the head in `/usr/bin` on macOS. It does not accept a negative count, so use `tail` or `sed` to drop trailing lines.
+
 ### Apple notes
 macOS `head` is the BSD implementation. It does not accept a negative count such as `-n -2`; use `tail` or `sed` to drop trailing lines.
 
 ## BusyBox
+### About BusyBox head
+BusyBox bundles head as an applet that supports `-n` and `-c`. Other options depend on how it was built, and this page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox notes
 BusyBox `head` supports `-n` and `-c`; other options depend on the build. A negative count is not part of the common examples.
