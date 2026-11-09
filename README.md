@@ -26,6 +26,7 @@ Use local Astro previews during private development and iteration. After the rep
 | [Distribution](docs/distribution.md) | Releases, curl, Homebrew, mise, and reproducibility |
 | [Related projects and references](docs/references.md) | tldr, ExplainShell, all projects in tldr's similar-projects list, and supporting tools |
 | [Command collection checklist](docs/command-collection.md) | Stage 4 inventory, implementation coverage, and completion criteria |
+| [Learning guides](docs/learning-guides.md) | Proposed beginner series on the terminal, shell, operating systems and tool history |
 | [Roadmap](docs/roadmap.md) | Decisions, validation, and implementation stages |
 | [Development and verification](docs/development.md) | Build commands, local previews, test coverage, and known limits |
 | [Contributing](CONTRIBUTING.md) | Documentation contributions and source/licensing expectations |
