@@ -21,6 +21,8 @@ Usage:
   explain COMMAND [flags]
   explain list [--format json]
   explain search WORDS [--format json]
+  explain learn [GUIDE] [--section NAME]       Beginner guides; GUIDE is a name or number
+  explain glossary [WORD]                      Short definitions of words you will see
 
 Flags (may appear before or after COMMAND):
   --implementation ID                          Select documentation (see below)
@@ -29,6 +31,8 @@ Flags (may appear before or after COMMAND):
   --details                                    Show full explanations, options and references
   --format text|json                           Output format (default text)
   --width N                                    Prose width; compact descriptions capped at 100
+  --section NAME                               Show one section of a guide (learn only)
+  --no-pager                                   Print guides and the glossary without a pager
   --color auto|always|never                     Heading color (default auto)
   --no-probe                                   Disable native --version probes
   --help                                      Show this help
@@ -46,13 +50,17 @@ type Config struct {
 	Detector detect.Detector
 	Version  string
 	Width    int
-	Color    bool
+	// GuideWidth is the prose width for guides: the terminal width when known.
+	// Zero means use the default of 80 columns.
+	GuideWidth int
+	Color      bool
 }
 type options struct {
-	implementation, platform, option, format, color string
-	width                                           int
-	noProbe, help, version, details                 bool
-	args                                            []string
+	implementation, platform, option, format, color, section string
+	width                                                    int
+	widthSet                                                 bool
+	noProbe, help, version, details, noPager                 bool
+	args                                                     []string
 }
 type response struct {
 	SchemaVersion   int               `json:"schema_version"`
@@ -79,27 +87,51 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 		return failure(out, errOut, op.format, fmt.Errorf("specify a command, list, or search"))
 	}
 	switch op.args[0] {
+	case "learn":
+		return runLearn(c, op, out, errOut, cfg)
+	case "glossary":
+		return runGlossary(c, op, out, errOut, cfg)
 	case "list", "search":
 		if op.implementation != "" || op.platform != "" || op.option != "" || op.details {
 			return failure(out, errOut, op.format, fmt.Errorf("selection flags apply to command lookup only"))
 		}
 		entries := c.Entries
+		var guides []catalog.Guide
+		var terms []catalog.GlossaryTerm
 		if op.args[0] == "search" {
 			if len(op.args) < 2 {
 				return failure(out, errOut, op.format, fmt.Errorf("search needs a query"))
 			}
-			entries = c.Search(strings.Join(op.args[1:], " "))
+			query := strings.Join(op.args[1:], " ")
+			entries = c.Search(query)
+			guides = c.SearchGuides(query)
+			terms = c.SearchTerms(query)
 		} else if len(op.args) > 1 {
 			return failure(out, errOut, op.format, fmt.Errorf("list takes no arguments"))
 		}
 		if op.format == "json" {
-			return encode(out, map[string]any{"schema_version": c.SchemaVersion, "content_revision": c.Revision, "entries": entries})
+			result := map[string]any{"schema_version": c.SchemaVersion, "content_revision": c.Revision, "entries": entries}
+			if op.args[0] == "search" {
+				summaries := []map[string]any{}
+				for _, g := range guides {
+					summaries = append(summaries, guideSummary(g, c.GuideNumber(g.ID)))
+				}
+				result["guides"] = summaries
+				result["terms"] = terms
+			}
+			return encode(out, result)
 		}
 		for _, e := range entries {
 			fmt.Fprintf(out, "%-8s %s\n", e.ID, e.Summary)
 		}
-		if len(entries) == 0 {
-			fmt.Fprintln(out, "No commands matched. Try: explain list")
+		for _, g := range guides {
+			fmt.Fprintf(out, "guide    explain learn %s  (%s)\n", g.ID, g.Title)
+		}
+		for _, t := range terms {
+			fmt.Fprintf(out, "word     explain glossary %q  (%s)\n", t.Term, t.FirstSentence())
+		}
+		if len(entries)+len(guides)+len(terms) == 0 {
+			fmt.Fprintln(out, "Nothing matched. Try: explain list, explain learn, or explain glossary")
 		}
 		return 0
 	}
@@ -185,6 +217,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 			fmt.Fprintln(out, catalog.Plain(s.Markdown, op.width))
 		}
 	}
+	learnMore(c, e, out, color)
 	heading("References")
 	for _, ref := range e.References {
 		fmt.Fprintln(out, ref)
@@ -246,6 +279,9 @@ func parse(args []string, width int) (options, error) {
 		case "--details":
 			o.details = true
 			continue
+		case "--no-pager":
+			o.noPager = true
+			continue
 		}
 		key, val, has := strings.Cut(a, "=")
 		if !has {
@@ -262,6 +298,8 @@ func parse(args []string, width int) (options, error) {
 			o.platform = val
 		case "--option":
 			o.option = val
+		case "--section":
+			o.section = val
 		case "--format":
 			o.format = val
 		case "--color":
@@ -271,7 +309,7 @@ func parse(args []string, width int) (options, error) {
 			if err != nil || n < 0 || n > 1000 {
 				return o, fmt.Errorf("width must be 0–1000")
 			}
-			o.width = n
+			o.width, o.widthSet = n, true
 		default:
 			return o, fmt.Errorf("unknown flag %s", key)
 		}

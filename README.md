@@ -66,7 +66,12 @@ explain --platform linux grep
 explain --format json grep
 explain search logs
 explain list
+explain learn
+explain learn big-picture
+explain glossary kernel
 ```
+
+`explain learn` lists the beginner guides, and `explain learn GUIDE` (a name or a number) reads one, optionally a single `--section`. `explain glossary` lists short definitions of words beginners meet, and `explain glossary WORD` reads one. `explain search` also finds guides and glossary words. On a terminal, a guide or the glossary opens in your pager (`$PAGER`, or `less`); use `--no-pager` to print it directly.
 
 `explain` provides information; it does not run the example command or install the command being explained. Full pipeline/script explanation is a possible later feature, not part of the first release.
 

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"runtime"
 	"strconv"
@@ -21,9 +22,17 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	width := catalog.DescriptionWidth
+	width, guideWidth := catalog.DescriptionWidth, 0
 	if n, err := strconv.Atoi(os.Getenv("COLUMNS")); err == nil && n >= 20 && n <= 1000 {
-		width = n
+		width, guideWidth = n, n
 	}
-	os.Exit(cli.Run(context.Background(), c, os.Args[1:], os.Stdout, os.Stderr, cli.Config{Version: version, Width: width, Color: cli.TerminalColor(os.Stdout), Detector: detect.Detector{OS: runtime.GOOS, Path: os.Getenv("PATH")}}))
+	// Guides and the glossary are long; show them through the pager on a terminal.
+	var out io.Writer = os.Stdout
+	finish := func() {}
+	if cli.WantsPager(os.Args[1:]) {
+		out, finish = cli.StartPager(os.Stdout, false)
+	}
+	status := cli.Run(context.Background(), c, os.Args[1:], out, os.Stderr, cli.Config{Version: version, Width: width, GuideWidth: guideWidth, Color: cli.TerminalColor(os.Stdout), Detector: detect.Detector{OS: runtime.GOOS, Path: os.Getenv("PATH")}})
+	finish()
+	os.Exit(status)
 }
