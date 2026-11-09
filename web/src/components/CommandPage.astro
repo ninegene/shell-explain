@@ -37,6 +37,10 @@ const variantURL = (id: string) =>
       {entry.data.title}
     </h1>
     <p class="lede">{entry.data.summary}</p>
+    <p class="updated">
+      Last updated{' '}
+      <time datetime={entry.data.updated}>{entry.data.updated}</time>
+    </p>
     <div class="tags">
       {entry.data.tags.map((t) => (
         <a href={`/tags/${t}/`}>#{t}</a>

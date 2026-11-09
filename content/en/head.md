@@ -6,6 +6,7 @@ summary: Print the first lines or bytes of files.
 aliases: [ghead]
 tags: [text, files, logs]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/head-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=head&sektion=1

@@ -6,6 +6,7 @@ summary: Report or omit repeated adjacent lines.
 aliases: [guniq]
 tags: [text, files, counting]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/uniq-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=uniq&sektion=1

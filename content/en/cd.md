@@ -6,6 +6,7 @@ summary: Change the current directory of your interactive shell.
 aliases: []
 tags: [shell, navigation, directories]
 implementations: [bash]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/bash/manual/html_node/Bourne-Shell-Builtins.html
 ---

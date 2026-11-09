@@ -6,6 +6,7 @@ summary: Print files, or standard input, one after another.
 aliases: [gcat]
 tags: [text, files, pipes]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/cat-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=cat&sektion=1

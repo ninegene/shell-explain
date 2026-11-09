@@ -6,6 +6,7 @@ summary: Remove files and directories.
 aliases: [grm]
 tags: [files, directories]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/rm-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=rm&sektion=1

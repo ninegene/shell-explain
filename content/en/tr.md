@@ -6,6 +6,7 @@ summary: Translate, squeeze, or delete characters from standard input.
 aliases: [gtr]
 tags: [text, pipes, characters]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/tr-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=tr&sektion=1

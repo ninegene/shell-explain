@@ -6,6 +6,7 @@ summary: Create, list and extract archive files.
 aliases: [gtar]
 tags: [files, compression, archive]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/tar/manual/tar.html
   - https://man.freebsd.org/cgi/man.cgi?query=bsdtar&sektion=1

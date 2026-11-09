@@ -7,7 +7,7 @@ import (
 
 func fixture(id, aliases, impls, extra string) []byte {
 	var b strings.Builder
-	b.WriteString("---\nschema_version: 1\nid: " + id + "\ntitle: " + id + "\nsummary: Fixture entry.\naliases: " + aliases + "\ntags: [test]\nimplementations: " + impls + "\nreferences:\n  - https://example.org/manual\n---\n")
+	b.WriteString("---\nschema_version: 1\nid: " + id + "\ntitle: " + id + "\nsummary: Fixture entry.\naliases: " + aliases + "\ntags: [test]\nimplementations: " + impls + "\nupdated: 2026-11-08\nreferences:\n  - https://example.org/manual\n---\n")
 	for _, s := range []string{"Overview", "Background", "Examples", "Common mistakes", "Portability"} {
 		b.WriteString("\n### " + s + "\n\nText.\n")
 	}

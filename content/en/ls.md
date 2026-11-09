@@ -6,6 +6,7 @@ summary: List files and directories.
 aliases: [gls]
 tags: [files, directories]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/ls-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=ls&sektion=1

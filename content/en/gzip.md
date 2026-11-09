@@ -6,6 +6,7 @@ summary: Compress and decompress files with gzip.
 aliases: [ggzip]
 tags: [files, compression]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/gzip/manual/gzip.html
   - https://man.freebsd.org/cgi/man.cgi?query=gzip&sektion=1

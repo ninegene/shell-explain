@@ -6,6 +6,7 @@ summary: Transform text one line at a time using editing rules.
 aliases: [gsed]
 tags: [text, replace, files]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/sed/manual/
   - https://man.freebsd.org/cgi/man.cgi?query=sed&sektion=1

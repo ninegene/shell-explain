@@ -6,6 +6,7 @@ summary: Create directories.
 aliases: [gmkdir]
 tags: [files, directories]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/mkdir-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=mkdir&sektion=1
