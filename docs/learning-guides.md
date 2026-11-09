@@ -156,7 +156,7 @@ Style rules, checked in review:
 
 Guides are a second kind of authored Markdown, separate from command pages, loaded by the same Go parser.
 
-- **Location:** `content/en/guides/<id>.md`, one file per guide, plus `content/en/glossary.md`. The existing loader reads `content/en/*.md` for commands, so guides never collide with command IDs.
+- **Location:** `content/en/guides/<id>.md`, one file per guide, and `content/en/glossary/terms.md` for the glossary. The command loader globs only `content/en/*.md` (`fs.Glob` does not descend into subdirectories), so neither the guides nor the glossary can be mistaken for a command page or claim a command ID. Nothing may be placed directly in `content/en/` except command pages. Each new kind gets its own loader that globs its own directory: `en/guides/*.md` for guides and `en/glossary/*.md` for the glossary.
 - **Front matter** (all required unless noted): `schema_version`, `id` (matches the filename), `title` (the catchy title), `subtitle` (the plain topic), `summary`, `series`, `order` (position in the series), `level` (`beginner` for now), `reading_minutes`, `updated` (the same `YYYY-MM-DD` rule as command pages), `related_commands` (each must be an existing command page), `related_guides` (each must exist), `references` (absolute HTTP(S) links), optional `tags`.
 - **Body:** level-two headings are the nine outline sections above, in order; level-three headings are allowed inside them. Required sections are checked by name, like the command pages' required sections.
 - **Markdown subset additions.** Guides need two things the command format deliberately rejects today:
