@@ -49,6 +49,10 @@ Work in reviewed batches, beginning with everyday commands and the existing grep
 
 Stage 4 is complete when every required command in the checklist has reviewed common use cases/options and applicable implementation coverage, lookup aliases and non-command topics have explicit dispositions, both consumers expose the same content, and content/Go/web checks pass with no known blocking accuracy or rendering regressions. Completion of this collection is the stage's exit gate; the deferred usability tasks are not extra gates. Mark the stage complete only after the inventory and exit review are checked off.
 
+### Proposed addition to stage 4: learning guides
+
+The command pages assume readers already know what a terminal, shell, process or pipe is, and why one command has several versions. [Learning guides](learning-guides.md) propose a beginner series (operating systems, the terminal and shell, input and output, and the history behind GNU, BSD, macOS, Linux and BusyBox) with diagrams, tables and runnable examples, shown on the home page and through `explain learn` in the CLI. It is a design awaiting review; nothing is implemented, and it must be settled before the stage 5 public release.
+
 ## Stage 5: license, open contributions, distribute, and publish
 
 Begin only after stage 4's command collection and exit review are complete. Keep public launch as a deliberate release step:
