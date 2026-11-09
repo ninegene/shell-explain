@@ -153,8 +153,12 @@ for (const entry of catalog.entries) {
           copy.querySelectorAll('button').forEach((b) => b.remove());
           return copy.innerHTML;
         });
+        // Go escapes a double quote as &quot;; innerHTML serializes it raw. Same HTML.
         expect(actual.replace(/\s+/g, ' ').trim()).toBe(
-          section.html.replace(/\s+/g, ' ').trim(),
+          section.html
+            .replace(/&quot;/g, '"')
+            .replace(/\s+/g, ' ')
+            .trim(),
         );
       }
       expect(response.content_revision).toBe(catalog.revision);

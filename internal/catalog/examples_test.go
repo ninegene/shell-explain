@@ -20,7 +20,7 @@ func TestAuthoredExamples(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	implementations := []string{"bash", "apple", "gnu", "busybox"}
+	implementations := []string{"bash", "apple", "gnu", "busybox", "mawk"}
 	for _, impl := range implementations {
 		for _, entry := range c.Entries {
 			selected, err := entry.Select(impl, "")
@@ -83,6 +83,10 @@ func exampleTool(d detect.Detector, command, implementation string) string {
 	candidates := []string{command}
 	if implementation == "gnu" {
 		candidates = []string{"g" + command, command}
+	}
+	if implementation == "mawk" {
+		// mawk is installed as mawk; a plain awk may be any implementation.
+		candidates = []string{"mawk", command}
 	}
 	if implementation == "apple" {
 		if d.OS != "darwin" {

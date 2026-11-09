@@ -31,7 +31,7 @@ func check() error {
 	if err != nil {
 		return err
 	}
-	for _, impl := range []string{"busybox", "gnu"} {
+	for _, impl := range []string{"busybox", "gnu", "mawk"} {
 		tools, err := os.MkdirTemp("", "tools-")
 		if err != nil {
 			return err
@@ -39,8 +39,8 @@ func check() error {
 		defer os.RemoveAll(tools)
 		for _, name := range applicable(c, impl) {
 			target := "/bin/busybox"
-			if impl == "gnu" {
-				target, err = exec.LookPath(name)
+			if impl != "busybox" {
+				target, err = exec.LookPath(provider(impl, name))
 				if err != nil {
 					return err
 				}
@@ -135,6 +135,18 @@ func checkAwk() error {
 		fmt.Printf("Linux awk detection: %s via %s -> %s (version %s); banner: %s\n", tt.command, tt.provider, tt.impl, s.Version, first)
 	}
 	return nil
+}
+
+// provider names the guest executable that implements name for impl. The tool
+// is linked under name, so awk can be gawk or mawk, whatever plain awk is.
+func provider(impl, name string) string {
+	switch {
+	case impl == "mawk":
+		return "mawk"
+	case impl == "gnu" && name == "awk":
+		return "gawk"
+	}
+	return name
 }
 
 // applicable lists the entries that declare impl and are not shell builtins.

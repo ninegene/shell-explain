@@ -27,7 +27,7 @@ var textFiles = map[string]string{
 	"nums.txt":  "10\n9\n2\n33\n1\n",
 	"data.csv":  "name,qty\napple,3\nbanana,12\ncherry,7\n",
 }
-var textEntries = []string{"cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr"}
+var textEntries = []string{"cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "awk"}
 
 // Setup creates the base fixture, plus any extra files the entry's examples need.
 func Setup(dir, entry string) error {
@@ -229,6 +229,19 @@ var expected = map[string]expectation{
 	"stat -f '%z' notes.txt":                        {output: "34\n"},
 	"stat -f '%Lp %N' notes.txt":                    {output: "644 notes.txt\n"},
 	"stat -f '%HT' logs":                            {output: "Directory\n"},
+	// awk: the shared examples run on macOS awk, gawk, mawk and BusyBox awk. Array
+	// order is unspecified, so that example is compared as a set of lines.
+	"awk '{print $1}' notes.txt":                                             {output: "old\nsecond\nthird\nfourth\nfifth\n"},
+	"awk -F, '{print $1}' data.csv":                                          {output: "name\napple\nbanana\ncherry\n"},
+	"awk -F, -v min=5 'NR > 1 && $2 > min {print $1}' data.csv":              {output: "banana\ncherry\n"},
+	"awk -F, 'NR > 1 {sum += $2} END {print sum}' data.csv":                  {output: "22\n"},
+	"awk '/ERROR/ {print $2}' app.log":                                       {output: "broken\n"},
+	"awk '{print NF}' notes.txt":                                             {output: "2\n1\n1\n1\n1\n"},
+	"awk -F, 'NR > 1 {printf \"%-8s %3d\\n\", $1, $2}' data.csv":             {output: "apple      3\nbanana    12\ncherry     7\n"},
+	"awk '{count[$1]++} END {for (w in count) print w, count[w]}' fruit.txt": {output: "apple 3\nbanana 2\ncherry 1\n", unordered: true},
+	"awk 'BEGIN {PROCINFO[\"sorted_in\"] = \"@ind_str_asc\"} {count[$1]++} END {for (w in count) print w, count[w]}' fruit.txt": {output: "apple 3\nbanana 2\ncherry 1\n"},
+	"echo 'a1b22' | awk '{print gensub(/[0-9]+/, \"N\", \"g\")}'":                                                               {output: "aNbN\n"},
+	"awk 'BEGIN {print strftime(\"%Y-%m-%d\", 86400, 1)}'":                                                                      {output: "1970-01-02\n"},
 	// cd: only success is checked; the printed directory is a temporary path.
 	"cd projects":        {},
 	"cd ..":              {},
