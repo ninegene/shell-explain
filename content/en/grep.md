@@ -18,7 +18,7 @@ Use `grep` to select lines from a file or from another command's output. The pat
 For the full GNU reference, read the [GNU grep manual](https://www.gnu.org/software/grep/manual/).
 
 ### Background
-The name comes from the `ed` editor command `g/re/p`: globally search for a regular expression and print the matching lines. Ken Thompson wrote the original `grep` for early Unix, and it became a standard tool. Today the name covers several separate programs that share that interface but not their source code: GNU grep, the BSD-derived grep that macOS ships, and a small reimplementation inside BusyBox. They agree on the common options below and differ on extensions such as `--include`, regular-expression engines, and recursive-search details. That is why the sections that follow are split by implementation.
+The name comes from the `ed` editor command `g/re/p`: globally search for a regular expression and print the matching lines. Ken Thompson wrote the original `grep` for early Unix, and it became a standard tool. Today the name covers several separate programs that share that interface but not their source code: GNU grep, the BSD-derived grep that macOS ships, and a small reimplementation inside BusyBox. They agree on the common options below and differ on extensions such as the Perl-style `-P` patterns, regular-expression engines, and recursive-search details. That is why the sections that follow are split by implementation.
 
 ### Examples
 Find lines containing ERROR in a log:
@@ -130,7 +130,7 @@ The examples in Common use options that GNU grep, macOS grep, and BusyBox grep a
 
 ## GNU
 ### About GNU grep
-GNU grep is the default `grep` on most Linux distributions, and Homebrew installs it on macOS as `ggrep`, or as `grep` when its `gnubin` directory comes first on PATH. It is part of the GNU Project and has the largest feature set of the three, including `--include` and the `-P` Perl-style patterns when built with PCRE. Its `--version` output names GNU grep.
+GNU grep is the default `grep` on most Linux distributions, and Homebrew installs it on macOS as `ggrep`, or as `grep` when its `gnubin` directory comes first on PATH. It is part of the GNU Project and has the largest feature set of the three, including the `-P` Perl-style patterns when built with PCRE. Its `--version` output names GNU grep.
 
 ### GNU examples
 Search a directory recursively and print matching line numbers:
@@ -146,7 +146,7 @@ GNU's long spelling for `-n`. Use `-n` for a shorter portable example.
 
 ## Apple
 ### About macOS grep
-The `grep` in `/usr/bin` on macOS is Apple's build of the BSD-derived grep. It describes itself as BSD grep while accepting many GNU options, so its banner can look GNU-compatible even though it is not GNU grep. It lacks some GNU-only features, and a package-manager GNU grep earlier on PATH changes which one you run.
+The `grep` in `/usr/bin` on macOS is Apple's build of the BSD-derived grep. It describes itself as BSD grep while accepting many GNU options, so its banner can look GNU-compatible even though it is not GNU grep. For example, macOS grep 2.6.0-FreeBSD rejects `-P` as an invalid option. A package-manager GNU grep earlier on PATH changes which one you run.
 
 ### Apple notes
 The macOS system utility is usually `/usr/bin/grep`. GNU grep installed by a package manager may be named `ggrep` or may come first on PATH. Use the detected executable path to distinguish them; the operating system alone is not enough.
