@@ -1,0 +1,143 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { commands } from '../lib/catalog';
+import {
+  type Guide,
+  findGuide,
+  glossaryURL,
+  guideNumber,
+  guideURL,
+  guides,
+  guidesIn,
+  neighbors,
+  seriesOf,
+} from '../lib/guides';
+interface Props {
+  guide: Guide;
+}
+const { guide } = Astro.props;
+const info = seriesOf(guide);
+const number = guideNumber(guide.id);
+const { prev, next } = neighbors(guide.id);
+const entries = await commands();
+// Related commands may be named by an alias; link to the canonical page.
+const related = guide.related_commands.flatMap((name) => {
+  const entry = entries.find(
+    (e) => e.id === name || (e.data.aliases ?? []).includes(name),
+  );
+  return entry ? [entry] : [];
+});
+const relatedGuides = guide.related_guides.flatMap((id) => {
+  const g = findGuide(id);
+  return g ? [g] : [];
+});
+---
+
+<Layout title={guide.title} description={guide.summary}>
+  <div class="page-intro compact guide-intro">
+    <a class="back" href="/learn/">
+      ← All guides
+    </a>
+    <div class="eyebrow">
+      {info.title.toUpperCase()} · GUIDE {number} OF {guides.length}
+    </div>
+    <h1>{guide.title}</h1>
+    <p class="lede">{guide.subtitle}</p>
+    <p class="updated">
+      About {guide.reading_minutes} minutes · Last updated{' '}
+      <time datetime={guide.updated}>{guide.updated}</time>
+    </p>
+  </div>
+  <div class="reference-layout">
+    <aside class="reference-sidebar">
+      <h2>In this series</h2>
+      <nav class="variant-nav" aria-label="Guides in this series">
+        {guidesIn(guide.series).map((g) => (
+          <a
+            href={guideURL(g.id)}
+            aria-current={g.id === guide.id ? 'page' : undefined}
+          >
+            {g.title}
+            <span aria-hidden="true">{g.id === guide.id ? '●' : '↗'}</span>
+          </a>
+        ))}
+      </nav>
+      <h2 class="sidebar-gap">On this page</h2>
+      <nav class="toc" aria-label="On this page">
+        {guide.sections.map((s) => (
+          <a href={`#${s.id}`}>{s.title}</a>
+        ))}
+        <a href="#references">References</a>
+      </nav>
+      <div class="terminal-note">
+        <span class="eyebrow">ALSO OFFLINE</span>
+        <code>explain learn {guide.id}</code>
+        <p>Local development CLI. Public binaries are not released yet.</p>
+      </div>
+    </aside>
+    <article class="reference-body guide-body" data-guide={guide.id}>
+      {guide.sections.map((section) => (
+        <section
+          class="explanation-section"
+          id={section.id}
+          data-section-id={section.id}
+        >
+          <h2>{section.title}</h2>
+          <div class="prose" set:html={section.html} />
+        </section>
+      ))}
+      {(related.length > 0 || relatedGuides.length > 0) && (
+        <section class="explanation-section related" id="related">
+          <h2>Keep exploring</h2>
+          <ul class="reference-links related-links">
+            {related.map((e) => (
+              <li>
+                <a href={`/commands/${e.id}/`}>
+                  <code>explain {e.id}</code>
+                </a>{' '}
+                {e.data.summary}
+              </li>
+            ))}
+            {relatedGuides.map((g) => (
+              <li>
+                <a href={guideURL(g.id)}>{g.title}</a> {g.subtitle}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      <nav class="guide-nav" aria-label="Previous and next guide">
+        {prev && (
+          <a class="guide-nav-prev" rel="prev" href={guideURL(prev.id)}>
+            <small>← Previous</small>
+            {prev.title}
+          </a>
+        )}
+        {next && (
+          <a class="guide-nav-next" rel="next" href={guideURL(next.id)}>
+            <small>Next →</small>
+            {next.title}
+          </a>
+        )}
+      </nav>
+      <section id="references" class="explanation-section">
+        <h2>References</h2>
+        <p>
+          Original explanations, with sources for further reading. Words you do
+          not know are in the <a href={glossaryURL()}>glossary</a>.
+        </p>
+        <ul class="reference-links">
+          {guide.references.map((ref) => (
+            <li>
+              <a href={ref}>{ref}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <p class="copy-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+</Layout>
+<script>
+  import '../scripts/copy-buttons';
+</script>

@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import { labels } from '../lib/catalog';
+import { findGuide, guideURL } from '../lib/guides';
 interface Props {
   entry: CollectionEntry<'commands'>;
   implementation?: string;
@@ -17,6 +18,10 @@ const sections = selected.filter(
   (s) => s.option_text === undefined || s.id === options[0]?.id,
 );
 const variants = ['common', ...entry.data.implementations];
+const learnMore = (entry.data.related_guides ?? []).flatMap((id) => {
+  const guide = findGuide(id);
+  return guide ? [guide] : [];
+});
 const variantURL = (id: string) =>
   id === 'common' ? `/commands/${entry.id}/` : `/commands/${entry.id}/${id}/`;
 ---
@@ -74,6 +79,16 @@ const variantURL = (id: string) =>
         ))}
         <a href="#references">References</a>
       </nav>
+      {learnMore.length > 0 && (
+        <>
+          <h2 class="sidebar-gap">Learn more</h2>
+          <nav class="toc" aria-label="Related guides">
+            {learnMore.map((g) => (
+              <a href={guideURL(g.id)}>{g.title}</a>
+            ))}
+          </nav>
+        </>
+      )}
       <div class="terminal-note">
         <span class="eyebrow">ALSO OFFLINE</span>
         <code>
@@ -133,31 +148,5 @@ const variantURL = (id: string) =>
   </div>
 </Layout>
 <script>
-  for (const pre of document.querySelectorAll<HTMLPreElement>('.prose pre')) {
-    const code = pre.querySelector('code');
-    if (!code) continue;
-    const button = document.createElement('button');
-    button.className = 'copy-button';
-    button.type = 'button';
-    button.textContent = 'Copy';
-    const options = pre.dataset.copyLabel === 'Copy options';
-    button.setAttribute(
-      'aria-label',
-      options ? 'Copy options' : 'Copy code example',
-    );
-    button.addEventListener('click', async () => {
-      const status = document.querySelector('.copy-status')!;
-      try {
-        await navigator.clipboard.writeText(code.textContent ?? '');
-        button.textContent = 'Copied';
-        status.textContent = options
-          ? 'Options copied.'
-          : 'Example copied. Review it before running.';
-      } catch {
-        status.textContent =
-          'Clipboard unavailable. Select and copy the example manually.';
-      }
-    });
-    pre.append(button);
-  }
+  import '../scripts/copy-buttons';
 </script>

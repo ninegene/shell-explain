@@ -1,0 +1,67 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { findGuide, glossary, guideURL } from '../../../lib/guides';
+---
+
+<Layout title={glossary.title} description={glossary.summary}>
+  <div class="page-intro compact guide-intro">
+    <a class="back" href="/learn/">
+      ← All guides
+    </a>
+    <div class="eyebrow">THE GLOSSARY</div>
+    <h1>{glossary.title}</h1>
+    <p class="lede">{glossary.summary}</p>
+    <p class="updated">
+      Last updated <time datetime={glossary.updated}>{glossary.updated}</time>
+    </p>
+  </div>
+  <div class="reference-layout">
+    <aside class="reference-sidebar">
+      <h2>Words</h2>
+      <nav class="toc" aria-label="Words on this page">
+        {glossary.terms.map((t) => (
+          <a href={`#${t.id}`}>{t.term}</a>
+        ))}
+      </nav>
+      <div class="terminal-note">
+        <span class="eyebrow">ALSO OFFLINE</span>
+        <code>explain glossary WORD</code>
+        <p>Local development CLI. Public binaries are not released yet.</p>
+      </div>
+    </aside>
+    <article class="reference-body guide-body" data-glossary>
+      {glossary.terms.map((term) => (
+        <section
+          class="explanation-section term"
+          id={term.id}
+          data-term-id={term.id}
+        >
+          <h2>
+            <a class="term-anchor" href={`#${term.id}`}>
+              {term.term}
+            </a>
+          </h2>
+          <div class="prose" set:html={term.html} />
+          {term.guides.length > 0 && (
+            <p class="term-more">
+              Learn more:{' '}
+              {term.guides.map((id, i) => {
+                const g = findGuide(id);
+                return g ? (
+                  <>
+                    {i > 0 && ', '}
+                    <a href={guideURL(g.id)}>{g.title}</a>
+                  </>
+                ) : null;
+              })}
+            </p>
+          )}
+        </section>
+      ))}
+      <p class="copy-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+</Layout>
+<script>
+  import '../../../scripts/copy-buttons';
+</script>

@@ -54,6 +54,8 @@ npm ci --prefix web
 just web-dev
 ```
 
+The site has the command reference at `/commands/`, the beginner guides at `/learn/` (a "Start here" section on the home page links to them), and the glossary at `/learn/glossary/`.
+
 The currently implemented interface supports these forms once the binary is on PATH:
 
 ```console

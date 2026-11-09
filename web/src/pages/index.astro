@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Catalog from '../components/Catalog.astro';
 import { commands } from '../lib/catalog';
+import { activeSeries, glossaryURL, guideURL, guidesIn } from '../lib/guides';
 const entries = await commands();
 const featured = entries.find((entry) => entry.id === 'grep') ?? entries[0];
 const examples = featured.data.sections.find(
@@ -58,6 +59,43 @@ const explanation =
       </div>
     </div>
   </section>
+  {activeSeries().length > 0 && (
+    <section id="start-here" class="catalog-section start-here">
+      <div class="eyebrow">NEW TO THE TERMINAL? START HERE</div>
+      <h2 class="start-heading">Learn the ideas behind the commands.</h2>
+      <p class="lede">
+        Plain-language guides with pictures and tables: what a terminal and a
+        shell are, how a command becomes a result, and why one tool has many
+        versions.
+      </p>
+      <ul class="series-cards">
+        {activeSeries().map((s) => {
+          const first = guidesIn(s.id)[0];
+          return (
+            <li class="command-card series-card">
+              <h3>
+                <a href={guideURL(first.id)}>{s.title}</a>
+              </h3>
+              <p>{s.promise}</p>
+              <small>
+                {guidesIn(s.id).length}{' '}
+                {guidesIn(s.id).length === 1 ? 'guide' : 'guides'}, starting
+                with {first.title}
+              </small>
+            </li>
+          );
+        })}
+      </ul>
+      <p class="start-links">
+        <a class="text-link" href="/learn/">
+          Browse all guides <span aria-hidden="true">→</span>
+        </a>
+        <a class="text-link" href={glossaryURL()}>
+          Words you will see <span aria-hidden="true">→</span>
+        </a>
+      </p>
+    </section>
+  )}
   <section id="reference" class="catalog-section">
     <div class="eyebrow">START WITH A USE CASE</div>
     <Catalog />
