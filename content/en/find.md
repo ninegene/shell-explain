@@ -6,6 +6,7 @@ summary: Locate files and directories using explicit matching rules.
 aliases: [gfind]
 tags: [files, search, directories]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/findutils/manual/
   - https://man.freebsd.org/cgi/man.cgi?query=find&sektion=1

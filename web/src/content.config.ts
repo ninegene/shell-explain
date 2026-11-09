@@ -24,6 +24,7 @@ const commands = defineCollection({
     aliases: z.array(z.string()).nullable(),
     tags: z.array(z.string()),
     implementations: z.array(z.string()),
+    updated: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     references: z.array(z.url()),
     version_policy: z.string(),
     sections: z.array(section),

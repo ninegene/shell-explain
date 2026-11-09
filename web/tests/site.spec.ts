@@ -180,6 +180,15 @@ for (const entry of catalog.entries) {
   }
 }
 
+test('every command page shows its last updated date', async ({ page }) => {
+  for (const entry of catalog.entries) {
+    await page.goto(`/commands/${entry.id}/`);
+    const updated = page.locator('.page-intro time');
+    await expect(updated).toHaveText(entry.updated);
+    await expect(updated).toHaveAttribute('datetime', entry.updated);
+  }
+});
+
 test('copy preserves exact code and implementation links are shareable', async ({
   page,
   context,

@@ -95,12 +95,12 @@ func TestExamplesDefaultAndDetails(t *testing.T) {
 				if status != 0 || stderr != "" {
 					t.Fatalf("details: status=%d stderr=%s", status, stderr)
 				}
-				for _, omitted := range []string{"\nOverview\n", "\nCommon mistakes\n", "\nPortability\n", "\nOption: ", "\nReferences\n", "\nSelection:"} {
+				for _, omitted := range []string{"\nOverview\n", "\nCommon mistakes\n", "\nPortability\n", "\nOption: ", "\nReferences\n", "\nSelection:", "Last updated:"} {
 					if strings.Contains(examples, omitted) {
 						t.Errorf("default output contains detail %q", omitted)
 					}
 				}
-				for _, required := range []string{"Overview\n", "Common mistakes\n", "Portability\n", "References\n", "Selection:"} {
+				for _, required := range []string{"Overview\n", "Common mistakes\n", "Portability\n", "References\n", "Selection:", "Last updated: 20"} {
 					if !strings.Contains(details, required) {
 						t.Errorf("full output missing %q", required)
 					}

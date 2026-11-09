@@ -6,6 +6,7 @@ summary: Change file and directory permissions.
 aliases: [gchmod]
 tags: [files, permissions]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=chmod&sektion=1

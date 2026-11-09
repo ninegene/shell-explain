@@ -6,6 +6,7 @@ summary: Show file size, permissions, type and timestamps.
 aliases: [gstat]
 tags: [files, system]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/stat-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=stat&sektion=1

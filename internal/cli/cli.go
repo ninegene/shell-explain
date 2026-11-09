@@ -162,6 +162,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 		fmt.Fprintln(out, "Version:", sel.Version)
 	}
 	fmt.Fprintln(out, "Selection:", sel.Evidence)
+	fmt.Fprintln(out, "Last updated:", e.Updated)
 	fmt.Fprintln(out, catalog.Plain(e.VersionPolicy, op.width))
 	for _, warning := range sel.Warnings {
 		fmt.Fprint(out, catalog.Plain("Note: "+warning, op.width))

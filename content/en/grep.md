@@ -6,6 +6,7 @@ summary: Find lines of text that match a pattern.
 aliases: [ggrep]
 tags: [text, search, logs]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/grep/manual/
   - https://man.freebsd.org/cgi/man.cgi?query=grep&sektion=1

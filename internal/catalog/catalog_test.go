@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 	"testing/fstest"
+	"time"
 
 	"github.com/ninegene/shell-explain/content"
 )
@@ -22,6 +23,9 @@ func TestSharedCorpus(t *testing.T) {
 		t.Fatal("non-deterministic or incomplete corpus")
 	}
 	for _, e := range c.Entries {
+		if _, err := time.Parse("2006-01-02", e.Updated); err != nil {
+			t.Fatalf("%s has no valid updated date: %q", e.ID, e.Updated)
+		}
 		for _, v := range append([]string{"common"}, e.Implementations...) {
 			sections, err := e.Select(v, "")
 			if err != nil {
@@ -89,6 +93,11 @@ func TestInvalidContent(t *testing.T) {
 		"two About sections":    valid + "\n### About one\nText.\n\n### About two\nText.\n",
 		"missing Background":    strings.Replace(valid, "### Background", "### History", 1),
 		"missing About":         strings.Replace(valid, "### About GNU grep", "### Notes on GNU grep", 1),
+		"missing updated":       strings.Replace(valid, "updated: 2026-11-08\n", "", 1),
+		"updated wrong order":   strings.Replace(valid, "updated: 2026-11-08", "updated: 08-11-2026", 1),
+		"updated not a date":    strings.Replace(valid, "updated: 2026-11-08", "updated: yesterday", 1),
+		"updated impossible":    strings.Replace(valid, "updated: 2026-11-08", "updated: 2026-13-45", 1),
+		"updated unpadded":      strings.Replace(valid, "updated: 2026-11-08", "updated: 2026-1-5", 1),
 	}
 	for name, s := range tests {
 		t.Run(name, func(t *testing.T) {

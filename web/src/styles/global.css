@@ -157,6 +157,11 @@ h1 em {
   color: var(--muted);
   max-width: 640px;
 }
+.updated {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
 .text-link {
   display: inline-flex;
   gap: 30px;

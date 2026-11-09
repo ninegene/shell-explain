@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"time"
 	"unicode"
 	"unicode/utf8"
 
@@ -90,7 +91,10 @@ type Metadata struct {
 	Aliases         []string `yaml:"aliases" json:"aliases"`
 	Tags            []string `yaml:"tags" json:"tags"`
 	Implementations []string `yaml:"implementations" json:"implementations"`
-	References      []string `yaml:"references" json:"references"`
+	// Updated is the date (YYYY-MM-DD) the page's content was last reviewed or
+	// changed. Authors set it by hand when they edit a page's claims.
+	Updated    string   `yaml:"updated" json:"updated"`
+	References []string `yaml:"references" json:"references"`
 }
 
 type Section struct {
@@ -392,6 +396,9 @@ func validateMetadata(m Metadata) error {
 				return fmt.Errorf("metadata must not contain control characters")
 			}
 		}
+	}
+	if _, err := time.Parse("2006-01-02", m.Updated); err != nil {
+		return fmt.Errorf("updated must be a calendar date written YYYY-MM-DD, got %q", m.Updated)
 	}
 	if len(m.Tags) == 0 || len(m.Implementations) == 0 || len(m.References) == 0 {
 		return fmt.Errorf("tags, implementations and references are required")

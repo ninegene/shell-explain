@@ -6,6 +6,7 @@ summary: Print the last lines or bytes of files, or follow a growing file.
 aliases: [gtail]
 tags: [text, files, logs]
 implementations: [gnu, apple, busybox]
+updated: 2026-11-08
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/tail-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=tail&sektion=1

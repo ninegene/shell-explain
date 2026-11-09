@@ -19,6 +19,7 @@ summary: Evaluate a condition.
 aliases: ['[']
 tags: [shell]
 implementations: [upstream]
+updated: 2026-11-08
 references:
   - https://example.org/test
 ---
