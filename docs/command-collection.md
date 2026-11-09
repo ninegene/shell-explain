@@ -58,6 +58,7 @@ Reviewed and executed on 2026-11-08 (macOS Homebrew coreutils 9.11 was exercised
 | `tar` | 6 common, 1 GNU | system bsdtar 3.5.3, executed | GNU tar, executed | BusyBox 1.37.0 and Alpine GNU tar, executed | n/a |
 | `stat` | 2 common; 3 GNU, 3 Apple, 2 BusyBox | system `/usr/bin/stat`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `date` | 5 common; 2 GNU, 2 Apple, 1 BusyBox | system `/bin/date`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `awk` | 8 common; 2 GNU, 1 BusyBox | system `/usr/bin/awk` (awk version 20200816), executed | gawk 5.4.0, executed (with Homebrew gawk first on PATH, because a version-manager wrapper script is never probed) | BusyBox 1.37.0, gawk 5.3.2 and mawk 1.3.4, executed | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -202,8 +203,8 @@ Expected output is compared exactly, except directory-traversal order, which is 
 
 ### gawk
 
-- [ ] `awk`
-- [ ] `gawk`
+- [x] `awk` (stage 4 batch 2e, 2026-11-08; see completed-page evidence)
+- [x] `gawk` (an alias of the `awk` page, which has a GNU view for gawk; see completed-page evidence)
 - [ ] `gawkbug`
 
 ### grep
