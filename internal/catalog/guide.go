@@ -572,3 +572,107 @@ func (c *Catalog) checkReferences() error {
 	}
 	return nil
 }
+
+// FindGuide returns a guide by ID, or by its 1-based number in reading order.
+func (c *Catalog) FindGuide(key string) (*Guide, bool) {
+	for i := range c.Guides {
+		if c.Guides[i].ID == key || fmt.Sprint(i+1) == key {
+			return &c.Guides[i], true
+		}
+	}
+	return nil, false
+}
+
+// GuideNumber is the guide's 1-based position in reading order, or 0.
+func (c *Catalog) GuideNumber(id string) int {
+	for i := range c.Guides {
+		if c.Guides[i].ID == id {
+			return i + 1
+		}
+	}
+	return 0
+}
+
+// GuideNeighbors returns the guides before and after id in reading order; a
+// missing neighbor is nil.
+func (c *Catalog) GuideNeighbors(id string) (prev, next *Guide) {
+	n := c.GuideNumber(id)
+	if n == 0 {
+		return nil, nil
+	}
+	if n > 1 {
+		prev = &c.Guides[n-2]
+	}
+	if n < len(c.Guides) {
+		next = &c.Guides[n]
+	}
+	return prev, next
+}
+
+// Section returns the guide section whose title or slug (for example
+// "try-it") matches name, ignoring case.
+func (g *Guide) Section(name string) (Section, bool) {
+	want := termID(name)
+	for _, s := range g.Sections {
+		if strings.EqualFold(s.Title, name) || termID(s.Title) == want {
+			return s, true
+		}
+	}
+	return Section{}, false
+}
+
+// FindTerm returns a glossary term by its words or anchor, ignoring case.
+func (c *Catalog) FindTerm(name string) (*GlossaryTerm, bool) {
+	want := termID(name)
+	for i := range c.Glossary.Terms {
+		t := &c.Glossary.Terms[i]
+		if strings.EqualFold(t.Term, name) || (want != "" && t.ID == want) {
+			return t, true
+		}
+	}
+	return nil, false
+}
+
+// matchesAll reports whether every query word occurs in text, ignoring case.
+func matchesAll(text string, words []string) bool {
+	text = strings.ToLower(text)
+	for _, w := range words {
+		if !strings.Contains(text, w) {
+			return false
+		}
+	}
+	return true
+}
+
+// SearchGuides finds guides whose ID, titles, summary or tags contain every word.
+func (c *Catalog) SearchGuides(query string) []Guide {
+	result := []Guide{}
+	words := strings.Fields(strings.ToLower(query))
+	for _, g := range c.Guides {
+		if matchesAll(g.ID+" "+g.Title+" "+g.Subtitle+" "+g.Summary+" "+strings.Join(g.Tags, " "), words) {
+			result = append(result, g)
+		}
+	}
+	return result
+}
+
+// SearchTerms finds glossary terms whose words or definition contain every word.
+func (c *Catalog) SearchTerms(query string) []GlossaryTerm {
+	result := []GlossaryTerm{}
+	words := strings.Fields(strings.ToLower(query))
+	for _, t := range c.Glossary.Terms {
+		if matchesAll(t.Term+" "+t.ID+" "+t.Markdown, words) {
+			result = append(result, t)
+		}
+	}
+	return result
+}
+
+// FirstSentence returns the first sentence of a term's definition as plain text.
+func (t GlossaryTerm) FirstSentence() string {
+	plain := strings.Join(strings.Fields(Plain(t.Markdown, 1000)), " ")
+	if i := strings.Index(plain, ". "); i >= 0 {
+		return plain[:i+1]
+	}
+	return plain
+}

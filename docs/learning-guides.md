@@ -1,6 +1,6 @@
 # Learning guides: teaching the shell from the ground up
 
-Status: design accepted; the format, parser, export and a sample guide are implemented (see the Guides section of [content-format.md](content-format.md)), and the CLI commands, web pages and remaining content are not yet built. This document records what to build and in what order, so each step can be reviewed before it is built. It extends [stage 4](roadmap.md) and must be finished before the public release in stage 5, because the home page will lead with it.
+Status: design accepted; the format, parser, export and a sample guide are implemented (see the Guides section of [content-format.md](content-format.md)), the `explain learn` and `explain glossary` commands are implemented, and the web pages, home-page section and remaining content are not yet built. This document records what to build and in what order, so each step can be reviewed before it is built. It extends [stage 4](roadmap.md) and must be finished before the public release in stage 5, because the home page will lead with it.
 
 ## Why this exists
 

@@ -242,3 +242,120 @@ func TestExportIncludesGuidesAndGlossary(t *testing.T) {
 		t.Fatalf("shipped corpus: %d guides, %d terms", len(c.Guides), len(c.Glossary.Terms))
 	}
 }
+
+func TestGuideLookupOrderAndSearch(t *testing.T) {
+	grep, err := content.Files.ReadFile("en/grep.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	terms, err := content.Files.ReadFile("en/glossary/terms.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	base := strings.Replace(sampleGuide(t), "related_commands: [ls, cat]", "related_commands: [grep]", 1)
+	guide := func(id, series string, order int, title string) []byte {
+		g := strings.Replace(base, "id: big-picture", "id: "+id, 1)
+		g = strings.Replace(g, "series: how-a-computer-works", "series: "+series, 1)
+		g = strings.Replace(g, "order: 1", "order: "+string(rune('0'+order)), 1)
+		return []byte(strings.Replace(g, "title: From Keypress to Screen", "title: "+title, 1))
+	}
+	// Files are given out of order: reading order is series, then position.
+	c, err := Load(fstest.MapFS{
+		"en/grep.md":                {Data: grep},
+		"en/glossary/terms.md":      {Data: []byte(strings.ReplaceAll(string(terms), "See: big-picture", "See: alpha"))},
+		"en/guides/zeta.md":         {Data: guide("zeta", "terminal-shell-commands", 1, "Zeta Guide")},
+		"en/guides/beta.md":         {Data: guide("beta", "how-a-computer-works", 2, "Beta Guide")},
+		"en/guides/alpha.md":        {Data: guide("alpha", "how-a-computer-works", 1, "Alpha Guide")},
+		"en/glossary/ignored.txt":   {Data: []byte("x")},
+		"en/guides/readme-notes.go": {Data: []byte("x")},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var order []string
+	for _, g := range c.Guides {
+		order = append(order, g.ID)
+	}
+	if strings.Join(order, ",") != "alpha,beta,zeta" {
+		t.Fatalf("reading order %v", order)
+	}
+	for key, want := range map[string]string{"alpha": "alpha", "1": "alpha", "2": "beta", "3": "zeta", "zeta": "zeta"} {
+		if g, ok := c.FindGuide(key); !ok || g.ID != want {
+			t.Errorf("FindGuide(%q) = %v, %v", key, g, ok)
+		}
+	}
+	for _, key := range []string{"0", "4", "nope", ""} {
+		if _, ok := c.FindGuide(key); ok {
+			t.Errorf("FindGuide(%q) found a guide", key)
+		}
+	}
+	prev, next := c.GuideNeighbors("alpha")
+	if prev != nil || next == nil || next.ID != "beta" {
+		t.Errorf("alpha neighbors: %v %v", prev, next)
+	}
+	prev, next = c.GuideNeighbors("beta")
+	if prev == nil || prev.ID != "alpha" || next == nil || next.ID != "zeta" {
+		t.Errorf("beta neighbors: %v %v", prev, next)
+	}
+	prev, next = c.GuideNeighbors("zeta")
+	if prev == nil || prev.ID != "beta" || next != nil {
+		t.Errorf("zeta neighbors: %v %v", prev, next)
+	}
+	if p, n := c.GuideNeighbors("nope"); p != nil || n != nil || c.GuideNumber("nope") != 0 || c.GuideNumber("zeta") != 3 {
+		t.Error("unknown guide has neighbors or a number")
+	}
+	if got := c.SearchGuides("alpha guide"); len(got) != 1 || got[0].ID != "alpha" {
+		t.Errorf("SearchGuides: %v", got)
+	}
+	if got := c.SearchGuides("keypress"); len(got) != 0 {
+		t.Errorf("the titles were replaced, keypress should not match: %v", got)
+	}
+	if got := c.SearchGuides("big picture of what"); len(got) != 3 {
+		t.Errorf("subtitle search: %d", len(got))
+	}
+	if got := c.SearchGuides("nonsense words"); got == nil || len(got) != 0 {
+		t.Errorf("an empty search must be an empty list, not nil: %#v", got)
+	}
+}
+
+func TestGuideSectionAndTermLookup(t *testing.T) {
+	c, err := Load(content.Files)
+	if err != nil {
+		t.Fatal(err)
+	}
+	g, _ := c.FindGuide("big-picture")
+	for _, name := range []string{"Try it", "try it", "TRY IT", "try-it", "The idea in plain words", "the-idea-in-plain-words"} {
+		if _, ok := g.Section(name); !ok {
+			t.Errorf("Section(%q) not found", name)
+		}
+	}
+	for _, name := range []string{"", "nope", "try", "Bonus"} {
+		if _, ok := g.Section(name); ok {
+			t.Errorf("Section(%q) found", name)
+		}
+	}
+	for _, name := range []string{"Kernel", "kernel", "KERNEL", "operating system", "operating-system", "Operating-System"} {
+		if term, ok := c.FindTerm(name); !ok || (term.ID != "kernel" && term.ID != "operating-system") {
+			t.Errorf("FindTerm(%q) = %v %v", name, term, ok)
+		}
+	}
+	for _, name := range []string{"", "!!!", "kern", "operating"} {
+		if _, ok := c.FindTerm(name); ok {
+			t.Errorf("FindTerm(%q) found a term", name)
+		}
+	}
+	if got := c.SearchTerms("kernel"); len(got) < 2 {
+		t.Errorf("SearchTerms(kernel) = %d, want the kernel and operating system terms", len(got))
+	}
+	if got := c.SearchTerms("zzzz"); got == nil || len(got) != 0 {
+		t.Errorf("empty SearchTerms must be an empty list: %#v", got)
+	}
+	term, _ := c.FindTerm("kernel")
+	if got := term.FirstSentence(); got != "The core of the operating system." {
+		t.Errorf("FirstSentence = %q", got)
+	}
+	single := GlossaryTerm{Markdown: "Only one sentence here\n"}
+	if got := single.FirstSentence(); got != "Only one sentence here" {
+		t.Errorf("FirstSentence without a full stop = %q", got)
+	}
+}
