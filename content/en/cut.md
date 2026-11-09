@@ -15,6 +15,9 @@ references:
 ### Overview
 `cut` prints chosen parts of every input line: fields split by a delimiter, or character positions. It is the simple way to pull a column out of delimited text.
 
+### Background
+The manuals disagree about where `cut` came from: the macOS manual says it appeared in System III Unix, while the FreeBSD manual says it first appeared in 4.3BSD-Reno, so treat its origin as uncertain. Today the name covers GNU cut, the cut that macOS ships, and the cut applet in BusyBox. They agree on `-d`, `-f`, and `-c` with ranges, and differ on long options such as `--complement`.
+
 ### Examples
 Print the first comma-separated field:
 
@@ -68,6 +71,9 @@ Select character positions, for example `1-3`. In some locales a character is mo
 `-d`, `-f`, and `-c` with the ranges above are in the Common examples. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
+### About GNU cut
+GNU cut is part of GNU coreutils, and this page's checks ran coreutils 9.11. It adds options such as `--complement`.
+
 ### GNU examples
 Print every field except the first. `--complement` is a GNU extension:
 
@@ -76,9 +82,15 @@ cut --complement -d, -f1 data.csv
 ```
 
 ## Apple
+### About macOS cut
+This is the cut in `/usr/bin` on macOS. It has no long options such as `--complement` or `--delimiter`, so use the short spellings.
+
 ### Apple notes
 macOS `cut` is the BSD implementation. It has no long options such as `--complement` or `--delimiter`; use the short spellings.
 
 ## BusyBox
+### About BusyBox cut
+BusyBox bundles cut as an applet, and anything beyond the common options depends on how it was built. This page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox notes
 BusyBox `cut` supports `-d`, `-f`, and `-c`; other options depend on the build.

@@ -15,6 +15,9 @@ references:
 ### Overview
 `sort` reads lines from files or standard input and prints them in order. By default it compares text using the current locale, so punctuation, case, and numbers sort as text.
 
+### Background
+A `sort` command first appeared in Version 1 Unix, according to the FreeBSD and macOS manuals. Today the name covers GNU sort, the sort that macOS ships, and the sort applet in BusyBox. They agree on `-r`, `-n`, `-u`, `-t`, and `-k`, and differ on options such as `-h` and `-V`.
+
 ### Examples
 Sort lines alphabetically:
 
@@ -74,13 +77,22 @@ Without `-n`, numbers sort as text, so `10` comes before `9`. Order depends on t
 `-r`, `-n`, `-u`, `-t`, and `-k` are in the Common examples. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check). Version sort `-V`, human-numeric `-h`, and stability options differ between builds.
 
 ## GNU
+### About GNU sort
+GNU sort is part of GNU coreutils, and this page's checks ran coreutils 9.11. It adds options such as `-h` for human-readable sizes and `-V` for version order.
+
 ### GNU notes
 GNU sort adds options such as `-h` (human-readable sizes like 2K or 1G) and `-V` (version order). Confirm that a macOS or BusyBox build provides an option before depending on it.
 
 ## Apple
+### About macOS sort
+This is the sort in `/usr/bin` on macOS. Its `--version` output reads `2.3-Apple`, which is why implementation detection checks for Apple before GNU.
+
 ### Apple notes
 macOS `sort` identifies itself as `2.3-Apple` and is derived from GNU sort, so most common options match; confirm rarely used long options before relying on them.
 
 ## BusyBox
+### About BusyBox sort
+BusyBox bundles sort as an applet, and anything beyond the common options depends on how it was built. This page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox notes
 BusyBox `sort` supports the common options above. Options such as `-h`, `-V`, and `--parallel` depend on the build configuration.

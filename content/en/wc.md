@@ -15,6 +15,9 @@ references:
 ### Overview
 `wc` counts the lines, words, and bytes in each file, or in standard input. A line is counted at each newline, so a last line without a trailing newline is not counted.
 
+### Background
+`wc` counts lines, words, and bytes. A `wc` command appeared in Version 1 Unix, according to the FreeBSD and macOS manuals. Today the name covers GNU wc, the wc that macOS ships, and the wc applet in BusyBox. They agree on `-l`, `-w`, and `-c`, and differ on output padding and extra options such as `-L`.
+
 ### Examples
 Show lines, words, and bytes for a file:
 
@@ -68,6 +71,9 @@ The column padding of the output differs between implementations, so do not comp
 `-l`, `-w`, and `-c` are in the Common examples. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check). Output padding and the default `-m` behavior differ.
 
 ## GNU
+### About GNU wc
+GNU wc is part of GNU coreutils, and this page's checks ran coreutils 9.11. It adds options such as `-L`, which prints the longest line length.
+
 ### GNU examples
 Print the length of the longest line. `-L` is a GNU option:
 
@@ -76,9 +82,15 @@ wc -L notes.txt
 ```
 
 ## Apple
+### About macOS wc
+This is the wc in `/usr/bin` on macOS. It pads each count to a fixed width, so `wc -l` output has leading spaces.
+
 ### Apple notes
 macOS `wc` is the BSD implementation. It pads each count to a fixed width, so `wc -l` output has leading spaces.
 
 ## BusyBox
+### About BusyBox wc
+BusyBox bundles wc as an applet, and anything beyond the common options depends on how it was built. This page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox notes
 BusyBox `wc` supports `-l`, `-w`, and `-c`; other options depend on the build.
