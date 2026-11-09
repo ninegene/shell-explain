@@ -316,12 +316,15 @@ func Parse(data []byte) (*Entry, error) {
 	if err := flush(); err != nil {
 		return nil, err
 	}
-	if !declared["common"] || !seen["common/Overview"] || !seen["common/Examples"] || !seen["common/Common mistakes"] || !seen["common/Portability"] {
-		return nil, fmt.Errorf("Common requires Overview, Examples, Common mistakes and Portability")
+	if !declared["common"] || !seen["common/Overview"] || !seen["common/Background"] || !seen["common/Examples"] || !seen["common/Common mistakes"] || !seen["common/Portability"] {
+		return nil, fmt.Errorf("Common requires Overview, Background, Examples, Common mistakes and Portability")
 	}
 	for _, impl := range e.Implementations {
 		if !declared[impl] {
 			return nil, fmt.Errorf("missing declared variant %q", impl)
+		}
+		if !seen[impl+"/about"] {
+			return nil, fmt.Errorf("variant %q requires an About section", impl)
 		}
 	}
 	return e, nil
