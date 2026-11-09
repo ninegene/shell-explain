@@ -70,3 +70,21 @@ func TestRejectsUnsafeNamesAndMixedUpstream(t *testing.T) {
 		}
 	}
 }
+
+func TestMawkIsARegisteredView(t *testing.T) {
+	if impl, ok := LookupImplementation("mawk"); !ok || impl.Heading != "Mawk" || impl.Shell {
+		t.Fatalf("mawk registry entry: %+v %v", impl, ok)
+	}
+	page := append(fixture("awk", "[]", "[gnu, mawk]", ""), []byte("\n## GNU\n\n### About gawk\n\nText.\n\n## Mawk\n\n### About mawk\n\nText.\n")...)
+	e, err := Parse(page)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := e.Select("mawk", ""); err != nil {
+		t.Fatal(err)
+	}
+	// Declaring mawk without its view is rejected like any other implementation.
+	if _, err := Parse(append(fixture("awk", "[]", "[gnu, mawk]", ""), []byte("\n## GNU\n\n### About gawk\n\nText.\n")...)); err == nil {
+		t.Fatal("missing Mawk view accepted")
+	}
+}

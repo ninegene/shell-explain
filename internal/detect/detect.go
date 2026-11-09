@@ -21,7 +21,7 @@ import (
 // identify an implementation. Add a command only after checking that GNU,
 // BSD/Apple and BusyBox builds reject or answer the flag without side effects
 // and without waiting for input; do not probe commands outside this list.
-var probed = []string{"grep", "sed", "find", "cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "ls", "mkdir", "cp", "mv", "rm", "chmod", "xargs", "gzip", "tar", "stat", "date"}
+var probed = []string{"grep", "sed", "find", "cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "ls", "mkdir", "cp", "mv", "rm", "chmod", "xargs", "gzip", "tar", "stat", "date", "awk"}
 
 // appleSystemDirs hold macOS's own executables; coreutils such as cat live in /bin.
 var appleSystemDirs = []string{"/usr/bin", "/bin"}
@@ -88,7 +88,7 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 		s.Confidence = "target"
 		s.Evidence = "Requested target platform, not local detection"
 		if r.Platform == "linux" && r.Single == "" {
-			s.Warnings = append(s.Warnings, "Linux does not imply GNU tools; select gnu or busybox explicitly for their extensions.")
+			s.Warnings = append(s.Warnings, "Linux does not imply GNU tools; select an implementation (for example gnu, busybox, or mawk) explicitly for its extensions.")
 		}
 		return s, nil
 	}
@@ -140,9 +140,13 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 				s.Implementation = "apple"
 			case strings.Contains(banner, "BusyBox"):
 				s.Implementation = "busybox"
-			case strings.Contains(first, "(GNU ") || (strings.HasPrefix(first, "gzip ") && strings.Contains(banner, "Free Software Foundation")):
-				// GNU gzip prints "gzip 1.13" plus a Free Software Foundation notice.
+			case strings.Contains(first, "(GNU ") || strings.HasPrefix(first, "GNU Awk ") || (strings.HasPrefix(first, "gzip ") && strings.Contains(banner, "Free Software Foundation")):
+				// GNU gzip prints "gzip 1.13" plus a Free Software Foundation notice,
+				// and gawk prints "GNU Awk 5.3.2, API 4.0, ...".
 				s.Implementation = "gnu"
+			case strings.HasPrefix(first, "mawk "):
+				// mawk 1.3.4 prints "mawk 1.3.4 20260302".
+				s.Implementation = "mawk"
 			default:
 				banner = ""
 			}

@@ -24,11 +24,11 @@ An unchecked command needs an original or expanded page, applicable implementati
 
 Done in the stage 4 batch 1 schema change, with Go, CLI, detection, and web tests:
 
-- Implementations come from one registry (`catalog.Implementations`): gnu, apple, busybox, bash, zsh, and upstream. Git, curl, jq, and similar tools use `upstream` instead of a mislabeled GNU/BusyBox variant.
+- Implementations come from one registry (`catalog.Implementations`): gnu, apple, busybox, mawk, bash, zsh, and upstream. The `mawk` row exists because the default awk on Debian-based Linux is mawk, not GNU awk; gawk is covered by `gnu` and macOS awk by `apple`. Git, curl, jq, and similar tools use `upstream` instead of a mislabeled GNU/BusyBox variant.
 - Symbolic lookup names such as `[` are aliases of a safe canonical ID (`test`), so filenames, web routes, and JSON IDs keep the lowercase-letter rule.
 - Shell-only entries and single-implementation `upstream` entries are selected without PATH probing.
 
-Still open: detection probes only the commands in `detect.probed` (grep, sed, find, cat, head, tail, wc, sort, uniq, cut, tr, ls, mkdir, cp, mv, rm, chmod, xargs, gzip, tar, stat, date; see [detection](detection.md)). New pages must work with portable/common content or explicit supported selection first. Add bounded, command-specific detection only with tests and an explicit policy; do not probe every new executable with `--version` or infer implementation from OS alone.
+Still open: detection probes only the commands in `detect.probed` (grep, sed, find, cat, head, tail, wc, sort, uniq, cut, tr, ls, mkdir, cp, mv, rm, chmod, xargs, gzip, tar, stat, date, awk; see [detection](detection.md)). New pages must work with portable/common content or explicit supported selection first. Add bounded, command-specific detection only with tests and an explicit policy; do not probe every new executable with `--version` or infer implementation from OS alone.
 
 ## Completed-page evidence
 

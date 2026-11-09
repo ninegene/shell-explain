@@ -29,6 +29,15 @@ func TestMain(m *testing.M) {
 			fmt.Println("sort (GNU coreutils) 9.11")
 		case "busybox":
 			fmt.Println("grep: unrecognized option --version\nBusyBox v1.37.0 multi-call binary")
+		case "gawk":
+			fmt.Println("GNU Awk 5.3.2, API 4.0, PMA Avon 8-g1, (GNU MPFR 4.2.2, GNU MP 6.3.0)\nCopyright (C) 1989, 1991-2026 Free Software Foundation.")
+		case "mawk":
+			fmt.Println("mawk 1.3.4 20260302\nCopyright 2008-2024,2026, Thomas E. Dickey")
+		case "mawk-old":
+			fmt.Println("mawk: not an option: --version")
+			os.Exit(2)
+		case "bwk-awk":
+			fmt.Println("awk version 20200816")
 		case "timeout":
 			time.Sleep(3 * time.Second)
 		case "flood":
@@ -253,5 +262,42 @@ func TestProbeBuffer(t *testing.T) {
 	}
 	if got := firstVersion("grep: unrecognized option --version\nBusyBox v1.37.0 multi-call binary"); got != "1.37.0" {
 		t.Fatal(got)
+	}
+}
+
+func TestAwkImplementationsAreProbedUnderAnyTypedName(t *testing.T) {
+	t.Setenv("GORACE", "atexit_sleep_ms=0")
+	executable, err := os.Executable()
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := t.TempDir()
+	for _, name := range []string{"awk", "gawk", "mawk"} {
+		if err = os.Symlink(executable, filepath.Join(dir, name)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	// Name is what the user typed; Command is the page ID, which is what the probe list matches.
+	for _, tt := range []struct{ command, mode, impl, confidence string }{
+		{"awk", "gawk", "gnu", "detected"},
+		{"gawk", "gawk", "gnu", "detected"},
+		{"awk", "mawk", "mawk", "detected"},
+		{"mawk", "mawk", "mawk", "detected"},
+		{"awk", "busybox", "busybox", "detected"},
+		// BWK awk is not one of the registered implementations; on Linux it stays unknown.
+		{"awk", "bwk-awk", "common", "unknown"},
+		// Old mawk has no --version, so the banner proves nothing.
+		{"mawk", "mawk-old", "common", "unknown"},
+	} {
+		t.Run(tt.command+"/"+tt.mode, func(t *testing.T) {
+			t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", tt.mode)
+			s, err := (Detector{OS: "linux", Path: dir}).Select(context.Background(), Request{Name: tt.command, Command: "awk"})
+			if err != nil || s.Implementation != tt.impl || s.Confidence != tt.confidence {
+				t.Fatalf("%+v %v", s, err)
+			}
+			if tt.impl == "mawk" && s.Version != "1.3.4" {
+				t.Fatalf("version %q", s.Version)
+			}
+		})
 	}
 }

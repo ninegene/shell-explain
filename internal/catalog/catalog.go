@@ -48,6 +48,7 @@ var Implementations = []Implementation{
 	{ID: "gnu", Heading: "GNU", Label: "GNU"},
 	{ID: "apple", Heading: "Apple", Label: "macOS / Apple"},
 	{ID: "busybox", Heading: "BusyBox", Label: "BusyBox"},
+	{ID: "mawk", Heading: "Mawk", Label: "mawk"},
 	{ID: "bash", Heading: "Bash", Label: "Bash builtin", Shell: true},
 	{ID: "zsh", Heading: "Zsh", Label: "Zsh builtin", Shell: true},
 	{ID: "upstream", Heading: "Upstream", Label: "Upstream project"},
