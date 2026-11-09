@@ -176,6 +176,23 @@ test(
         .replace('aliases: [ggrep]', 'aliases: []'),
     );
     await until(async () => (await page('/commands/demo/')).ok);
+    // Guides name grep as a related command, and the export refuses a name with
+    // no page. Drop it from the guides first, as an author removing the page would.
+    const guides = path.join(fixture, 'content/en/guides');
+    for (const name of await readdir(guides)) {
+      const file = path.join(guides, name);
+      const text = await readFile(file, 'utf8');
+      await writeFile(
+        file,
+        text.replace(/^related_commands: \[(.*)\]$/m, (_, list) => {
+          const kept = list
+            .split(',')
+            .map((s) => s.trim())
+            .filter((s) => s && s !== 'grep');
+          return `related_commands: [${kept.join(', ')}]`;
+        }),
+      );
+    }
     await rm(source);
     await until(async () => (await page('/commands/grep/')).status === 404);
     // The homepage falls back to the first command alphabetically.

@@ -11,7 +11,7 @@ reading_minutes: 5
 updated: 2026-11-08
 tags: [basics, processes]
 related_commands: []
-related_guides: [big-picture, who-is-boss, what-is-an-os]
+related_guides: [big-picture, who-is-boss, what-is-an-os, input-output-errors]
 references:
   - https://man7.org/linux/man-pages/man7/credentials.7.html
   - https://man7.org/linux/man-pages/man2/fork.2.html
@@ -115,6 +115,6 @@ sleep 1
 4. Which process has the number 1? Answer: the first process the kernel starts.
 
 ## Where next
-You now have the whole bottom half of the picture: the hardware, how it starts, what the kernel does, and what a process is. The next series takes apart the terminal, the shell and the commands you type into them.
+You now have the whole bottom half of the picture: the hardware, how it starts, what the kernel does, and what a process is. The next series takes apart the terminal, the shell and the commands you type into them. Start with `explain learn input-output-errors`, which shows the three streams every process has.
 
 Run `explain glossary process` to see a short definition.

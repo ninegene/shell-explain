@@ -700,6 +700,11 @@ input::placeholder {
   background: #edf0e7;
   color: var(--ink);
 }
+/* A command broken across two lines is hard to read; scroll the table instead. */
+.prose td code,
+.prose th code {
+  white-space: nowrap;
+}
 .prose td {
   background: #fffefa;
   color: #3f5452;
