@@ -141,6 +141,6 @@ You should see this:
 4. What status does the shell give when it cannot find a command? Answer: 127.
 
 ## Where next
-You now know how commands read input, write output, report errors, and say whether they worked. The rest of this series takes apart the terminal and the shell, and the anatomy of a command.
+You now know how commands read input, write output, report errors, and say whether they worked. The next guide, `explain learn path-and-environment`, explains how the shell finds a command by name, which is where the status 127 comes from.
 
 For a command that uses exit status in a useful way, see `explain grep`.

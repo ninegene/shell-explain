@@ -16,6 +16,16 @@ A word you type after a command's name, such as a file name or an option. In eve
 
 See: input-output-errors, anatomy-of-a-command
 
+## ASCII
+An old, simple encoding that gives each of 128 characters a number. The letter A is 65. UTF-8 keeps the same numbers for these characters.
+
+See: text-and-binary
+
+## Binary file
+A file whose bytes are not meant to be read as characters, such as a photo, a program or a compressed archive.
+
+See: text-and-binary
+
 ## Boot
 To start a computer: the steps from pressing the power button until the operating system is running.
 
@@ -25,6 +35,11 @@ See: who-is-boss
 A small program that finds the kernel on the disk, loads it into memory and starts it. On Linux, GRUB is a common boot loader.
 
 See: who-is-boss
+
+## Byte
+A number from 0 to 255. A file is a row of bytes.
+
+See: text-and-binary
 
 ## Command
 A short instruction you type into the shell. It is usually the name of a program, followed by extra words that tell the program what to do.
@@ -60,6 +75,21 @@ See: big-picture, computer-body
 The part of the kernel that knows how to work one kind of hardware, such as a disk or a keyboard.
 
 See: what-is-an-os
+
+## Encoding
+The rule that says which number stands for which character.
+
+See: text-and-binary
+
+## Environment variable
+A named piece of text that a program carries and hands to the programs it starts, such as PATH or HOME.
+
+See: path-and-environment
+
+## Executable file
+A file that has the execute permission turned on, so the system will run it as a program.
+
+See: permissions
 
 ## Exit status
 The number a command hands back to the shell when it ends. Zero means success, and any other number means something went wrong.
@@ -115,6 +145,16 @@ See: processes
 The way to reach a file or folder, written as names separated by `/`.
 
 See: files-and-folders
+
+## PATH variable
+The environment variable that lists the folders, separated by colons, where the shell looks for a program by name.
+
+See: path-and-environment
+
+## Permission
+A setting that says whether the owner, the group or everyone else may read, write or execute a file.
+
+See: permissions
 
 ## PID
 Short for process ID: the number the kernel gives each running process so it can be told apart from the others.
@@ -196,6 +236,11 @@ A flow of data, one piece after another. Every program starts with three streams
 
 See: input-output-errors
 
+## Superuser
+An account that may read and write any file and skips most permission checks. It is often called root.
+
+See: permissions
+
 ## System call
 A request a program makes to the kernel, such as asking it to open a file. It is how a program asks the kernel to do something for it.
 
@@ -205,6 +250,21 @@ See: what-is-an-os
 A window or screen that shows text and passes your key presses to the shell.
 
 See: big-picture, terminal-shell-command
+
+## Text file
+A file whose bytes stand for characters, arranged in lines.
+
+See: text-and-binary
+
+## UTF-8
+The common way to write text as bytes today. ASCII characters keep their numbers, and other characters take two or more bytes.
+
+See: text-and-binary
+
+## Variable
+A name that holds a piece of text, such as PATH.
+
+See: path-and-environment
 
 ## Volatile
 Describes memory that loses its contents when the power goes off.
