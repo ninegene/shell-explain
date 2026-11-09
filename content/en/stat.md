@@ -15,6 +15,9 @@ references:
 ### Overview
 `stat` reports details about a file that `ls` hides or formats loosely: exact size, permission bits, type, owner and timestamps. Its output format is different on each implementation, and so is the option that chooses the fields, so the portable use is the exit status. Pick the format option in the GNU, Apple or BusyBox section for what you need.
 
+### Background
+The `stat` utility appeared in NetBSD 1.6 and FreeBSD 4.10, according to the FreeBSD and macOS manuals. Today the name covers GNU stat, the stat that macOS ships, and the stat applet in BusyBox. They agree only on whether a file exists, and differ on the option that chooses the fields: GNU and BusyBox use `-c`, macOS uses `-f`, and the format letters do not overlap.
+
 ### Examples
 Test that a file exists. The output is discarded, and `stat` exits with a non-zero status for a missing file:
 
@@ -35,6 +38,9 @@ Parsing the default output of `stat` in a script breaks when you move between Li
 GNU and BusyBox use `-c FORMAT` with letters such as `%s` for size and `%a` for the octal mode. macOS uses `-f FORMAT` with `%z` for size and `%Lp` for the octal mode. The two format languages do not overlap, so only the existence check is common. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
+### About GNU stat
+GNU stat is part of GNU coreutils, and this page's checks ran coreutils 9.11. It prints chosen fields with `-c FORMAT`.
+
 ### GNU examples
 Print only the size in bytes:
 
@@ -58,6 +64,9 @@ stat -c '%F' logs
 Print using a format string instead of the default report. `%s` is the size in bytes, `%a` the octal permissions, `%n` the name, `%F` the file type, `%U` the owner and `%y` the modification time.
 
 ## Apple
+### About macOS stat
+This is the stat in `/usr/bin` on macOS. It prints chosen fields with `-f FORMAT`, using format letters that differ from GNU's.
+
 ### Apple examples
 Print only the size in bytes:
 
@@ -81,6 +90,9 @@ stat -f '%HT' logs
 Print using a format string instead of the default report. `%z` is the size in bytes, `%Lp` the octal permissions, `%N` the name, `%HT` the file type, `%Su` the owner and `%Sm` the modification time.
 
 ## BusyBox
+### About BusyBox stat
+BusyBox bundles stat as an applet, and anything beyond the common options depends on how it was built. This page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox examples
 BusyBox `stat` takes the same `-c` format as GNU for the fields below:
 
