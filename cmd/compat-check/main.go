@@ -94,7 +94,47 @@ func check() error {
 			}
 		}
 	}
+	if err := checkGuides(c); err != nil {
+		return err
+	}
 	return checkAwk()
+}
+
+// checkGuides runs every command a guide asks a reader to try, in a temporary
+// folder, on the guest's own tools (BusyBox ps, GNU coreutils and so on). Each
+// must be safe, succeed, and print what the guide shows.
+func checkGuides(c *catalog.Catalog) error {
+	count := 0
+	for _, g := range c.Guides {
+		for _, s := range g.Sections {
+			if s.Title != "Try it" {
+				continue
+			}
+			for _, b := range examplecheck.TryItBlocks(s.Markdown) {
+				if why := examplecheck.UnsafeTryIt(b.Code); why != "" {
+					return fmt.Errorf("guide %s: %q is not allowed in a Try it block", g.ID, why)
+				}
+				dir, err := os.MkdirTemp("", "guide-")
+				if err != nil {
+					return err
+				}
+				defer os.RemoveAll(dir)
+				if err = examplecheck.Setup(dir, g.ID); err != nil {
+					return err
+				}
+				out, err := run("/bin/sh", []string{"-c", b.Code}, dir, "/nonexistent")
+				if err != nil {
+					return fmt.Errorf("guide %s: %q failed: %w %s", g.ID, b.Code, err, out)
+				}
+				if err = examplecheck.CheckTryIt(b, string(out)); err != nil {
+					return fmt.Errorf("guide %s: %q: %w", g.ID, b.Code, err)
+				}
+				count++
+			}
+		}
+	}
+	fmt.Printf("Linux guides: %d Try it commands ran and matched\n", count)
+	return nil
 }
 
 // checkAwk runs implementation detection against the guest's real awk
