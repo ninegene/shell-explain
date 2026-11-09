@@ -62,7 +62,7 @@ just web-build
 npm --prefix web run preview -- --ignore-lock
 ```
 
-The --ignore-lock flag keeps an agent-driven preview in the foreground so it can be stopped with Ctrl-C. Astro 7 may otherwise background preview/dev servers when it detects an agent. The test configuration uses a foreground preview on 127.0.0.1:4321 and cleans it up after tests. Do not run another server on that port during browser testing.
+The --ignore-lock flag keeps an agent-driven preview in the foreground so it can be stopped with Ctrl-C. Astro 7 may otherwise background preview/dev servers when it detects an agent. `npm test` (`just web-test`) runs the browser suite through `web/scripts/test-e2e.mjs`, which picks a free port, passes it to Playwright as `WEB_TEST_PORT`, serves a foreground preview there and cleans it up afterwards. It does not use Astro's dev port 4321, so `just web-dev` can keep running. Running `npx playwright test` directly falls back to port 4322.
 
 ## Verification commands
 

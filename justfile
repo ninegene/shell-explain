@@ -49,6 +49,6 @@
 
 # Test live Markdown updates, then CLI/site parity, usability, and accessibility.
 @web-test:
-    printf '\n%s\n%s\n' 'Testing live Markdown updates and browser behavior against fresh builds...' 'Uses localhost:4321; stop any other server on that port first.'
+    printf '\n%s\n%s\n' 'Testing live Markdown updates and browser behavior against fresh builds...' 'Uses a free port, so a running just web-dev is not affected.'
     npm --prefix web test
     printf '\n%s\n' 'Browser tests passed; the test preview server has stopped.'
