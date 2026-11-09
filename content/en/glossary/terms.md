@@ -6,6 +6,11 @@ summary: Short definitions of the words beginners meet when they start using a t
 updated: 2026-11-08
 ---
 
+## Argument
+A word you type after a command's name to tell it what to work on or how, such as a file name.
+
+See: input-output-errors
+
 ## Boot
 To start a computer: the steps from pressing the power button until the operating system is running.
 
@@ -35,6 +40,11 @@ See: big-picture, computer-body
 The part of the kernel that knows how to work one kind of hardware, such as a disk or a keyboard.
 
 See: what-is-an-os
+
+## Exit status
+The number a command hands back to the shell when it ends. Zero means success, and any other number means something went wrong.
+
+See: exit-codes
 
 ## Firmware
 Small built-in software stored on the hardware itself. It starts the computer when you switch it on and hands control to the operating system.
@@ -71,6 +81,16 @@ Short for process ID: the number the kernel gives each running process so it can
 
 See: processes
 
+## Pipe
+A one-way channel that connects the standard output of one command to the standard input of the next. In the shell it is written with the `|` symbol.
+
+See: pipes-and-redirects
+
+## Pipeline
+Commands joined with pipes, so that the output of each one becomes the input of the next.
+
+See: pipes-and-redirects
+
 ## Process
 A program that is running. It has its own PID and its own memory.
 
@@ -86,6 +106,11 @@ Short for random-access memory. It is the computer's memory: fast, temporary sto
 
 See: computer-body
 
+## Redirection
+Sending one of a program's streams to or from a file instead of the keyboard and screen, for example with `>` or `<`.
+
+See: pipes-and-redirects, input-output-errors
+
 ## Shell
 A program that reads the commands you type and starts the programs they name. Bash and zsh are shells.
 
@@ -95,6 +120,26 @@ See: big-picture
 Instructions, stored as files, that tell a computer what to do. The operating system and every program you run are software.
 
 See: who-is-boss
+
+## stderr
+Short for standard error: the stream a program writes its error messages to. By default it goes to your screen.
+
+See: input-output-errors
+
+## stdin
+Short for standard input: the stream a program reads from. By default it comes from your keyboard.
+
+See: input-output-errors
+
+## stdout
+Short for standard output: the stream a program writes its normal results to. By default it goes to your screen.
+
+See: input-output-errors
+
+## Stream
+A flow of data, one piece after another. Every program starts with three streams: input, output and error.
+
+See: input-output-errors
 
 ## System call
 A request a program makes to the kernel, such as asking it to open a file. It is how a program asks the kernel to do something for it.

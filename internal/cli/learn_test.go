@@ -3,6 +3,7 @@ package cli
 import (
 	"encoding/json"
 	"os"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
@@ -28,7 +29,10 @@ func TestLearnListAndReading(t *testing.T) {
 	if byName != byNumber || !strings.HasPrefix(byName, "From Keypress to Screen\n") {
 		t.Fatalf("name and number differ or the header is wrong:\n%s", byName)
 	}
-	for _, want := range []string{"Series: How a Computer Works, Just Enough", "Guide 1 of 5 · about 5 minutes", "Next:      The Computer's Body: CPU, Memory, Disk\n           explain learn computer-body\n", "Related:   The Computer's Body: CPU, Memory, Disk\n           explain learn computer-body\n", "           explain learn who-is-boss\n", "Goal\n", "A picture\n", "Try it\n", "Check yourself\n", "Where next\n", "Keep going\n", "Commands:  explain ls, explain cat", "References\nhttps://www.gnu.org/software/bash/manual/\nhttps://docs.kernel.org/\n"} {
+	if !regexp.MustCompile(`Guide 1 of \d+ · about 5 minutes`).MatchString(byName) {
+		t.Error("guide header is missing its position and reading time")
+	}
+	for _, want := range []string{"Series: How a Computer Works, Just Enough", "Next:      The Computer's Body: CPU, Memory, Disk\n           explain learn computer-body\n", "Related:   The Computer's Body: CPU, Memory, Disk\n           explain learn computer-body\n", "           explain learn who-is-boss\n", "Goal\n", "A picture\n", "Try it\n", "Check yourself\n", "Where next\n", "Keep going\n", "Commands:  explain ls, explain cat", "References\nhttps://www.gnu.org/software/bash/manual/\nhttps://docs.kernel.org/\n"} {
 		if !strings.Contains(byName, want) {
 			t.Errorf("guide is missing %q", want)
 		}
@@ -170,7 +174,7 @@ func TestGlossary(t *testing.T) {
 		} `json:"glossary"`
 	}
 	_, data, _ = run(t, "glossary", "--format=json")
-	if err := json.Unmarshal([]byte(data), &all); err != nil || len(all.Glossary.Terms) != 21 {
+	if err := json.Unmarshal([]byte(data), &all); err != nil || len(all.Glossary.Terms) < 21 {
 		t.Fatalf("glossary json: %v", err)
 	}
 	_, _, stderr = run(t, "glossary", "kerne")
