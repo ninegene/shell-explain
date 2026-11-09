@@ -15,6 +15,9 @@ references:
 ### Overview
 `tar` bundles files and directories into one archive file, lists an archive, or extracts it. One mode letter chooses the job: `-c` creates, `-t` lists and `-x` extracts. `-f` names the archive, and `-z` compresses with gzip.
 
+### Background
+A `tar` command appeared in Seventh Edition Unix, released in January 1979, according to the FreeBSD and macOS manuals. Many implementations since then extended the file format. John Gilmore's public-domain pdtar, from about November 1987, was influential and formed the basis of GNU tar. The macOS manual says the macOS tar is a complete re-implementation based on the libarchive library, first released with FreeBSD 5.4 in May 2005. Today the name covers GNU tar, the bsdtar that macOS ships, and the tar applet in BusyBox. They agree on `-c`, `-t`, `-x`, `-f`, `-z`, `-C`, `-O`, and `--exclude`, and differ on `-J`, `--transform`, and other long options.
+
 ### Examples
 Create an archive from a directory and list its contents:
 
@@ -74,6 +77,9 @@ Extracting an untrusted archive can write outside the target directory; list it 
 The Common examples use `-c`, `-t`, `-x`, `-f`, `-z`, `-C`, `-O` and `--exclude`. macOS ships `bsdtar` from libarchive, which also reads many other formats. GNU tar adds `-J`, `--transform` and many other long options, and BusyBox builds enable only a subset. The Common examples were executed on GNU tar, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
+### About GNU tar
+GNU tar is the GNU Project's tar. It adds `-J`, `--transform`, and many other long options.
+
 ### GNU examples
 Rename members while archiving with `--transform`, a sed-style expression. This option is a GNU extension:
 
@@ -82,9 +88,15 @@ tar -cf logs.tar --transform 's,^logs,archive,' logs && tar -tf logs.tar
 ```
 
 ## Apple
+### About macOS tar
+On macOS, `/usr/bin/tar` is a link to `bsdtar`, which this page's check reported as bsdtar 3.5.3 with libarchive 3.7.4. It also reads many other archive formats.
+
 ### Apple notes
 macOS `tar` is `bsdtar` from libarchive. It lists the same member names for the common examples but supports different long options and formats than GNU tar.
 
 ## BusyBox
+### About BusyBox tar
+BusyBox bundles tar as an applet, and anything beyond the common options depends on how it was built. This page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox notes
 BusyBox `tar` supports the options in the common examples; compression flags and long options depend on the build.

@@ -17,6 +17,9 @@ references:
 
 The current time changes on every run, so the examples below pipe the result through `grep -c`, which prints `1` when the output has the expected shape.
 
+### Background
+A `date` command appeared in Version 1 Unix, according to the FreeBSD and macOS manuals. Today the name covers GNU date, the date that macOS ships, and the date applet in BusyBox. They agree on printing the current time with a `+` format, `-u`, and the conversions the examples use, and differ on how to read or convert a specific time: GNU uses `-d`, while macOS uses `-r` and `-j -f`.
+
 ### Examples
 Print today's date as year-month-day, such as `2026-11-08`. The `grep` checks the shape:
 
@@ -58,6 +61,9 @@ A format without the leading `+` is read as a new time to set, not as a layout. 
 The Common examples use `-u` and the `%Y %m %d %H %M %S %s %Z` conversions, which all three implementations accept. Reading or converting a specific time (`-d` on GNU, `-r` and `-j -f` on macOS) is different on each, and the examples are in the sections below. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
+### About GNU date
+GNU date is part of GNU coreutils, and this page's checks ran coreutils 9.11. It converts a specific time with `-d`, including the `@seconds` form.
+
 ### GNU examples
 Convert a count of seconds since 1970 into a date with `-d @`. This is a GNU extension:
 
@@ -72,6 +78,9 @@ date -u -d '2026-11-08 12:00' +%s
 ```
 
 ## Apple
+### About macOS date
+This is the date in `/bin` on macOS. It converts a specific time with `-r` for seconds since 1970, or `-j -f` with an input format.
+
 ### Apple examples
 Convert seconds since 1970 into a date with `-r`. On GNU, `-r` takes a file name instead:
 
@@ -86,6 +95,9 @@ date -u -j -f '%Y-%m-%d %H:%M:%S' '2026-11-08 12:00:00' +%s
 ```
 
 ## BusyBox
+### About BusyBox date
+BusyBox bundles date as an applet, and anything beyond the common options depends on how it was built. This page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox examples
 BusyBox accepts `-d @seconds` like GNU:
 
