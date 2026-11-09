@@ -1,6 +1,6 @@
 # Learning guides: teaching the shell from the ground up
 
-Status: proposed design, not implemented. This document records what to build and in what order, so each step can be reviewed before it is built. It extends [stage 4](roadmap.md) and must be finished before the public release in stage 5, because the home page will lead with it.
+Status: design accepted; the format, parser, export and a sample guide are implemented (see the Guides section of [content-format.md](content-format.md)), and the CLI commands, web pages and remaining content are not yet built. This document records what to build and in what order, so each step can be reviewed before it is built. It extends [stage 4](roadmap.md) and must be finished before the public release in stage 5, because the home page will lead with it.
 
 ## Why this exists
 
@@ -160,7 +160,7 @@ Guides are a second kind of authored Markdown, separate from command pages, load
 - **Front matter** (all required unless noted): `schema_version`, `id` (matches the filename), `title` (the catchy title), `subtitle` (the plain topic), `summary`, `series`, `order` (position in the series), `level` (`beginner` for now), `reading_minutes`, `updated` (the same `YYYY-MM-DD` rule as command pages), `related_commands` (each must be an existing command page), `related_guides` (each must exist), `references` (absolute HTTP(S) links), optional `tags`.
 - **Body:** level-two headings are the nine outline sections above, in order; level-three headings are allowed inside them. Required sections are checked by name, like the command pages' required sections.
 - **Markdown subset additions.** Guides need two things the command format deliberately rejects today:
-  - **Tables**, using the standard pipe syntax. Rendered as aligned text in the CLI and as a real table on the web, with horizontal scrolling on narrow screens.
+  - **Tables**, using the standard pipe syntax, at most four columns and at most 78 columns wide when rendered. Rendered as aligned text in the CLI and as a real table on the web, with horizontal scrolling on narrow screens.
   - **Diagrams**, as a fenced block with the language `diagram`. The block must be followed by a paragraph that starts with `Diagram:` and describes it in words. The web shows it in a labelled, non-copyable block; the CLI prints it unchanged.
   - Everything else stays as today: no raw HTML, no images, no nested headings beyond level three.
 - **Embedding:** `content/embed.go` currently embeds `en/*.md`, which skips subdirectories, so the offline CLI would contain no guide or glossary. The directive must become `//go:embed en/*.md en/guides/*.md en/glossary/*.md`, with a test that fails if a content file on disk is missing from the embedded filesystem. This keeps one authored collection supplying both the CLI and the website.

@@ -10,6 +10,8 @@ import (
 
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
+	"github.com/yuin/goldmark/extension"
+	east "github.com/yuin/goldmark/extension/ast"
 	goldmarkhtml "github.com/yuin/goldmark/renderer/html"
 	"github.com/yuin/goldmark/text"
 )
@@ -17,7 +19,7 @@ import (
 // Plain renders the accepted Markdown subset without ANSI codes. Code is never wrapped.
 func Plain(markdown string, width int) string {
 	source := []byte(markdown)
-	doc := goldmark.New().Parser().Parse(text.NewReader(source))
+	doc := goldmark.New(goldmark.WithExtensions(extension.Table)).Parser().Parse(text.NewReader(source))
 	var out strings.Builder
 	var inline func(ast.Node) []inlineSpan
 	inline = func(n ast.Node) []inlineSpan {
@@ -57,10 +59,23 @@ func Plain(markdown string, width int) string {
 		case *ast.Paragraph, *ast.TextBlock:
 			out.WriteString(wrap(inline(n), width, prefix))
 			out.WriteString("\n\n")
+		case *ast.Heading:
+			out.WriteString(prefix + strings.TrimSpace(flatText(n, source)) + "\n\n")
+		case *east.Table:
+			// Tables and diagrams are printed as written, with no added indent,
+			// so they keep their shape in a terminal.
+			for _, line := range strings.Split(layoutTable(tableRows(v, source)), "\n") {
+				out.WriteString(prefix + line + "\n")
+			}
+			out.WriteByte('\n')
 		case *ast.FencedCodeBlock:
+			indent := "    "
+			if string(v.Language(source)) == "diagram" {
+				indent = ""
+			}
 			for i := 0; i < v.Lines().Len(); i++ {
 				seg := v.Lines().At(i)
-				out.WriteString(prefix + "    ")
+				out.WriteString(prefix + indent)
 				out.Write(seg.Value(source))
 			}
 			out.WriteByte('\n')
@@ -181,4 +196,84 @@ func wrap(spans []inlineSpan, width int, prefix string) string {
 		length += n
 	}
 	return out.String()
+}
+
+// flatText returns the visible text of a node's inline content on one line.
+func flatText(n ast.Node, source []byte) string {
+	var b strings.Builder
+	for c := n.FirstChild(); c != nil; c = c.NextSibling() {
+		switch v := c.(type) {
+		case *ast.Text:
+			b.WriteString(plainText(v.Segment.Value(source), v.IsRaw()))
+			if v.SoftLineBreak() || v.HardLineBreak() {
+				b.WriteByte(' ')
+			}
+		case *ast.String:
+			b.WriteString(plainText(v.Value, v.IsRaw() || v.IsCode()))
+		case *ast.CodeSpan:
+			for child := c.FirstChild(); child != nil; child = child.NextSibling() {
+				value := string(child.(*ast.Text).Segment.Value(source))
+				b.WriteString(strings.TrimSuffix(value, "\n"))
+				if strings.HasSuffix(value, "\n") {
+					b.WriteByte(' ')
+				}
+			}
+		case *ast.Link:
+			b.WriteString(flatText(c, source))
+			fmt.Fprintf(&b, " (%s)", v.Destination)
+		default:
+			b.WriteString(flatText(c, source))
+		}
+	}
+	return b.String()
+}
+
+// tableRows returns a table's cell texts, header row first.
+func tableRows(t *east.Table, source []byte) [][]string {
+	var rows [][]string
+	for r := t.FirstChild(); r != nil; r = r.NextSibling() {
+		var row []string
+		for c := r.FirstChild(); c != nil; c = c.NextSibling() {
+			row = append(row, strings.TrimSpace(flatText(c, source)))
+		}
+		rows = append(rows, row)
+	}
+	return rows
+}
+
+// layoutTable aligns rows into columns separated by two spaces, with a dashed
+// line under the header. Cells are never wrapped.
+func layoutTable(rows [][]string) string {
+	if len(rows) == 0 {
+		return ""
+	}
+	widths := make([]int, len(rows[0]))
+	for _, row := range rows {
+		for i, cell := range row {
+			if i < len(widths) {
+				widths[i] = max(widths[i], utf8.RuneCountInString(cell))
+			}
+		}
+	}
+	line := func(row []string) string {
+		cells := make([]string, len(widths))
+		for i := range widths {
+			cell := ""
+			if i < len(row) {
+				cell = row[i]
+			}
+			cells[i] = cell + strings.Repeat(" ", widths[i]-utf8.RuneCountInString(cell))
+		}
+		return strings.TrimRight(strings.Join(cells, "  "), " ")
+	}
+	lines := []string{line(rows[0])}
+	rule := make([]string, len(widths))
+	for i, w := range widths {
+		rule[i] = strings.Repeat("-", w)
+	}
+	lines = append(lines, strings.Join(rule, "  "))
+	for _, row := range rows[1:] {
+		lines = append(lines, line(row))
+	}
+	return strings.Join(lines, "\n")
 }
