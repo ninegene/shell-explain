@@ -117,6 +117,6 @@ pwd
 4. Is the terminal the thing that does the work of your command? Answer: no. It shows text and passes your keys on.
 
 ## Where next
-The next guides zoom in on each layer. Start with `explain learn computer-body` for the parts of the computer. Then read about starting up (`who-is-boss`), what an operating system does (`what-is-an-os`) and processes (`processes`). A later series covers how the terminal, the shell and a command differ.
+The next guides zoom in on each layer. Start with `explain learn computer-body` for the parts of the computer. Then read about starting up (`who-is-boss`), what an operating system does (`what-is-an-os`) and processes (`processes`). The next series, starting with `explain learn terminal-shell-command`, covers how the terminal, the shell and a command differ.
 
 To see real commands, open the command pages. For example, run `explain ls` or `explain cat` in your terminal.

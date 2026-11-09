@@ -128,7 +128,7 @@ func TestLearnSectionAndJSON(t *testing.T) {
 
 func TestLearnAndGlossaryErrors(t *testing.T) {
 	for _, args := range [][]string{
-		{"learn", "nosuch"}, {"learn", "9"}, {"learn", "0"},
+		{"learn", "nosuch"}, {"learn", "99"}, {"learn", "0"},
 		{"learn", "big-picture", "extra"},
 		{"learn", "big-picture", "--section", "nope"},
 		{"learn", "--section", "Goal"},
@@ -194,7 +194,8 @@ func TestWidthZeroTurnsWrappingOff(t *testing.T) {
 		t.Error("guide prose wrapped with --width=0")
 	}
 	_, list, _ := run(t, "glossary", "--width=0")
-	if !strings.Contains(list, "Disk              Long-term storage that keeps your files when the computer is turned off, such as a hard disk or a solid-state drive (SSD).\n") {
+	// The padding depends on the longest term, so match any amount of it.
+	if !regexp.MustCompile(`(?m)^Disk +Long-term storage that keeps your files when the computer is turned off, such as a hard disk or a solid-state drive \(SSD\)\.$`).MatchString(list) {
 		t.Errorf("glossary list wrapped with --width=0:\n%s", list)
 	}
 }
