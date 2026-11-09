@@ -15,6 +15,9 @@ references:
 ### Overview
 `mv` renames a file or directory, or moves it into another directory. Within one file system it is a rename, so it is fast and keeps the contents. It overwrites an existing target file without asking.
 
+### Background
+A `mv` command appeared in Version 1 Unix, according to the FreeBSD and macOS manuals. Today the name covers GNU mv, the mv that macOS ships, and the mv applet in BusyBox. They agree on `-f`, and differ on no-clobber `-n`, update `-u`, and the target-directory option `-t`.
+
 ### Examples
 Rename a file and show that the contents moved with it:
 
@@ -56,6 +59,9 @@ Overwrite the target without prompting, even if `-i` appeared earlier.
 Only `-f` is in the Common examples. No-clobber `-n`, update `-u` and the target-directory option `-t` differ or are missing between implementations. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
+### About GNU mv
+GNU mv is part of GNU coreutils, and this page's checks ran coreutils 9.11. It adds `-t` to name the destination directory first.
+
 ### GNU examples
 Name the destination directory first with `-t`. This option is a GNU extension:
 
@@ -64,9 +70,15 @@ mv -t logs notes.txt app.log && ls logs
 ```
 
 ## Apple
+### About macOS mv
+This is the mv in `/bin` on macOS. It has no `-t`, so the destination goes last.
+
 ### Apple notes
 macOS `mv` is the BSD implementation. It has no `-t`; put the destination last.
 
 ## BusyBox
+### About BusyBox mv
+BusyBox bundles mv as an applet, and anything beyond the common options depends on how it was built. This page's examples ran on BusyBox 1.37.0.
+
 ### BusyBox notes
 BusyBox `mv` supports `-f` and `-i`; GNU long options depend on the build.
