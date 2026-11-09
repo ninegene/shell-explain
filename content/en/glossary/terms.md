@@ -6,10 +6,15 @@ summary: Short definitions of the words beginners meet when they start using a t
 updated: 2026-11-08
 ---
 
-## Argument
-A word you type after a command's name to tell it what to work on or how, such as a file name.
+## Absolute path
+A path that starts with `/`, so it names a file or folder from the top of the tree, wherever you are.
 
-See: input-output-errors
+See: files-and-folders
+
+## Argument
+A word you type after a command's name, such as a file name or an option. In everyday talk every word after the name is an argument.
+
+See: input-output-errors, anatomy-of-a-command
 
 ## Boot
 To start a computer: the steps from pressing the power button until the operating system is running.
@@ -24,12 +29,27 @@ See: who-is-boss
 ## Command
 A short instruction you type into the shell. It is usually the name of a program, followed by extra words that tell the program what to do.
 
-See: big-picture
+See: big-picture, terminal-shell-command
+
+## Command line
+The line you type into the shell: a command name followed by its options and arguments.
+
+See: anatomy-of-a-command, terminal-shell-command
 
 ## CPU
 The part of the computer that carries out instructions, one tiny step at a time, very fast. It is also called the processor.
 
 See: big-picture, computer-body
+
+## Current directory
+The folder the shell is working in. A relative path starts from it. `pwd` prints it, and `cd` changes it.
+
+See: files-and-folders
+
+## Directory
+A folder: a place that holds files and other directories.
+
+See: files-and-folders
 
 ## Disk
 Long-term storage that keeps your files when the computer is turned off, such as a hard disk or a solid-state drive (SSD). It is slower than memory.
@@ -51,10 +71,20 @@ Small built-in software stored on the hardware itself. It starts the computer wh
 
 See: big-picture, who-is-boss
 
+## Flag
+Another word for an option.
+
+See: anatomy-of-a-command
+
 ## Hardware
 The physical parts of a computer that you can touch: the processor, the memory, the disk, the keyboard and the screen.
 
 See: big-picture, computer-body
+
+## Home directory
+Your personal folder. In the shell, `~` stands for it.
+
+See: files-and-folders
 
 ## Kernel
 The core of the operating system. It decides which program gets the CPU and memory, and it talks to the hardware on behalf of programs.
@@ -71,10 +101,20 @@ The software that manages the computer for all other programs. It shares out the
 
 See: big-picture, what-is-an-os
 
+## Option
+A word that starts with a dash, such as `-l`, and changes how a command works. Some options take a value of their own.
+
+See: anatomy-of-a-command
+
 ## Parent process
 The process that started another one. The one it started is its child.
 
 See: processes
+
+## Path
+The way to reach a file or folder, written as names separated by `/`.
+
+See: files-and-folders
 
 ## PID
 Short for process ID: the number the kernel gives each running process so it can be told apart from the others.
@@ -101,6 +141,11 @@ A set of instructions the computer can run to do one job, such as listing files.
 
 See: big-picture, processes
 
+## Prompt
+The text the shell prints to show that it is ready for your next command.
+
+See: terminal-shell-command
+
 ## RAM
 Short for random-access memory. It is the computer's memory: fast, temporary storage that is lost when the power goes off.
 
@@ -111,10 +156,20 @@ Sending one of a program's streams to or from a file instead of the keyboard and
 
 See: pipes-and-redirects, input-output-errors
 
+## Relative path
+A path that does not start with `/`. It starts from the current directory.
+
+See: files-and-folders
+
+## Root directory
+The top folder, written `/`. Every other file and folder is inside it.
+
+See: files-and-folders
+
 ## Shell
 A program that reads the commands you type and starts the programs they name. Bash and zsh are shells.
 
-See: big-picture
+See: big-picture, terminal-shell-command
 
 ## Software
 Instructions, stored as files, that tell a computer what to do. The operating system and every program you run are software.
@@ -149,7 +204,7 @@ See: what-is-an-os
 ## Terminal
 A window or screen that shows text and passes your key presses to the shell.
 
-See: big-picture
+See: big-picture, terminal-shell-command
 
 ## Volatile
 Describes memory that loses its contents when the power goes off.
