@@ -57,6 +57,50 @@ CLI command JSON contains schema_version, content_revision, command metadata, se
 
 Run just content or the exporter with --source content to validate working-tree files. Tests reject schema errors, duplicate IDs/aliases/headings/options, unsupported Markdown, unsafe URLs, control characters, and missing variant coverage. Local documentation links are checked separately; external reference availability is not a network dependency of the offline build. Browser tests compare every implementation's selected CLI sections, HTML, and exact code with the corresponding static page. Reviewed examples run in temporary fixtures against available host tools; see development.md for precise limits.
 
+## Guides and the glossary
+
+Beginner guides and the glossary are a second kind of authored Markdown, parsed by the same Go code and exported next to the command pages. They follow the plan in [learning guides](learning-guides.md). Command pages keep every rule above, including the rejection of tables and headings; only guides and the glossary get the additions below.
+
+**Where they live.** Guides are `content/en/guides/<id>.md`, one file per guide, and the glossary is `content/en/glossary/terms.md`. The command loader reads only `content/en/*.md`, so these files never become command pages. The embed directive in `content/embed.go` lists each directory explicitly because it does not descend into subdirectories; adding a new content directory means adding it there, and `go test ./content` fails if a Markdown file under `content/en` is missing from the embedded copy.
+
+**Guide front matter.** All fields are required except `tags`, which may be empty or omitted:
+
+```yaml
+---
+schema_version: 1
+id: big-picture
+title: From Keypress to Screen
+subtitle: The big picture of what happens when you type a command
+summary: Follow one command from your fingers to the text on your screen.
+series: how-a-computer-works
+order: 1
+level: beginner
+reading_minutes: 5
+updated: 2026-11-08
+tags: [basics, overview]
+related_commands: [ls, cat]
+related_guides: []
+references:
+  - https://docs.kernel.org/
+---
+```
+
+The `id` matches the filename. `series` is one of the registered series in `catalog.Series` (exported as `series`), and `order` is the guide's position in it; two guides cannot share a position. `level` is `beginner` for now. `updated` follows the same `YYYY-MM-DD` rule and hand-maintenance as command pages. Every name in `related_commands` must be an existing command page or alias, and every name in `related_guides` an existing other guide; these are checked when the whole collection loads. Unknown keys are rejected.
+
+**Guide sections.** A guide has exactly these level-two sections, in this order: Goal, The idea in plain words, A picture, Another way to see it, Walk through it, Try it, Common confusions, Check yourself, Where next. Level-three headings are allowed inside a section; level one and levels four to six are not.
+
+**Markdown additions for guides.** Everything the command subset allows, plus:
+
+- Pipe tables, with at most four columns. A table must render within 78 columns, because the CLI prints it as aligned text without wrapping cells.
+- Diagrams, written as a fenced block with the language `diagram`. A diagram uses plain printable ASCII, is at most 72 columns wide, and must be followed by a paragraph that starts with `Diagram:` and describes it in words. The CLI prints a diagram exactly as written, with no added indent, and the web page shows it in a block that is not copyable.
+- Level-three headings.
+
+**Glossary.** `terms.md` has front matter with `schema_version`, `id: glossary`, `title`, `summary` and `updated`. Each level-two section is one term: the heading is the term and the body its definition. The anchor is the heading in lowercase with hyphens, so `Operating system` is `operating-system`, and anchors must be unique. A final paragraph written `See: guide-id, other-guide` links the term to guides, which must exist.
+
+**Command pages** may add an optional `related_guides` list of guide IDs, which must exist. It is exported as `related_guides`, and the CLI and web will use it for "Learn more" links.
+
+**Export and revision.** The exporter adds `series`, `guides` and `glossary` next to `entries`, with the same per-section IDs, HTML and exact code strings. Guide and glossary files are part of the content revision, so any edit changes it.
+
 ## Content ownership
 
 Write original examples and explanations. Link upstream manuals for detailed authority. Borrowing project ideas does not permit copying their text. If reuse is approved, preserve provenance, attribution, licensing, and modification notices as required. Choose code and content licenses before importing a corpus or publishing reusable releases.

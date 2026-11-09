@@ -93,6 +93,7 @@ func TestInvalidContent(t *testing.T) {
 		"two About sections":    valid + "\n### About one\nText.\n\n### About two\nText.\n",
 		"missing Background":    strings.Replace(valid, "### Background", "### History", 1),
 		"missing About":         strings.Replace(valid, "### About GNU grep", "### Notes on GNU grep", 1),
+		"table in command page": strings.Replace(valid, "Use `grep`", "| a | b |\n| - | - |\n| 1 | 2 |\n\nUse `grep`", 1),
 		"missing updated":       strings.Replace(valid, "updated: 2026-11-08\n", "", 1),
 		"updated wrong order":   strings.Replace(valid, "updated: 2026-11-08", "updated: 08-11-2026", 1),
 		"updated not a date":    strings.Replace(valid, "updated: 2026-11-08", "updated: yesterday", 1),

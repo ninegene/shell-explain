@@ -12,12 +12,12 @@ import (
 	"regexp"
 	"slices"
 	"strings"
-	"time"
 	"unicode"
-	"unicode/utf8"
 
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
+	"github.com/yuin/goldmark/extension"
+	east "github.com/yuin/goldmark/extension/ast"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/text"
 	"github.com/yuin/goldmark/util"
@@ -95,6 +95,9 @@ type Metadata struct {
 	// changed. Authors set it by hand when they edit a page's claims.
 	Updated    string   `yaml:"updated" json:"updated"`
 	References []string `yaml:"references" json:"references"`
+	// RelatedGuides names beginner guides that explain ideas this page assumes.
+	// Optional; each name must be an existing guide.
+	RelatedGuides []string `yaml:"related_guides" json:"related_guides,omitempty"`
 }
 
 type Section struct {
@@ -144,6 +147,9 @@ type Catalog struct {
 	Revision        string           `json:"revision"`
 	Implementations []Implementation `json:"implementations"`
 	Entries         []Entry          `json:"entries"`
+	Series          []SeriesInfo     `json:"series"`
+	Guides          []Guide          `json:"guides"`
+	Glossary        Glossary         `json:"glossary"`
 }
 
 func Load(files fs.FS) (*Catalog, error) {
@@ -154,7 +160,7 @@ func Load(files fs.FS) (*Catalog, error) {
 	if len(paths) == 0 {
 		return nil, fmt.Errorf("no command Markdown files found")
 	}
-	c := &Catalog{SchemaVersion: SchemaVersion, Implementations: Implementations, Entries: []Entry{}}
+	c := &Catalog{SchemaVersion: SchemaVersion, Implementations: Implementations, Entries: []Entry{}, Series: Series, Guides: []Guide{}, Glossary: Glossary{Terms: []GlossaryTerm{}}}
 	hash := sha256.New()
 	seen := map[string]bool{}
 	for _, p := range paths {
@@ -181,31 +187,23 @@ func Load(files fs.FS) (*Catalog, error) {
 		hash.Write([]byte{0})
 		c.Entries = append(c.Entries, *entry)
 	}
+	if err := c.loadGuides(files, hash); err != nil {
+		return nil, err
+	}
+	if err := c.checkReferences(); err != nil {
+		return nil, err
+	}
 	c.Revision = hex.EncodeToString(hash.Sum(nil))
 	return c, nil
 }
 
 func Parse(data []byte) (*Entry, error) {
-	if !utf8.Valid(data) {
-		return nil, fmt.Errorf("content must be UTF-8")
-	}
-	if bytes.Contains(data, []byte("\r")) {
-		return nil, fmt.Errorf("use LF line endings")
-	}
-	for _, b := range string(data) {
-		if unicode.IsControl(b) && b != '\n' && b != '\t' {
-			return nil, fmt.Errorf("control characters are not allowed")
-		}
-	}
-	if !bytes.HasPrefix(data, []byte("---\n")) {
-		return nil, fmt.Errorf("missing YAML front matter")
-	}
-	parts := bytes.SplitN(data[4:], []byte("\n---\n"), 2)
-	if len(parts) != 2 {
-		return nil, fmt.Errorf("unclosed front matter")
+	front, rest, err := frontMatter(data)
+	if err != nil {
+		return nil, err
 	}
 	e := &Entry{VersionPolicy: VersionPolicy, Sections: []Section{}}
-	dec := yaml.NewDecoder(bytes.NewReader(parts[0]))
+	dec := yaml.NewDecoder(bytes.NewReader(front))
 	dec.KnownFields(true)
 	if err := dec.Decode(&e.Metadata); err != nil {
 		return nil, err
@@ -213,8 +211,8 @@ func Parse(data []byte) (*Entry, error) {
 	if err := validateMetadata(e.Metadata); err != nil {
 		return nil, err
 	}
-	body := string(parts[1])
-	headings, err := sectionHeadings(parts[1])
+	body := string(rest)
+	headings, err := sectionHeadings(rest)
 	if err != nil {
 		return nil, err
 	}
@@ -397,13 +395,13 @@ func validateMetadata(m Metadata) error {
 			}
 		}
 	}
-	if _, err := time.Parse("2006-01-02", m.Updated); err != nil {
-		return fmt.Errorf("updated must be a calendar date written YYYY-MM-DD, got %q", m.Updated)
+	if err := validDate(m.Updated); err != nil {
+		return err
 	}
 	if len(m.Tags) == 0 || len(m.Implementations) == 0 || len(m.References) == 0 {
 		return fmt.Errorf("tags, implementations and references are required")
 	}
-	for i, list := range [][]string{m.Aliases, m.Tags, m.Implementations} {
+	for i, list := range [][]string{m.Aliases, m.Tags, m.Implementations, m.RelatedGuides} {
 		valid := names.MatchString
 		if i == 0 {
 			valid = IsLookupName
@@ -439,7 +437,10 @@ func safeURL(s string) bool {
 // RenderHTML allows only a small, non-executable CommonMark subset.
 func RenderHTML(markdown string) (string, []string, error) {
 	source := []byte(markdown)
-	md := goldmark.New()
+	// Parse pipe tables only to reject them: the terminal renderer understands
+	// tables, so a command page must not contain one that the web would show
+	// as plain text.
+	md := goldmark.New(goldmark.WithExtensions(extension.Table))
 	node := md.Parser().Parse(text.NewReader(source))
 	code := []string{}
 	err := ast.Walk(node, func(n ast.Node, enter bool) (ast.WalkStatus, error) {
@@ -448,6 +449,8 @@ func RenderHTML(markdown string) (string, []string, error) {
 		}
 		switch v := n.(type) {
 		case *ast.Document, *ast.Paragraph, *ast.TextBlock, *ast.Text, *ast.String, *ast.CodeSpan, *ast.Emphasis, *ast.List, *ast.ListItem:
+		case *east.Table:
+			return ast.WalkStop, fmt.Errorf("tables are not supported in command pages")
 		case *ast.Link:
 			if !safeURL(string(v.Destination)) {
 				return ast.WalkStop, fmt.Errorf("unsafe or unsupported link %q", v.Destination)

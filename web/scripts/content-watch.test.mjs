@@ -179,7 +179,9 @@ test(
     await rm(source);
     await until(async () => (await page('/commands/grep/')).status === 404);
     // The homepage falls back to the first command alphabetically.
+    // Only command pages count; guides and the glossary live in subdirectories.
     const fallback = (await readdir(path.join(fixture, 'content/en')))
+      .filter((name) => name.endsWith('.md'))
       .map((name) => name.replace(/\.md$/, ''))
       .sort((a, b) => a.localeCompare(b))[0];
     await until(async () => {
