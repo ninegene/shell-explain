@@ -65,7 +65,7 @@ Here is what happens, step by step, when you run `grep -q cherry fruit.txt && ec
 If the file had contained `cherry`, `grep` would have ended with 0, and `echo found` would have run.
 
 ## Try it
-These commands only look at things. Each one works on its own.
+These commands only look at things, except the last one, which writes a small file called `nothing.txt` in the folder you are in. Run it where that is fine. Each one works on its own.
 
 Run a command that succeeds and read its status:
 

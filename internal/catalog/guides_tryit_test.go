@@ -3,12 +3,35 @@ package catalog
 import (
 	"os"
 	"os/exec"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/ninegene/shell-explain/content"
 	"github.com/ninegene/shell-explain/internal/examplecheck"
 )
+
+// A Try it intro that promises read-only commands must be true: no block may
+// redirect into a file unless the intro says the commands write one.
+func TestTryItIntroMatchesWhatTheCommandsDo(t *testing.T) {
+	c, err := Load(content.Files)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, g := range c.Guides {
+		for _, s := range g.Sections {
+			if s.Title != "Try it" {
+				continue
+			}
+			readOnly := strings.Contains(s.Markdown, "only look at things") && !strings.Contains(s.Markdown, "writes")
+			for _, b := range examplecheck.TryItBlocks(s.Markdown) {
+				if readOnly && strings.Contains(b.Code, ">") {
+					t.Errorf("guide %s says its commands only look at things, but one redirects into a file: %q", g.ID, b.Code)
+				}
+			}
+		}
+	}
+}
 
 // Every command a guide asks a reader to try must be safe, must succeed on
 // this machine, and must print what the guide says it prints. Commands run
