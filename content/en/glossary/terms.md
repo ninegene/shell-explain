@@ -122,7 +122,7 @@ Instructions, stored as files, that tell a computer what to do. The operating sy
 See: who-is-boss
 
 ## stderr
-Short for standard error: the stream a program writes its error messages to. By default it goes to your screen.
+Short for standard error: the stream a program writes its error messages and warnings to. It is kept apart from standard output so that results stay clean when they are saved or piped, and so that errors are still seen. By default it goes to your screen.
 
 See: input-output-errors
 
@@ -132,7 +132,7 @@ Short for standard input: the stream a program reads from. By default it comes f
 See: input-output-errors
 
 ## stdout
-Short for standard output: the stream a program writes its normal results to. By default it goes to your screen.
+Short for standard output: the stream a program writes its normal results to. A pipe or a `>` redirect carries this stream, and not standard error. By default it goes to your screen.
 
 See: input-output-errors
 
