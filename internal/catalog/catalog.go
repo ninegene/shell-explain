@@ -240,6 +240,18 @@ func Parse(data []byte) (*Entry, error) {
 				section.Options = append(section.Options, op)
 			}
 		}
+		if title == "Background" && view != "common" {
+			return fmt.Errorf("Background belongs in Common, not %q", view)
+		}
+		if strings.HasPrefix(title, "About ") {
+			if view == "common" {
+				return fmt.Errorf("%q belongs in an implementation view, not Common", title)
+			}
+			if seen[view+"/about"] {
+				return fmt.Errorf("more than one About section in %q", view)
+			}
+			seen[view+"/about"] = true
+		}
 		key := view + "/" + title
 		if seen[key] {
 			return fmt.Errorf("duplicate section %q", key)

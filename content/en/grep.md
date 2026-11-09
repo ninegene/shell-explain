@@ -17,6 +17,9 @@ Use `grep` to select lines from a file or from another command's output. The pat
 
 For the full GNU reference, read the [GNU grep manual](https://www.gnu.org/software/grep/manual/).
 
+### Background
+The name comes from the `ed` editor command `g/re/p`: globally search for a regular expression and print the matching lines. `grep` first appeared in Version 6 Unix, according to the FreeBSD manual. Today the name covers several separate programs that share that interface but not their source code: GNU grep, the BSD-derived grep that macOS ships, and a small reimplementation inside BusyBox. They agree on the common options below and differ on extensions such as the Perl-style `-P` patterns, regular-expression engines, and recursive-search details. That is why the sections that follow are split by implementation.
+
 ### Examples
 Find lines containing ERROR in a log:
 
@@ -126,6 +129,9 @@ An exit status of 1 means no lines matched; it does not necessarily mean the com
 The examples in Common use options that GNU grep, macOS grep, and BusyBox grep all accept; they were executed on GNU grep 3.12, macOS grep (BSD) 2.6.0-FreeBSD, and BusyBox 1.37.0 (see the development guide for the exact check). Optional regex engines and recursive-search details differ. Implementation detection does not guarantee every installed version supports every feature; inspect the installed manual for version-specific behavior.
 
 ## GNU
+### About GNU grep
+GNU grep is the GNU Project's grep. Homebrew installs it on macOS as `ggrep`, and as `grep` in its `gnubin` directory, which acts as GNU grep when placed first on PATH (checked with Homebrew grep 3.12). It accepts the `-P` Perl-style patterns, which macOS grep rejects. Its `--version` output names GNU grep.
+
 ### GNU examples
 Search a directory recursively and print matching line numbers:
 
@@ -139,9 +145,15 @@ grep -rn --include='*.log' 'ERROR' logs/
 GNU's long spelling for `-n`. Use `-n` for a shorter portable example.
 
 ## Apple
+### About macOS grep
+The `grep` in `/usr/bin` on macOS is Apple's build of the BSD-derived grep. It describes itself as BSD grep while accepting many GNU options, so its banner can look GNU-compatible even though it is not GNU grep. For example, macOS grep 2.6.0-FreeBSD rejects `-P` as an invalid option. A package-manager GNU grep earlier on PATH changes which one you run.
+
 ### Apple notes
 The macOS system utility is usually `/usr/bin/grep`. GNU grep installed by a package manager may be named `ggrep` or may come first on PATH. Use the detected executable path to distinguish them; the operating system alone is not enough.
 
 ## BusyBox
+### About BusyBox grep
+BusyBox bundles a compact `grep` as one of its applets, so it is what you get on systems built around BusyBox, such as the Alpine Linux guest this project's Linux check uses. Which options exist depends on how BusyBox was configured when it was built, so check `grep --help` in the actual environment.
+
 ### BusyBox notes
 BusyBox applets can vary with build configuration. Prefer the common short options and consult `grep --help` in the actual environment before using optional features.
