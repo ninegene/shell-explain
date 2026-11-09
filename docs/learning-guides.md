@@ -163,6 +163,8 @@ Guides are a second kind of authored Markdown, separate from command pages, load
   - **Tables**, using the standard pipe syntax. Rendered as aligned text in the CLI and as a real table on the web, with horizontal scrolling on narrow screens.
   - **Diagrams**, as a fenced block with the language `diagram`. The block must be followed by a paragraph that starts with `Diagram:` and describes it in words. The web shows it in a labelled, non-copyable block; the CLI prints it unchanged.
   - Everything else stays as today: no raw HTML, no images, no nested headings beyond level three.
+- **Embedding:** `content/embed.go` currently embeds `en/*.md`, which skips subdirectories, so the offline CLI would contain no guide or glossary. The directive must become `//go:embed en/*.md en/guides/*.md en/glossary/*.md`, with a test that fails if a content file on disk is missing from the embedded filesystem. This keeps one authored collection supplying both the CLI and the website.
+- **Command-page front matter:** command pages gain an optional `related_guides` list (each entry must be an existing guide) that drives the `Learn more:` lines and boxes. The parser rejects unknown keys today, so this needs a parser change, a `docs/content-format.md` update and tests. The schema version stays 1 for now: the format is documented as extensible during stage 4, and the field is optional so no existing page changes. Revisit the version number before the public release.
 - **Export:** the exporter adds `guides` and `glossary` next to `entries`, with the same per-section IDs, HTML, and exact code strings, so the web uses the CLI's exported content. Search records include guides and glossary terms.
 - **Quality checks in the parser:** required sections present and in order, diagram width at most 72 columns, every diagram followed by its `Diagram:` description, tables at most four columns, links and related names resolve, `updated` valid.
 
@@ -209,7 +211,7 @@ Reading behaviour:
 Each step is a reviewed pull request, in this order.
 
 1. **This design.** Review and adjust the catalog, outline and open questions.
-2. **Format.** Guide and glossary parsing, tables and diagrams in the Markdown subset, validation, export, and tests. One sample guide (`big-picture`) to exercise everything.
+2. **Format.** Guide and glossary parsing, tables and diagrams in the Markdown subset, validation, the embed change, the optional `related_guides` field on command pages, export, and tests. One sample guide (`big-picture`) to exercise everything.
 3. **CLI and web shell.** `learn` and `glossary`, pager, search, the `/learn/` pages, the home page section, and the parity and accessibility tests.
 4. **Content, Series 1 and 2.** Written in batches of three to five guides, each with its diagrams, tables and runnable examples.
 5. **Content, Series 3 and the glossary.** History and implementation guides, with references.
