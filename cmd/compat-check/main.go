@@ -10,10 +10,12 @@ import (
 	"os/exec"
 	"path/filepath"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/ninegene/shell-explain/content"
 	"github.com/ninegene/shell-explain/internal/catalog"
+	"github.com/ninegene/shell-explain/internal/detect"
 	"github.com/ninegene/shell-explain/internal/examplecheck"
 )
 
@@ -91,6 +93,46 @@ func check() error {
 				}
 			}
 		}
+	}
+	return checkAwk()
+}
+
+// checkAwk runs implementation detection against the guest's real awk
+// programs: BusyBox, gawk and mawk. No awk page exists yet, so this calls the
+// detector directly instead of the CLI.
+func checkAwk() error {
+	for _, tt := range []struct{ command, provider, impl string }{
+		{"awk", "busybox", "busybox"},
+		{"awk", "gawk", "gnu"},
+		{"gawk", "gawk", "gnu"},
+		{"awk", "mawk", "mawk"},
+		{"mawk", "mawk", "mawk"},
+	} {
+		tools, err := os.MkdirTemp("", "awk-tools-")
+		if err != nil {
+			return err
+		}
+		defer os.RemoveAll(tools)
+		target := "/bin/busybox"
+		if tt.provider != "busybox" {
+			if target, err = exec.LookPath(tt.provider); err != nil {
+				return err
+			}
+		}
+		link := filepath.Join(tools, tt.command)
+		if err = os.Symlink(target, link); err != nil {
+			return err
+		}
+		banner, _ := run(link, []string{"--version"}, "/", tools)
+		s, err := (detect.Detector{OS: "linux", Path: tools}).Select(context.Background(), detect.Request{Name: tt.command, Command: "awk"})
+		if err != nil {
+			return err
+		}
+		if s.Implementation != tt.impl || s.Confidence != "detected" {
+			return fmt.Errorf("awk %s (%s) detected as %+v", tt.command, tt.provider, s)
+		}
+		first, _, _ := strings.Cut(string(banner), "\n")
+		fmt.Printf("Linux awk detection: %s via %s -> %s (version %s); banner: %s\n", tt.command, tt.provider, tt.impl, s.Version, first)
 	}
 	return nil
 }
