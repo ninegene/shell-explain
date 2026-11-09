@@ -2,12 +2,24 @@ package catalog
 
 import (
 	"encoding/json"
+	"regexp"
 	"strings"
 	"testing"
 	"testing/fstest"
 
 	"github.com/ninegene/shell-explain/content"
 )
+
+// isolatedGuide removes the sample guide's links to other guides, so a test
+// can load it on its own. The shipped guide links to its neighbours.
+func isolatedGuide(guide string) string {
+	return regexp.MustCompile(`(?m)^related_guides: .*$`).ReplaceAllString(guide, "related_guides: []")
+}
+
+// isolatedGlossary points every term at one guide, for the same reason.
+func isolatedGlossary(terms, guide string) string {
+	return regexp.MustCompile(`(?m)^See: .*$`).ReplaceAllString(terms, "See: "+guide)
+}
 
 func sampleGuide(t *testing.T) string {
 	t.Helper()
@@ -131,12 +143,24 @@ func TestGlossaryParsing(t *testing.T) {
 		t.Fatal("no terms")
 	}
 	for _, term := range g.Terms {
-		if term.ID == "" || term.Markdown == "" || strings.Contains(term.Markdown, "See:") || len(term.Guides) != 1 {
+		if term.ID == "" || term.Markdown == "" || strings.Contains(term.Markdown, "See:") || len(term.Guides) < 1 {
 			t.Fatalf("term %+v", term)
 		}
 	}
-	if g.Terms[7].ID != "operating-system" || g.Terms[7].Term != "Operating system" {
-		t.Fatalf("anchor id: %+v", g.Terms[7])
+	var os GlossaryTerm
+	for _, term := range g.Terms {
+		if term.ID == "operating-system" {
+			os = term
+		}
+	}
+	if os.Term != "Operating system" || len(os.Guides) < 2 {
+		t.Fatalf("anchor id or guide links: %+v", os)
+	}
+	// Terms are listed alphabetically, ignoring case, so readers can scan them.
+	for i := 1; i < len(g.Terms); i++ {
+		if strings.ToLower(g.Terms[i-1].Term) > strings.ToLower(g.Terms[i].Term) {
+			t.Errorf("%q should come after %q", g.Terms[i-1].Term, g.Terms[i].Term)
+		}
 	}
 	valid := string(raw)
 	for name, s := range map[string]string{
@@ -159,11 +183,12 @@ func TestLoadChecksReferencesAndRevision(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	guide := sampleGuide(t)
-	terms, err := content.Files.ReadFile("en/glossary/terms.md")
+	guide := isolatedGuide(sampleGuide(t))
+	rawTerms, err := content.Files.ReadFile("en/glossary/terms.md")
 	if err != nil {
 		t.Fatal(err)
 	}
+	terms := []byte(isolatedGlossary(string(rawTerms), "big-picture"))
 	load := func(command, guide, glossary string) (*Catalog, error) {
 		files := fstest.MapFS{
 			"en/grep.md":                {Data: []byte(command)},
@@ -252,7 +277,7 @@ func TestGuideLookupOrderAndSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	base := strings.Replace(sampleGuide(t), "related_commands: [ls, cat]", "related_commands: [grep]", 1)
+	base := strings.Replace(isolatedGuide(sampleGuide(t)), "related_commands: [ls, cat]", "related_commands: [grep]", 1)
 	guide := func(id, series string, order int, title string) []byte {
 		g := strings.Replace(base, "id: big-picture", "id: "+id, 1)
 		g = strings.Replace(g, "series: how-a-computer-works", "series: "+series, 1)
@@ -262,7 +287,7 @@ func TestGuideLookupOrderAndSearch(t *testing.T) {
 	// Files are given out of order: reading order is series, then position.
 	c, err := Load(fstest.MapFS{
 		"en/grep.md":                {Data: grep},
-		"en/glossary/terms.md":      {Data: []byte(strings.ReplaceAll(string(terms), "See: big-picture", "See: alpha"))},
+		"en/glossary/terms.md":      {Data: []byte(isolatedGlossary(string(terms), "alpha"))},
 		"en/guides/zeta.md":         {Data: guide("zeta", "terminal-shell-commands", 1, "Zeta Guide")},
 		"en/guides/beta.md":         {Data: guide("beta", "how-a-computer-works", 2, "Beta Guide")},
 		"en/guides/alpha.md":        {Data: guide("alpha", "how-a-computer-works", 1, "Alpha Guide")},

@@ -107,6 +107,8 @@ Requires Python 3, curl, Go, libarchive tar, and a separately installed qemu-sys
 
 The guest also runs implementation detection against its real awk programs (BusyBox 1.37.0, gawk 5.3.2 and mawk 1.3.4 from Alpine 3.24) and prints their banners, and runs the awk page's examples with each of them. The guest tests actual BusyBox and GNU executable selection and runs every authored code example for the entries that declare BusyBox or GNU inside temporary fixtures, including expected log output and sed backup preservation. It prints LINUX_SMOKE_PASS only after those checks succeed. The test helper cmd/compat-check is not a distributed command.
 
+The guides' `Try it` commands are run too: `go test ./internal/catalog` runs each one in a temporary folder on the host, and `scripts/linux-smoke.py` runs them in the Linux guest on BusyBox and GNU tools, checking that each succeeds, matches any output the guide shows, and avoids the commands a beginner guide must not ask for.
+
 `go test ./content` checks that every Markdown file under `content/en`, including guides and the glossary, is in the embedded filesystem the CLI ships with.
 
 Run `python3 -B scripts/test_linux_smoke.py` for extractor-selection unit tests without downloads or QEMU. These cover explicit bsdtar, macOS system tar with GNU tar first on PATH, libarchive tar on PATH, and rejection of GNU tar.

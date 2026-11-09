@@ -121,11 +121,12 @@ func runLearn(c *catalog.Catalog, op options, out, errOut io.Writer, cfg Config)
 	}
 	writeHeading(out, color, "Keep going")
 	prev, next := c.GuideNeighbors(g.ID)
+	// A title and its command go on two lines, so long titles stay within 80 columns.
 	if next != nil {
-		fmt.Fprintf(out, "Next:      explain learn %s  (%s)\n", next.ID, next.Title)
+		fmt.Fprintf(out, "Next:      %s\n           explain learn %s\n", next.Title, next.ID)
 	}
 	if prev != nil {
-		fmt.Fprintf(out, "Previous:  explain learn %s  (%s)\n", prev.ID, prev.Title)
+		fmt.Fprintf(out, "Previous:  %s\n           explain learn %s\n", prev.Title, prev.ID)
 	}
 	fmt.Fprintln(out, "All guides: explain learn    Words you will see: explain glossary")
 	if len(g.RelatedCommands) > 0 {
@@ -137,7 +138,7 @@ func runLearn(c *catalog.Catalog, op options, out, errOut io.Writer, cfg Config)
 	}
 	for _, id := range g.RelatedGuides {
 		if related, ok := c.FindGuide(id); ok {
-			fmt.Fprintf(out, "Related:   explain learn %s  (%s)\n", related.ID, related.Title)
+			fmt.Fprintf(out, "Related:   %s\n           explain learn %s\n", related.Title, related.ID)
 		}
 	}
 	fmt.Fprintln(out)
@@ -240,13 +241,23 @@ func runGlossary(c *catalog.Catalog, op options, out, errOut io.Writer, cfg Conf
 	}
 	t, ok := c.FindTerm(op.args[1])
 	if !ok {
-		hint := ""
-		if similar := c.SearchTerms(op.args[1]); len(similar) > 0 {
-			names := make([]string, 0, 5)
-			for _, s := range similar[:min(len(similar), 5)] {
-				names = append(names, s.Term)
+		// Suggest terms whose name contains the typed text; only when none do,
+		// fall back to terms whose definition mentions it.
+		var names []string
+		query := strings.ToLower(op.args[1])
+		for _, t := range c.Glossary.Terms {
+			if strings.Contains(strings.ToLower(t.Term), query) {
+				names = append(names, t.Term)
 			}
-			hint = "; similar: " + strings.Join(names, ", ")
+		}
+		if len(names) == 0 {
+			for _, t := range c.SearchTerms(op.args[1]) {
+				names = append(names, t.Term)
+			}
+		}
+		hint := ""
+		if len(names) > 0 {
+			hint = "; similar: " + strings.Join(names[:min(len(names), 5)], ", ")
 		}
 		return failure(out, errOut, op.format, fmt.Errorf("no glossary entry for %q%s; run explain glossary to list them", op.args[1], hint))
 	}
@@ -255,9 +266,12 @@ func runGlossary(c *catalog.Catalog, op options, out, errOut io.Writer, cfg Conf
 	}
 	writeHeading(out, color, t.Term)
 	fmt.Fprintln(out, catalog.Plain(t.Markdown, width))
+	if len(t.Guides) > 0 {
+		fmt.Fprintln(out, "Learn more:")
+	}
 	for _, id := range t.Guides {
 		if g, ok := c.FindGuide(id); ok {
-			fmt.Fprintf(out, "Learn more: explain learn %s  (%s)\n", g.ID, g.Title)
+			fmt.Fprintf(out, "  explain learn %s  (%s)\n", g.ID, g.Title)
 		}
 	}
 	return 0

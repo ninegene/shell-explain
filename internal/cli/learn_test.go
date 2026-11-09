@@ -14,7 +14,7 @@ func TestLearnListAndReading(t *testing.T) {
 	if status != 0 || stderr != "" {
 		t.Fatalf("learn: %d %s", status, stderr)
 	}
-	for _, want := range []string{"How a Computer Works, Just Enough", "From Keypress to Screen", "5 min", "explain learn big-picture", "explain glossary WORD"} {
+	for _, want := range []string{"How a Computer Works, Just Enough", "  1  From Keypress to Screen", "  2  The Computer's Body: CPU, Memory, Disk", "  5  Programs That Are Awake: Processes", "5 min", "explain learn big-picture", "explain learn processes", "explain glossary WORD"} {
 		if !strings.Contains(list, want) {
 			t.Errorf("list is missing %q:\n%s", want, list)
 		}
@@ -28,7 +28,7 @@ func TestLearnListAndReading(t *testing.T) {
 	if byName != byNumber || !strings.HasPrefix(byName, "From Keypress to Screen\n") {
 		t.Fatalf("name and number differ or the header is wrong:\n%s", byName)
 	}
-	for _, want := range []string{"Series: How a Computer Works, Just Enough", "Guide 1 of 1 · about 5 minutes", "Goal\n", "A picture\n", "Try it\n", "Check yourself\n", "Where next\n", "Keep going\n", "Commands:  explain ls, explain cat", "References\nhttps://www.gnu.org/software/bash/manual/\nhttps://docs.kernel.org/\n"} {
+	for _, want := range []string{"Series: How a Computer Works, Just Enough", "Guide 1 of 5 · about 5 minutes", "Next:      The Computer's Body: CPU, Memory, Disk\n           explain learn computer-body\n", "Related:   The Computer's Body: CPU, Memory, Disk\n           explain learn computer-body\n", "           explain learn who-is-boss\n", "Goal\n", "A picture\n", "Try it\n", "Check yourself\n", "Where next\n", "Keep going\n", "Commands:  explain ls, explain cat", "References\nhttps://www.gnu.org/software/bash/manual/\nhttps://docs.kernel.org/\n"} {
 		if !strings.Contains(byName, want) {
 			t.Errorf("guide is missing %q", want)
 		}
@@ -47,6 +47,35 @@ func TestLearnListAndReading(t *testing.T) {
 		if utf8.RuneCountInString(line) > 70 && !strings.HasPrefix(line, "https://") && !strings.HasPrefix(line, "Next") {
 			t.Errorf("prose line wider than 70: %q", line)
 		}
+	}
+}
+
+// Every guide, with its header and footer, fits an 80-column terminal.
+func TestEveryGuideFitsEightyColumns(t *testing.T) {
+	_, list, _ := run(t, "learn", "--format=json")
+	var ids struct {
+		Series []struct{ Guides []struct{ ID string } }
+	}
+	if err := json.Unmarshal([]byte(list), &ids); err != nil {
+		t.Fatal(err)
+	}
+	checked := 0
+	for _, s := range ids.Series {
+		for _, g := range s.Guides {
+			_, text, stderr := run(t, "learn", g.ID, "--width=80")
+			if stderr != "" || text == "" {
+				t.Fatalf("%s: %q", g.ID, stderr)
+			}
+			for _, line := range strings.Split(text, "\n") {
+				if n := utf8.RuneCountInString(line); n > 80 && !strings.HasPrefix(line, "https://") {
+					t.Errorf("%s: line of %d characters: %q", g.ID, n, line)
+				}
+			}
+			checked++
+		}
+	}
+	if checked < 5 {
+		t.Errorf("only %d guides checked", checked)
 	}
 }
 
@@ -88,7 +117,7 @@ func TestLearnSectionAndJSON(t *testing.T) {
 		} `json:"series"`
 	}
 	_, data, _ = run(t, "learn", "--format=json")
-	if err := json.Unmarshal([]byte(data), &list); err != nil || len(list.Series) != 4 || list.Series[0].Guides[0].ID != "big-picture" || list.Series[0].Guides[0].Number != 1 || len(list.Series[3].Guides) != 0 {
+	if err := json.Unmarshal([]byte(data), &list); err != nil || len(list.Series) != 4 || list.Series[0].Guides[0].ID != "big-picture" || list.Series[0].Guides[0].Number != 1 || len(list.Series[0].Guides) != 5 || list.Series[0].Guides[4].ID != "processes" || list.Series[0].Guides[4].Number != 5 || len(list.Series[3].Guides) != 0 {
 		t.Fatalf("list json: %v %s", err, data)
 	}
 }
@@ -122,7 +151,7 @@ func TestGlossary(t *testing.T) {
 	_, same, _ := run(t, "glossary", "KERNEL")
 	_, anchor, _ := run(t, "glossary", "operating-system")
 	_, spaced, _ := run(t, "glossary", "Operating system")
-	if term != same || anchor != spaced || !strings.HasPrefix(term, "Kernel\nThe core of the operating system.") || !strings.Contains(term, "Learn more: explain learn big-picture  (From Keypress to Screen)") || strings.Contains(term, "See:") {
+	if term != same || anchor != spaced || !strings.HasPrefix(term, "Kernel\nThe core of the operating system.") || !strings.Contains(term, "Learn more:\n  explain learn big-picture  (From Keypress to Screen)\n  explain learn what-is-an-os  (What an Operating System Really Does)\n  explain learn who-is-boss  (") || strings.Contains(term, "See:") {
 		t.Fatalf("term output:\n%s", term)
 	}
 	var one struct {
@@ -132,7 +161,7 @@ func TestGlossary(t *testing.T) {
 		} `json:"term"`
 	}
 	_, data, _ := run(t, "glossary", "kernel", "--format=json")
-	if err := json.Unmarshal([]byte(data), &one); err != nil || one.Term.ID != "kernel" || !slices.Equal(one.Term.Guides, []string{"big-picture"}) {
+	if err := json.Unmarshal([]byte(data), &one); err != nil || one.Term.ID != "kernel" || !slices.Equal(one.Term.Guides, []string{"big-picture", "what-is-an-os", "who-is-boss"}) {
 		t.Fatalf("term json: %v %s", err, data)
 	}
 	var all struct {
@@ -141,12 +170,17 @@ func TestGlossary(t *testing.T) {
 		} `json:"glossary"`
 	}
 	_, data, _ = run(t, "glossary", "--format=json")
-	if err := json.Unmarshal([]byte(data), &all); err != nil || len(all.Glossary.Terms) != 11 {
+	if err := json.Unmarshal([]byte(data), &all); err != nil || len(all.Glossary.Terms) != 21 {
 		t.Fatalf("glossary json: %v", err)
 	}
 	_, _, stderr = run(t, "glossary", "kerne")
-	if !strings.Contains(stderr, "similar: Kernel") {
-		t.Errorf("no suggestion: %s", stderr)
+	if !strings.Contains(stderr, "similar: Kernel;") {
+		t.Errorf("name matches should be the only suggestions: %s", stderr)
+	}
+	// With no name match, fall back to definitions that mention the word.
+	_, _, stderr = run(t, "glossary", "processor")
+	if !strings.Contains(stderr, "similar: CPU,") {
+		t.Errorf("no definition-based suggestion: %s", stderr)
 	}
 }
 
