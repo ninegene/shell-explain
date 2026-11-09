@@ -12,7 +12,7 @@ An unchecked command needs an original or expanded page, applicable implementati
 
 ## Per-command completion criteria
 
-- Explain the purpose, prerequisites, common tasks, common mistakes, and portability limits in the canonical Markdown page.
+- Explain the purpose, prerequisites, common tasks, common mistakes, and portability limits in the canonical Markdown page, with a `Background` section and an `About` section for each implementation view (required; see [content format](content-format.md)).
 - Cover commonly used options and practical examples: start with 5–10 distinct everyday use cases where meaningful; small commands may need fewer, complex tools may need more. Do not pad trivial commands or claim an exhaustive manual. Explain option arguments and expected behavior.
 - Keep each example in a separate fenced block, and use structured option sections and the existing compact output conventions in AGENTS.md.
 - Identify applicable implementations separately from OS: GNU, Apple/macOS, BusyBox, and Bash builtins where relevant. Research FreeBSD/OpenBSD or other implementations when applicable; explicitly mark unsupported/not-applicable variants instead of inventing them. BusyBox applet availability/options vary by build. Modern tools such as jq or Git need their actual upstream implementation, not fabricated GNU/BusyBox variants.

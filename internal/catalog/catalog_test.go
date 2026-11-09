@@ -87,6 +87,8 @@ func TestInvalidContent(t *testing.T) {
 		"Background in variant": strings.Replace(valid, "### GNU examples", "### Background\nHistory.\n\n### GNU examples", 1),
 		"About in Common":       strings.Replace(valid, "### Examples", "### About gawk\nText.\n\n### Examples", 1),
 		"two About sections":    valid + "\n### About one\nText.\n\n### About two\nText.\n",
+		"missing Background":    strings.Replace(valid, "### Background", "### History", 1),
+		"missing About":         strings.Replace(valid, "### About GNU grep", "### Notes on GNU grep", 1),
 	}
 	for name, s := range tests {
 		t.Run(name, func(t *testing.T) {

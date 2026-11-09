@@ -8,7 +8,7 @@ import (
 func fixture(id, aliases, impls, extra string) []byte {
 	var b strings.Builder
 	b.WriteString("---\nschema_version: 1\nid: " + id + "\ntitle: " + id + "\nsummary: Fixture entry.\naliases: " + aliases + "\ntags: [test]\nimplementations: " + impls + "\nreferences:\n  - https://example.org/manual\n---\n")
-	for _, s := range []string{"Overview", "Examples", "Common mistakes", "Portability"} {
+	for _, s := range []string{"Overview", "Background", "Examples", "Common mistakes", "Portability"} {
 		b.WriteString("\n### " + s + "\n\nText.\n")
 	}
 	_ = extra
@@ -33,7 +33,7 @@ func TestSymbolicAliasAndNewImplementations(t *testing.T) {
 	if err == nil {
 		t.Fatalf("missing declared GNU view accepted: %+v", e)
 	}
-	data := append(fixture("test", "['[']", "[upstream]", ""), []byte("\n## Upstream\n\n### Upstream examples\n\nText.\n")...)
+	data := append(fixture("test", "['[']", "[upstream]", ""), []byte("\n## Upstream\n\n### About upstream\n\nText.\n\n### Upstream examples\n\nText.\n")...)
 	e, err = Parse(data)
 	if err != nil {
 		t.Fatal(err)
@@ -45,7 +45,7 @@ func TestSymbolicAliasAndNewImplementations(t *testing.T) {
 	if _, err := e.Select("upstream", ""); err != nil {
 		t.Fatal(err)
 	}
-	zsh := append(fixture("where", "[]", "[bash, zsh]", ""), []byte("\n## Bash\n\n### Bash examples\n\nText.\n\n## Zsh\n\n### Zsh examples\n\nText.\n")...)
+	zsh := append(fixture("where", "[]", "[bash, zsh]", ""), []byte("\n## Bash\n\n### About Bash\n\nText.\n\n### Bash examples\n\nText.\n\n## Zsh\n\n### About Zsh\n\nText.\n\n### Zsh examples\n\nText.\n")...)
 	z, err := Parse(zsh)
 	if err != nil || !z.ShellOnly() || len(z.ShellImplementations()) != 2 {
 		t.Fatal(err, z)

@@ -29,6 +29,10 @@ references:
 
 Checks a condition.
 
+### Background
+
+Test is a shell command.
+
 ### Examples
 
 Check that a file exists.
@@ -44,6 +48,10 @@ Forgetting quotes.
 Same everywhere here.
 
 ## Upstream
+
+### About test
+
+One implementation.
 
 ### Upstream examples
 
