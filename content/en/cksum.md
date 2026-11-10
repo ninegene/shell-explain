@@ -66,7 +66,7 @@ Choose the checksum algorithm, such as `crc`, `md5` or `sha256`.
 
 ## Apple
 ### About macOS cksum
-This is the cksum that macOS ships.It follows the BSD implementation.
+This is the cksum that macOS ships. It follows the BSD implementation.
 
 ### Apple notes
 macOS `cksum` has `-o 1`, `-o 2` and `-o 3` for historic algorithms, and no `-a`.
