@@ -214,6 +214,15 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 | `mise` | 3 executed, 2 reviewed only (they install tools) | mise 2026.10.19 | |
 | `zoxide` | 3 executed | zoxide 0.10.0 | |
 | `starship` | 2 executed | starship 1.27.0 | |
+| `ssh` | 4 executed (settings printed with `-G`, no connection), 4 reviewed only (they connect) | OpenSSH of the macOS host | |
+| `scp` | 1 executed (local copy), 4 reviewed only (they connect) | OpenSSH of the macOS host | |
+| `ssh-add` | 4 executed | OpenSSH of the macOS host | each example runs a private agent for one command on a short `/tmp` socket path and removes the socket file |
+| `ssh-agent` | 2 executed, 2 reviewed only (they leave a program running) | OpenSSH of the macOS host | |
+| `ssh-copy-id` | 1 executed (usage text), 3 reviewed only (they connect) | ssh-copy-id of the macOS host | |
+| `fzf` | 4 executed, 1 reviewed only (needs a terminal) | fzf 0.74.5 | |
+| `vim` | 4 executed, 1 reviewed only (opens the editor) | vim on the host | |
+| `zed` | 1 executed (version), 3 reviewed only (they open a window) | Zed 1.26.2 | |
+| `security` | 5 reviewed only | macOS system tool | none was run, because the examples touch keychains |
 
 ## Suggested order
 
@@ -415,7 +424,7 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `docker-compose`
 - [x] `fd` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `free` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
-- [ ] `fzf`
+- [x] `fzf` (stage 4 batch 3p, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `gh`
 - [x] `git` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `gitleaks` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
@@ -440,15 +449,15 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [x] `python3` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `rg` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `rsync` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `scp`
+- [x] `scp` (stage 4 batch 3p, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `sd` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `security`
+- [x] `security` (stage 4 batch 3p, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `shellcheck` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `shfmt` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `ssh`
-- [ ] `ssh-add`
-- [ ] `ssh-agent`
-- [ ] `ssh-copy-id`
+- [x] `ssh` (stage 4 batch 3p, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `ssh-add` (stage 4 batch 3p, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `ssh-agent` (stage 4 batch 3p, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `ssh-copy-id` (stage 4 batch 3p, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `ssh-keygen` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `starship` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `top` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
@@ -456,8 +465,8 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [x] `unzip` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `uv` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `uvx` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `vim`
-- [ ] `zed`
+- [x] `vim` (stage 4 batch 3p, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `zed` (stage 4 batch 3p, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `zip` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `zoxide` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 

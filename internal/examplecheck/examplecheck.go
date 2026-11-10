@@ -35,7 +35,7 @@ var textEntries = []string{"cat", "head", "tail", "wc", "sort", "uniq", "cut", "
 
 // emptyFixture lists the entries whose examples start in an empty folder, because they
 // create what they need and would otherwise see the base files (git status, tree, fd, rg).
-var emptyFixture = []string{"curl", "jq", "git", "rg", "fd", "bat", "tree", "sd", "shellcheck", "shfmt", "prettier", "node", "npm", "npx", "python3", "uv", "uvx", "go", "just", "bash", "zip", "unzip", "lsof", "rsync", "ssh-keygen", "actionlint", "markdownlint-cli2", "gitleaks", "lefthook", "mise", "zoxide", "starship"}
+var emptyFixture = []string{"curl", "jq", "git", "rg", "fd", "bat", "tree", "sd", "shellcheck", "shfmt", "prettier", "node", "npm", "npx", "python3", "uv", "uvx", "go", "just", "bash", "zip", "unzip", "lsof", "rsync", "ssh-keygen", "actionlint", "markdownlint-cli2", "gitleaks", "lefthook", "mise", "zoxide", "starship", "ssh", "scp", "ssh-add", "ssh-agent", "ssh-copy-id", "fzf", "vim", "zed", "security"}
 
 // Setup creates the base fixture, plus any extra files the entry's examples need.
 func Setup(dir, entry string) error {
@@ -899,6 +899,52 @@ var expected = map[string]expectation{
 	"zoxide init bash | head -n 1 | cut -c1-30":                              {output: "# shellcheck shell=bash\n"},
 	"starship --version | head -n 1 | cut -d' ' -f1":                         {output: "starship\n"},
 	"starship init bash | head -n 1 | grep -c starship":                      {output: "1\n"},
+	// ssh family, fzf, vim, zed, security: nothing here contacts a host. A private agent runs only for
+	// the length of one command on a short socket path; security is reviewed only (it touches keychains).
+	"ssh -V 2>&1 | cut -c1-8":                                                    {output: "OpenSSH_\n"},
+	"ssh -G example.org 2> /dev/null | grep '^hostname '":                        {output: "hostname example.org\n"},
+	"ssh -G -p 2222 -l alice example.org 2> /dev/null | grep -E '^(user|port) '": {output: "user alice\nport 2222\n"},
+	"ssh -G -o BatchMode=yes example.org 2> /dev/null | grep -i '^batchmode '":   {output: "batchmode yes\n"},
+	"ssh alice@example.org":                                                      {notRun: true},
+	"ssh alice@example.org uptime":                                               {notRun: true},
+	"ssh -L 8080:localhost:80 alice@example.org":                                 {notRun: true},
+	"ssh -J jump.example.org alice@internal.example.org":                         {notRun: true},
+	"printf data > a.txt && scp a.txt b.txt && cat b.txt":                        {output: "data"},
+	"scp a.txt alice@example.org:backup/":                                        {notRun: true},
+	"scp alice@example.org:backup/a.txt .":                                       {notRun: true},
+	"scp -r project alice@example.org:backup/":                                   {notRun: true},
+	"scp -P 2222 a.txt alice@example.org:backup/":                                {notRun: true},
+	"env -u SSH_AUTH_SOCK ssh-add -l > /dev/null 2>&1; echo \"status $?\"":       {output: "status 2\n"},
+	"ssh-keygen -q -t ed25519 -N '' -f k && ssh-agent -a \"/tmp/sa$$\" sh -c 'ssh-add k 2> /dev/null && ssh-add -l | wc -l | tr -d \" \"'; rm -f \"/tmp/sa$$\"":                                       {output: "1\n"},
+	"ssh-keygen -q -t ed25519 -N '' -f k && ssh-agent -a \"/tmp/sa$$\" sh -c 'ssh-add k 2> /dev/null; ssh-add -L | cut -d\" \" -f1'; rm -f \"/tmp/sa$$\"":                                             {output: "ssh-ed25519\n"},
+	"ssh-keygen -q -t ed25519 -N '' -f k && ssh-agent -a \"/tmp/sa$$\" sh -c 'ssh-add k 2> /dev/null; ssh-add -D 2> /dev/null; ssh-add -l > /dev/null 2>&1; echo \"status $?\"'; rm -f \"/tmp/sa$$\"": {output: "status 1\n"},
+	"ssh-agent -a \"/tmp/sa$$\" sh -c 'echo \"${SSH_AUTH_SOCK:+set}\"'; rm -f \"/tmp/sa$$\"":                                                                                                          {output: "set\n"},
+	"ssh-agent -a \"/tmp/sa$$\" sh -c 'ssh-add -l > /dev/null 2>&1; echo \"status $?\"'; rm -f \"/tmp/sa$$\"":                                                                                         {output: "status 1\n"},
+	"eval \"$(ssh-agent -s)\"":                                                     {notRun: true},
+	"ssh-agent -k":                                                                 {notRun: true},
+	"ssh-copy-id -h 2>&1 | head -n 1 | cut -c1-6":                                  {output: "Usage:\n"},
+	"ssh-copy-id alice@example.org":                                                {notRun: true},
+	"ssh-copy-id -i ~/.ssh/id_ed25519.pub alice@example.org":                       {notRun: true},
+	"ssh-copy-id -n alice@example.org":                                             {notRun: true},
+	"fzf --version | cut -d' ' -f1":                                                {output: "0.74.5\n"},
+	"printf 'apple\\nbanana\\ncherry\\n' | fzf -f an":                              {output: "banana\n"},
+	"printf 'apple\\nbanana\\ncherry\\n' | fzf -f '^ch'":                           {output: "cherry\n"},
+	"printf 'apple\\nbanana\\ncherry\\n' | fzf -f \"'err\"":                        {output: "cherry\n"},
+	"vim \"$(find . -type f | fzf)\"":                                              {notRun: true},
+	"printf 'a\\n' > f && vim -es -u NONE -c '%s/a/b/' -c 'wq' f && cat f":         {output: "b\n"},
+	"printf 'one\\ntwo\\n' > g && vim -es -u NONE -c 'g/two/d' -c 'wq' g && cat g": {output: "one\n"},
+	"printf 'x\\n' > h && vim -es -u NONE -c 'normal Ahello' -c 'wq' h && cat h":   {output: "xhello\n"},
+	"vim --version | head -n 1 | cut -c1-5":                                        {output: "VIM -\n"},
+	"vim notes.txt":                                                                {notRun: true},
+	"zed --version 2>&1 | head -n 1 | cut -d' ' -f1":                               {output: "Zed\n"},
+	"zed .":                   {notRun: true},
+	"zed notes.txt:10:5":      {notRun: true},
+	"zed --wait notes.txt":    {notRun: true},
+	"security list-keychains": {notRun: true},
+	"security find-generic-password -s example-service -w":         {notRun: true},
+	"security add-generic-password -a alice -s example-service -w": {notRun: true},
+	"security delete-generic-password -s example-service":          {notRun: true},
+	"security help find-generic-password":                          {notRun: true},
 	// cd: only success is checked; the printed directory is a temporary path.
 	"cd projects":        {},
 	"cd ..":              {},
