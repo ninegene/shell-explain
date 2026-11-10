@@ -49,6 +49,9 @@ var unsafeTryIt = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])(sudo|su|rm|rmdir|kill|k
 // contain, or "" when it is safe: only reading, and writing inside the current
 // folder.
 func UnsafeTryIt(code string) string {
+	// A backslash at the end of a line continues the command, so check the
+	// joined command: the words after it belong to the same mv.
+	code = strings.ReplaceAll(code, "\\\n", " ")
 	hasMove := false
 	for _, line := range strings.Split(code, "\n") {
 		if m := unsafeTryIt.FindStringSubmatch(line); m != nil {

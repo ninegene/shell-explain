@@ -32,7 +32,7 @@ func TestUnsafeTryIt(t *testing.T) {
 	for _, safe := range []string{
 		"ls", "df -h .", "du -sh .", "uname -s", "ps -o pid,ppid,comm", "echo $$", "sleep 1",
 		"mkdir practice\ncd practice\necho hello > hello.txt\ncat hello.txt",
-		"mv tidy/a.txt tidy/b.txt", "cd tidy\nmv a.txt b.txt", "mkdir -p t\ncd t && mv a b", "mv tidy/a.log tidy/old/", `for f in tidy/*.txt; do mv "$f" "${f%.txt}.md"; done`,
+		"mv tidy/a.txt tidy/b.txt", "cd tidy\nmv a.txt b.txt", "mv a.txt \\\n  b.txt", "mkdir -p t\ncd t && mv a b", "mv tidy/a.log tidy/old/", `for f in tidy/*.txt; do mv "$f" "${f%.txt}.md"; done`,
 		"ls -l ~/Documents",
 	} {
 		if got := UnsafeTryIt(safe); got != "" {
@@ -63,6 +63,8 @@ func TestUnsafeTryIt(t *testing.T) {
 		"for f in a b; do mv x $g; done":         "mv outside the current folder",
 		"for f in $HOME/*; do mv \"$f\" y; done": "mv outside the current folder",
 		"cd /tmp\nmv a b":                        "mv outside the current folder",
+		"mv a.txt \\\n  /etc/a.txt":              "mv outside the current folder",
+		"mv a.txt \\\n  ../a.txt":                "mv outside the current folder",
 		"cd\nmv a b":                             "mv outside the current folder",
 		"cd -\nmv a b":                           "mv outside the current folder",
 		"cd\nls\nmv a b":                         "mv outside the current folder",
