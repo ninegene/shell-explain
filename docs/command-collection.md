@@ -32,7 +32,7 @@ Still open: detection probes only the commands in `detect.probed` (grep, sed, fi
 
 ## Completed-page evidence
 
-Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10; tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout and truncate on 2026-11-10; dd, install, link, unlink, mkfifo, nohup, nice, sync, sum, tsort, pr and pathchk on 2026-11-10; groups, logname, tty, users, who, uptime, hostid, pinky, chown, chgrp, shred, dir, vdir, dircolors and mknod on 2026-11-10; echo, printf, pwd, true, false, test, kill and arch on 2026-11-10; numfmt, ptx, stdbuf, stty, chroot, chcon, runcon and coreutils on 2026-11-10; diff, cmp, diff3, sdiff, patch and zcat on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10; tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout and truncate on 2026-11-10; dd, install, link, unlink, mkfifo, nohup, nice, sync, sum, tsort, pr and pathchk on 2026-11-10; groups, logname, tty, users, who, uptime, hostid, pinky, chown, chgrp, shred, dir, vdir, dircolors and mknod on 2026-11-10; echo, printf, pwd, true, false, test, kill and arch on 2026-11-10; numfmt, ptx, stdbuf, stty, chroot, chcon, runcon and coreutils on 2026-11-10; diff, cmp, diff3, sdiff, patch and zcat on 2026-11-10; the gzip family of batch 3k on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
 
 | Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
 | --- | --- | --- | --- | --- | --- |
@@ -157,6 +157,15 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `sdiff` | 3 common (layout compared with blanks collapsed) | system `/usr/bin/sdiff`, executed | GNU 3.12 from a conda install managed by mise on the host, executed, and Alpine diffutils 3.12 in the guest | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `patch` | 4 common | system `/usr/bin/patch` (2.0-12u11-Apple), executed | GNU patch 2.8, executed on the host (mise conda) and in the guest (Alpine patch) | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `zcat` | 3 common, 1 GNU, 1 Apple | system `/usr/bin/zcat` and `gzcat`, executed | gzip 1.14 on the host and Alpine gzip in the guest (a shell script, so not identified automatically) | BusyBox 1.37.0, executed | n/a |
+| `zgrep` | 5 common | system `/usr/bin/zgrep`, executed | GNU gzip scripts, executed in the Linux guest only (the probe does not run scripts, so the host cannot select them) | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `zless` | 1 common executed, 1 reviewed only (needs a terminal) | system `/usr/bin/zless`, executed | GNU gzip scripts, executed in the Linux guest only (the probe does not run scripts, so the host cannot select them) | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `zmore` | 1 common executed, 1 reviewed only (needs a terminal) | system `/usr/bin/zmore`, executed | GNU gzip scripts, executed in the Linux guest only (the probe does not run scripts, so the host cannot select them) | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `zcmp` | 3 common | system `/usr/bin/zcmp`, executed | GNU gzip scripts, executed in the Linux guest only (the probe does not run scripts, so the host cannot select them) | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `zdiff` | 2 common | system `/usr/bin/zdiff`, executed | GNU gzip scripts, executed in the Linux guest only (the probe does not run scripts, so the host cannot select them) | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `zforce` | 2 common | system `/usr/bin/zforce`, executed | GNU gzip scripts, executed in the Linux guest only (the probe does not run scripts, so the host cannot select them) | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `gzexe` | 2 common | system `/usr/bin/gzexe`, executed | GNU gzip scripts, executed in the Linux guest only (the probe does not run scripts, so the host cannot select them) | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `znew` | 2 common, reviewed only (needs `compress`) | system `/usr/bin/znew`, not executed | not executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `uncompress` | 2 common, reviewed only (needs `compress`) | system `/usr/bin/uncompress`, not executed | not executed | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -314,19 +323,19 @@ Expected output is compared exactly, except directory-traversal order, which is 
 ### gzip
 
 - [x] `gunzip` (stage 4 batch 3j, 2026-11-10; an alias of the `gzip` page, with an example)
-- [ ] `gzexe`
+- [x] `gzexe` (stage 4 batch 3k, 2026-11-10; see completed-page evidence)
 - [x] `gzip` (stage 4 batch 2c, 2026-11-08; see completed-page evidence)
-- [ ] `uncompress`
+- [x] `uncompress` (stage 4 batch 3k, 2026-11-10; see completed-page evidence)
 - [x] `zcat` (stage 4 batch 3j, 2026-11-10; see completed-page evidence)
-- [ ] `zcmp`
-- [ ] `zdiff`
-- [ ] `zegrep`
-- [ ] `zfgrep`
-- [ ] `zforce`
-- [ ] `zgrep`
-- [ ] `zless`
-- [ ] `zmore`
-- [ ] `znew`
+- [x] `zcmp` (stage 4 batch 3k, 2026-11-10; see completed-page evidence)
+- [x] `zdiff` (stage 4 batch 3k, 2026-11-10; see completed-page evidence)
+- [x] `zegrep` (stage 4 batch 3k, 2026-11-10; an alias of the `zgrep` page)
+- [x] `zfgrep` (stage 4 batch 3k, 2026-11-10; an alias of the `zgrep` page)
+- [x] `zforce` (stage 4 batch 3k, 2026-11-10; see completed-page evidence)
+- [x] `zgrep` (stage 4 batch 3k, 2026-11-10; see completed-page evidence)
+- [x] `zless` (stage 4 batch 3k, 2026-11-10; see completed-page evidence)
+- [x] `zmore` (stage 4 batch 3k, 2026-11-10; see completed-page evidence)
+- [x] `znew` (stage 4 batch 3k, 2026-11-10; see completed-page evidence)
 
 ### patch
 
@@ -366,7 +375,7 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `git`
 - [ ] `gitleaks`
 - [ ] `go`
-- [ ] `gzcat`
+- [x] `gzcat` (stage 4 batch 3k, 2026-11-10; an alias of the `zcat` page)
 - [ ] `jq`
 - [ ] `just`
 - [ ] `killall`
