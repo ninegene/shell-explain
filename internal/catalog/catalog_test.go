@@ -19,7 +19,7 @@ func TestSharedCorpus(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(c.Entries) != 145 || c.Revision != again.Revision || len(c.Revision) != 64 {
+	if len(c.Entries) != 157 || c.Revision != again.Revision || len(c.Revision) != 64 {
 		t.Fatal("non-deterministic or incomplete corpus")
 	}
 	for _, e := range c.Entries {
