@@ -13,8 +13,8 @@ import (
 )
 
 // Companions lists programs that a command runs by name, which must come from the same
-// implementation as the command: GNU diff3 and sdiff call diff, and colima starts limactl.
-var Companions = map[string][]string{"diff3": {"diff"}, "sdiff": {"diff"}, "colima": {"limactl"}}
+// implementation as the command: GNU diff3 and sdiff call diff, colima starts limactl, and locate and updatedb belong together.
+var Companions = map[string][]string{"diff3": {"diff"}, "sdiff": {"diff"}, "colima": {"limactl"}, "locate": {"updatedb"}, "updatedb": {"locate"}}
 
 // Dirs and Files describe the synthetic working directory examples run in.
 var Dirs = []string{"projects", "logs", "cache"}
@@ -35,7 +35,7 @@ var textEntries = []string{"cat", "head", "tail", "wc", "sort", "uniq", "cut", "
 
 // emptyFixture lists the entries whose examples start in an empty folder, because they
 // create what they need and would otherwise see the base files (git status, tree, fd, rg).
-var emptyFixture = []string{"curl", "jq", "git", "rg", "fd", "bat", "tree", "sd", "shellcheck", "shfmt", "prettier", "node", "npm", "npx", "python3", "uv", "uvx", "go", "just", "bash", "zip", "unzip", "lsof", "rsync", "ssh-keygen", "actionlint", "markdownlint-cli2", "gitleaks", "lefthook", "mise", "zoxide", "starship", "ssh", "scp", "ssh-add", "ssh-agent", "ssh-copy-id", "fzf", "vim", "zed", "security", "docker", "docker-compose", "colima", "limactl", "aws", "gh", "pulumi", "claude", "codex"}
+var emptyFixture = []string{"curl", "jq", "git", "rg", "fd", "bat", "tree", "sd", "shellcheck", "shfmt", "prettier", "node", "npm", "npx", "python3", "uv", "uvx", "go", "just", "bash", "zip", "unzip", "lsof", "rsync", "ssh-keygen", "actionlint", "markdownlint-cli2", "gitleaks", "lefthook", "mise", "zoxide", "starship", "ssh", "scp", "ssh-add", "ssh-agent", "ssh-copy-id", "fzf", "vim", "zed", "security", "docker", "docker-compose", "colima", "limactl", "aws", "gh", "pulumi", "claude", "codex", "gawkbug", "rmt"}
 
 // Setup creates the base fixture, plus any extra files the entry's examples need.
 func Setup(dir, entry string) error {
@@ -787,7 +787,7 @@ var expected = map[string]expectation{
 	"sleep 7$$ & p=$!; pgrep -c -f \"sleep 7$$\"; kill $p":                                            {output: "1\n"},
 	"{ sleep 7$$ & pkill -f \"sleep 7$$\"; wait; } 2> /dev/null; echo done":                           {output: "done\n"},
 	"pkill -f \"no-such-process-$$\" || echo none":                                                    {output: "none\n"},
-	"{ sleep 7$$ & pkill -f \"sleep 7$$\"; wait; } 2> /dev/null; pgrep -f \"sleep 7$$\" || echo gone": {output: "gone\n"},
+	"{ sleep 7$$ & pkill -f \"sleep 7$$\"; wait; pgrep -f \"sleep 7$$\" || echo gone; } 2> /dev/null": {output: "gone\n"},
 	"killall sleep":                                 {notRun: true},
 	"killall -s TERM sleep":                         {notRun: true},
 	"killall -9 sleep":                              {notRun: true},
@@ -1002,6 +1002,30 @@ var expected = map[string]expectation{
 	"codex --help 2> /dev/null | head -n 1":         {output: "Codex CLI\n"},
 	"codex exec \"Add a unit test for the parser\"": {notRun: true},
 	"codex": {notRun: true},
+	// wget, locate, updatedb, gawkbug, rmt: downloads, the system locate database, mail and remote tape
+	// drives are reviewed only; the private-database examples and the help text run.
+	"wget -q -O - https://api.github.com/zen": {notRun: true},
+	"wget -q -O out.txt https://raw.githubusercontent.com/octocat/Hello-World/master/README && cat out.txt": {notRun: true},
+	"wget -q --spider https://api.github.com && echo up":                                                    {notRun: true},
+	"wget -c https://example.org/big.iso":                                                                   {notRun: true},
+	"wget -q -O /dev/null https://api.github.com/nonexistent-path; echo \"status $?\"":                      {notRun: true},
+	"wget --help | head -n 1 | cut -c1-8":                                                                   {output: "GNU Wget\n"},
+	"wget --version | head -n 1 | cut -c1-8":                                                                {output: "GNU Wget\n"},
+	"wget 2>&1 | head -n 1 | cut -c1-7":                                                                     {output: "BusyBox\n"},
+	"locate notes.txt":                                                                                      {notRun: true},
+	"mkdir -p tree/sub && printf a > tree/a.txt && printf b > tree/sub/b.txt && updatedb --localpaths=\"$PWD/tree\" --output=db && locate -d db a.txt | sed \"s#$PWD/##\"":                {output: "tree/a.txt\n"},
+	"mkdir -p tree/sub && printf a > tree/a.txt && printf b > tree/sub/b.txt && updatedb --localpaths=\"$PWD/tree\" --output=db && locate -d db -c txt":                                   {output: "2\n"},
+	"mkdir -p tree/sub && printf a > tree/a.txt && printf b > tree/sub/b.txt && updatedb --localpaths=\"$PWD/tree\" --output=db && locate -d db -i B.TXT | sed \"s#$PWD/##\"":             {output: "tree/sub/b.txt\n"},
+	"mkdir -p tree/sub && printf a > tree/a.txt && printf b > tree/sub/b.txt && updatedb --localpaths=\"$PWD/tree\" --output=db && locate -d db -l 1 txt | wc -l | tr -d ' '":             {output: "1\n"},
+	"mkdir -p tree && printf a > tree/a.txt && updatedb --localpaths=\"$PWD/tree\" --output=db && test -s db && echo built":                                                               {output: "built\n"},
+	"mkdir -p tree && printf a > tree/a.txt && updatedb --localpaths=\"$PWD/tree\" --output=db && locate -d db a.txt | sed \"s#$PWD/##\"":                                                 {output: "tree/a.txt\n"},
+	"mkdir -p tree/skip && printf a > tree/a.txt && printf s > tree/skip/s.txt && updatedb --localpaths=\"$PWD/tree\" --prunepaths=\"$PWD/tree/skip\" --output=db && locate -d db -c txt": {output: "1\n"},
+	"gawkbug --version 2>&1 | grep -m1 -o 'GNU gawkbug'": {output: "GNU gawkbug\n"},
+	"gawkbug":                      {notRun: true},
+	"gawkbug bug-gawk@example.org": {notRun: true},
+	"tar --rsh-command=/usr/bin/ssh -cf backup@tapehost.example.org:/dev/st0 project/":                             {notRun: true},
+	"tar --rsh-command=/usr/bin/ssh -tf backup@tapehost.example.org:/dev/st0":                                      {notRun: true},
+	"tar --rsh-command=/usr/bin/ssh --rmt-command=/usr/sbin/rmt -cf backup@tapehost.example.org:/dev/st0 project/": {notRun: true},
 	// cd: only success is checked; the printed directory is a temporary path.
 	"cd projects":        {},
 	"cd ..":              {},

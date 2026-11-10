@@ -172,6 +172,9 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `free` | 3 common | not shipped by macOS | procps-ng 4.0.6 in the guest | BusyBox 1.37.0, executed | n/a |
 | `top` | 1 Apple, 1 procps; the interactive example is reviewed only | system `/usr/bin/top`, executed in batch mode | procps-ng 4.0.6 in the guest | not run (reviewed only) | n/a |
 | `killall` | 4 common, reviewed only (a name such as `sleep` would signal every process of that name) | system `/usr/bin/killall`, not executed | not covered (psmisc is another program) | not executed | n/a |
+| `wget` | 5 common reviewed only (they download), 2 GNU and 1 BusyBox executed (help and version text) | not shipped by macOS | GNU Wget 1.25.0 on the host (not installed in the Linux guest) | BusyBox 1.37.0, usage text executed | n/a |
+| `locate` | 1 common reviewed only; 4 GNU executed (private database); macOS reviewed only | system `/usr/bin/locate` (BSD), not executed: its database is off by default | GNU findutils 4.10.0 on the host (a conda install managed by mise); not installed in the Linux guest | no BusyBox applet | n/a |
+| `updatedb` | 3 GNU executed | not shipped by macOS (`/usr/libexec/locate.updatedb` is another program) | GNU findutils 4.10.0 on the host; not installed in the Linux guest | no BusyBox applet | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -232,6 +235,8 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 | `pulumi` | 3 executed (version, help), 4 reviewed only (they plan or change infrastructure) | Pulumi v3.272.0 | `up`, `destroy` and `refresh` are never run by this project |
 | `claude` | 2 executed (version, help), 3 reviewed only (they send text to a service) | Claude Code 2.1.310 | |
 | `codex` | 2 executed (version, help), 2 reviewed only | codex-cli 0.164.0 | its warning about helper programs under a temporary folder is hidden |
+| `gawkbug` | 1 executed (version), 2 reviewed only (they open an editor and send mail) | script of gawk 5.4.1 | |
+| `rmt` | 3 reviewed only | not installed on the test hosts | documentation only: the tool is absent from macOS and from the host |
 
 ## Suggested order
 
@@ -367,15 +372,15 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 ### findutils
 
 - [x] `find` — expanded and reviewed 2026-11-08 (see completed-page evidence)
-- [ ] `locate`
-- [ ] `updatedb`
+- [x] `locate` (stage 4 batch 3r, 2026-11-10; see completed-page evidence)
+- [x] `updatedb` (stage 4 batch 3r, 2026-11-10; see completed-page evidence)
 - [x] `xargs` (stage 4 batch 2c, 2026-11-08; see completed-page evidence)
 
 ### gawk
 
 - [x] `awk` (stage 4 batch 2e, 2026-11-08; see completed-page evidence)
 - [x] `gawk` (an alias of the `awk` page, which has a GNU view for gawk; see completed-page evidence)
-- [ ] `gawkbug`
+- [x] `gawkbug` (stage 4 batch 3r, 2026-11-10; see completed-page evidence)
 
 ### grep
 
@@ -410,12 +415,12 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 
 ### tar
 
-- [ ] `rmt`
+- [x] `rmt` (stage 4 batch 3r, 2026-11-10; see completed-page evidence)
 - [x] `tar` (stage 4 batch 2c, 2026-11-08; see completed-page evidence)
 
 ### wget
 
-- [ ] `wget`
+- [x] `wget` (stage 4 batch 3r, 2026-11-10; see completed-page evidence)
 
 ## Additional commands and tools
 

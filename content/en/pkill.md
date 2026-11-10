@@ -35,7 +35,7 @@ pkill -f "no-such-process-$$" || echo none
 Check that the process is gone afterwards:
 
 ```sh
-{ sleep 7$$ & pkill -f "sleep 7$$"; wait; } 2> /dev/null; pgrep -f "sleep 7$$" || echo gone
+{ sleep 7$$ & pkill -f "sleep 7$$"; wait; pgrep -f "sleep 7$$" || echo gone; } 2> /dev/null
 ```
 
 ### Option: -f
