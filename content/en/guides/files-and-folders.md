@@ -144,6 +144,6 @@ You should see this:
 4. Why does a relative path give different results in different folders? Answer: it starts from the current folder, so moving the current folder changes where it points.
 
 ## Where next
-You now know the commands, the options and the paths. The next guides look at what is inside files, who may use them, and how the shell finds a program by name.
+You now know the commands, the options and the paths. The next guide, `explain learn text-and-binary`, looks at what is inside a file. Later guides cover how the shell finds a program by name and who may use a file.
 
 To practise, look at the command pages for `cd`, `ls` and `mkdir`.
