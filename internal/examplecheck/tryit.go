@@ -43,12 +43,16 @@ func TryItBlocks(markdown string) []TryItBlock {
 }
 
 // unsafeTryIt names commands a beginner guide must never ask a reader to run.
-var unsafeTryIt = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])(sudo|su|rm|rmdir|kill|killall|pkill|shutdown|reboot|halt|poweroff|mkfs|fdisk|dd|chown|chgrp|mv|ln|curl|wget|ssh|scp)([^a-zA-Z0-9_-]|$)|>\s*/(dev|etc|usr|bin|sbin|var|System|Library)\b`)
+var unsafeTryIt = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])(sudo|su|rm|rmdir|kill|killall|pkill|shutdown|reboot|halt|poweroff|mkfs|fdisk|dd|chown|chgrp|ln|curl|wget|ssh|scp)([^a-zA-Z0-9_-]|$)|>\s*/(dev|etc|usr|bin|sbin|var|System|Library)\b`)
 
 // UnsafeTryIt returns the first thing in code that a "Try it" block must not
 // contain, or "" when it is safe: only reading, and writing inside the current
 // folder.
 func UnsafeTryIt(code string) string {
+	// A backslash at the end of a line continues the command, so check the
+	// joined command: the words after it belong to the same mv.
+	code = strings.ReplaceAll(code, "\\\n", " ")
+	hasMove := false
 	for _, line := range strings.Split(code, "\n") {
 		if m := unsafeTryIt.FindStringSubmatch(line); m != nil {
 			if m[2] != "" {
@@ -56,8 +60,57 @@ func UnsafeTryIt(code string) string {
 			}
 			return "a redirect to a system path"
 		}
+		if moveWord.MatchString(line) {
+			hasMove = true
+			if movesOutside(line) {
+				return "mv outside the current folder"
+			}
+		}
+	}
+	if hasMove {
+		// A cd must go to a plain folder name inside the current folder: a bare
+		// cd goes home and "cd -" goes back, which would make a relative mv
+		// unsafe.
+		for _, m := range cdTarget.FindAllStringSubmatch(code, -1) {
+			if !plainFolder.MatchString(strings.TrimSpace(m[1])) {
+				return "mv outside the current folder"
+			}
+		}
 	}
 	return ""
+}
+
+// mv is allowed because the guide on renaming and moving files needs it, but
+// only on files the block itself made in the current folder. A line with mv is
+// rejected when any word starts with a slash or a tilde, when ".." appears
+// anywhere, or when it uses a backtick, a command substitution or a variable.
+// The one variable allowed is the loop variable of a for line, so the
+// rename-many example works.
+var (
+	moveWord = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])mv([^a-zA-Z0-9_-]|$)`)
+	cdTarget = regexp.MustCompile(`(?m)(?:^|[^a-zA-Z0-9_-])cd(?:[ 	]+([^;&|
+]*))?[ 	]*(?:[;&|
+]|$)`)
+	plainFolder  = regexp.MustCompile(`^[A-Za-z0-9_][A-Za-z0-9_.-]*(/[A-Za-z0-9_][A-Za-z0-9_.-]*)*/?$`)
+	leavesFolder = regexp.MustCompile(`(^|\s)["']?(/|~)|\.\.`)
+	loopLine     = regexp.MustCompile(`^\s*for\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\b`)
+	variableRef  = regexp.MustCompile(`\$\{?([A-Za-z_][A-Za-z0-9_]*)|\$[^A-Za-z_{]|\$\{[^A-Za-z_]`)
+)
+
+func movesOutside(line string) bool {
+	if leavesFolder.MatchString(line) || strings.ContainsAny(line, "`") || strings.Contains(line, "$(") {
+		return true
+	}
+	loop := ""
+	if m := loopLine.FindStringSubmatch(line); m != nil {
+		loop = m[1]
+	}
+	for _, m := range variableRef.FindAllStringSubmatch(line, -1) {
+		if m[1] == "" || m[1] != loop {
+			return true
+		}
+	}
+	return false
 }
 
 // CheckTryIt compares a command's output with the output the guide shows.

@@ -20,9 +20,10 @@ func TestLearnListAndReading(t *testing.T) {
 			t.Errorf("list is missing %q:\n%s", want, list)
 		}
 	}
-	// A series with no guides yet is not listed.
-	if strings.Contains(list, "Getting Things Done") {
-		t.Error("empty series listed")
+	for _, want := range []string{"Getting Things Done", "Needle in a Haystack: Find a Word in Many Files", "explain learn make-a-backup"} {
+		if !strings.Contains(list, want) {
+			t.Errorf("list is missing %q:\n%s", want, list)
+		}
 	}
 	_, byName, _ := run(t, "learn", "big-picture", "--width=70")
 	_, byNumber, _ := run(t, "learn", "1", "--width=70")
@@ -121,7 +122,7 @@ func TestLearnSectionAndJSON(t *testing.T) {
 		} `json:"series"`
 	}
 	_, data, _ = run(t, "learn", "--format=json")
-	if err := json.Unmarshal([]byte(data), &list); err != nil || len(list.Series) != 4 || list.Series[0].Guides[0].ID != "big-picture" || list.Series[0].Guides[0].Number != 1 || len(list.Series[0].Guides) != 5 || list.Series[0].Guides[4].ID != "processes" || list.Series[0].Guides[4].Number != 5 || len(list.Series[3].Guides) != 0 {
+	if err := json.Unmarshal([]byte(data), &list); err != nil || len(list.Series) != 4 || list.Series[0].Guides[0].ID != "big-picture" || list.Series[0].Guides[0].Number != 1 || len(list.Series[0].Guides) != 5 || list.Series[0].Guides[4].ID != "processes" || list.Series[0].Guides[4].Number != 5 || len(list.Series[3].Guides) != 4 || list.Series[3].Guides[3].ID != "make-a-backup" {
 		t.Fatalf("list json: %v %s", err, data)
 	}
 }

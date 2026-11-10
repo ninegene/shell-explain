@@ -11,6 +11,11 @@ A path that starts with `/`, so it names a file or folder from the top of the tr
 
 See: files-and-folders
 
+## Archive
+One file that holds many files and folders, with their names, so they can be stored or sent together. The tar command makes archives. An archive is not compressed unless you ask for that.
+
+See: make-a-backup
+
 ## Argument
 A word you type after a command's name, such as a file name or an option. In everyday talk every word after the name is an argument.
 
@@ -20,6 +25,11 @@ See: input-output-errors, anatomy-of-a-command
 An old, simple encoding that gives each of 128 characters a number. The letter A is 65. UTF-8 keeps the same numbers for these characters.
 
 See: text-and-binary
+
+## Backup
+A second copy of your files, kept somewhere else, so you can get them back if the first copy is lost or damaged.
+
+See: make-a-backup
 
 ## Binary file
 A file whose bytes are not meant to be read as characters, such as a photo, a program or a compressed archive.

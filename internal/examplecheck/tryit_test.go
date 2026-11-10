@@ -32,6 +32,7 @@ func TestUnsafeTryIt(t *testing.T) {
 	for _, safe := range []string{
 		"ls", "df -h .", "du -sh .", "uname -s", "ps -o pid,ppid,comm", "echo $$", "sleep 1",
 		"mkdir practice\ncd practice\necho hello > hello.txt\ncat hello.txt",
+		"mv tidy/a.txt tidy/b.txt", "cd tidy\nmv a.txt b.txt", "mv a.txt \\\n  b.txt", "mkdir -p t\ncd t && mv a b", "mv tidy/a.log tidy/old/", `for f in tidy/*.txt; do mv "$f" "${f%.txt}.md"; done`,
 		"ls -l ~/Documents",
 	} {
 		if got := UnsafeTryIt(safe); got != "" {
@@ -44,16 +45,37 @@ func TestUnsafeTryIt(t *testing.T) {
 		t.Error("a risky word inside text should be flagged")
 	}
 	for code, want := range map[string]string{
-		"sudo ls":                  "sudo",
-		"rm -rf practice":          "rm",
-		"ls && rm hello.txt":       "rm",
-		"kill 1234":                "kill",
-		"dd if=/dev/zero of=x":     "dd",
-		"mv a b":                   "mv",
-		"curl https://example.org": "curl",
-		"echo x > /etc/hosts":      "a redirect to a system path",
-		"echo x >/dev/sda":         "a redirect to a system path",
-		"shutdown -h now":          "shutdown",
+		"sudo ls":                                "sudo",
+		"rm -rf practice":                        "rm",
+		"ls && rm hello.txt":                     "rm",
+		"kill 1234":                              "kill",
+		"dd if=/dev/zero of=x":                   "dd",
+		"mv /etc/hosts x":                        "mv outside the current folder",
+		"mv x ~/y":                               "mv outside the current folder",
+		"mv ../x y":                              "mv outside the current folder",
+		"mv x $HOME/y":                           "mv outside the current folder",
+		`mv x "$HOME"`:                           "mv outside the current folder",
+		"mv x ${HOME}/y":                         "mv outside the current folder",
+		"mv x tidy/../../y":                      "mv outside the current folder",
+		"d=/etc; mv x $d":                        "mv outside the current folder",
+		"mv x `pwd`/..":                          "mv outside the current folder",
+		"mv x $(pwd)":                            "mv outside the current folder",
+		"for f in a b; do mv x $g; done":         "mv outside the current folder",
+		"for f in $HOME/*; do mv \"$f\" y; done": "mv outside the current folder",
+		"cd /tmp\nmv a b":                        "mv outside the current folder",
+		"mv a.txt \\\n  /etc/a.txt":              "mv outside the current folder",
+		"mv a.txt \\\n  ../a.txt":                "mv outside the current folder",
+		"cd\nmv a b":                             "mv outside the current folder",
+		"cd -\nmv a b":                           "mv outside the current folder",
+		"cd\nls\nmv a b":                         "mv outside the current folder",
+		"cd tidy && cd\nmv a b":                  "mv outside the current folder",
+		"cd ..\nmv a b":                          "mv outside the current folder",
+		"mv x ..":                                "mv outside the current folder",
+		`mv "/tmp/x" y`:                          "mv outside the current folder",
+		"curl https://example.org":               "curl",
+		"echo x > /etc/hosts":                    "a redirect to a system path",
+		"echo x >/dev/sda":                       "a redirect to a system path",
+		"shutdown -h now":                        "shutdown",
 	} {
 		if got := UnsafeTryIt(code); got != want {
 			t.Errorf("UnsafeTryIt(%q) = %q, want %q", code, got, want)
