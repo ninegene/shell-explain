@@ -122,7 +122,7 @@ func TestLearnSectionAndJSON(t *testing.T) {
 		} `json:"series"`
 	}
 	_, data, _ = run(t, "learn", "--format=json")
-	if err := json.Unmarshal([]byte(data), &list); err != nil || len(list.Series) != 4 || list.Series[0].Guides[0].ID != "big-picture" || list.Series[0].Guides[0].Number != 1 || len(list.Series[0].Guides) != 5 || list.Series[0].Guides[4].ID != "processes" || list.Series[0].Guides[4].Number != 5 || len(list.Series[3].Guides) != 4 || list.Series[3].Guides[3].ID != "make-a-backup" {
+	if err := json.Unmarshal([]byte(data), &list); err != nil || len(list.Series) != 4 || list.Series[0].Guides[0].ID != "big-picture" || list.Series[0].Guides[0].Number != 1 || len(list.Series[0].Guides) != 5 || list.Series[0].Guides[4].ID != "processes" || list.Series[0].Guides[4].Number != 5 || len(list.Series[3].Guides) != 5 || list.Series[3].Guides[3].ID != "make-a-backup" {
 		t.Fatalf("list json: %v %s", err, data)
 	}
 }

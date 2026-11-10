@@ -155,6 +155,6 @@ backup matches
 4. Why restore into a new folder? Answer: so the test cannot damage the original.
 
 ## Where next
-This ends the first group of goal-first guides. You can find a word, build a report, tidy files and make a backup you have checked, and each one uses the ideas from the earlier series.
+The next guide, `explain learn fetch-from-the-web`, asks a web service a question with `curl`. Until then you can find a word, build a report, tidy files and make a backup you have checked, and each one uses the ideas from the earlier series.
 
 For the details of each command, see `explain cp`, `explain tar`, `explain gzip` and `explain mkdir`.

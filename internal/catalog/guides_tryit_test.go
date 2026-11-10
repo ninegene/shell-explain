@@ -53,6 +53,9 @@ func TestGuideTryItCommands(t *testing.T) {
 			}
 			for i, b := range blocks {
 				t.Run(g.ID+"/"+string(rune('a'+i)), func(t *testing.T) {
+					if _, err := exec.LookPath("/usr/bin/curl"); err != nil && examplecheck.UsesCurl(b.Code) {
+						t.Skip("curl is not installed")
+					}
 					if why := examplecheck.UnsafeTryIt(b.Code); why != "" {
 						t.Fatalf("%q is not allowed in a Try it block: %s", why, b.Code)
 					}

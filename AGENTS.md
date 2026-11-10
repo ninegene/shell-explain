@@ -6,7 +6,7 @@ Command-reference project, private through development and iteration, with a pub
 
 ## Current state
 
-Stages 1–4 are implemented locally: original content in content/en, Go parser/CLI in internal and cmd, and an Astro static site in web. Current CLI/web usability is accepted as sufficient. Stage 4 (the command collection in docs/command-collection.md, 194 pages) is complete except one planned beginner guide (fetch-from-the-web, see docs/learning-guides.md), which must land before stage 5. Broader usability studies are deferred in docs/roadmap.md. Do not create installers, release/deployment workflows, change repository visibility, or publish without authorization.
+Stages 1–4 are implemented locally: original content in content/en, Go parser/CLI in internal and cmd, and an Astro static site in web. Current CLI/web usability is accepted as sufficient. Stage 4 (the command collection in docs/command-collection.md, 194 pages) is complete, and the planned beginner guides are written. Broader usability studies are deferred in docs/roadmap.md. Do not create installers, release/deployment workflows, change repository visibility, or publish without authorization.
 
 ## Commands and implementation
 
