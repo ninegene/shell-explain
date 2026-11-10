@@ -126,6 +126,6 @@ sed --version | head -n 1
 4. How does `explain` choose which documentation to show? Answer: it looks at the program itself to work out which implementation it is.
 
 ## Where next
-You now know why `sed` on one machine is not `sed` on another. Later guides in this series will explain how the tools reach your computer, and how to find out which ones you have.
+You now know why `sed` on one machine is not `sed` on another. The next two guides explain how tools reach a Linux computer through a distribution, and how to find out which ones you have.
 
 For the exact differences, one command at a time, see `explain sed`, `explain head`, `explain date` and `explain stat`.

@@ -86,6 +86,11 @@ Long-term storage that keeps your files when the computer is turned off, such as
 
 See: big-picture, computer-body
 
+## Distribution
+A complete Linux system: the Linux kernel plus the commands, libraries, installer and package manager that one group chose and put together. Debian, Ubuntu and Alpine are distributions. Often shortened to distro.
+
+See: distributions, whos-who
+
 ## Driver
 The part of the kernel that knows how to work one kind of hardware, such as a disk or a keyboard.
 
@@ -175,6 +180,16 @@ See: big-picture, what-is-an-os
 A word that starts with a dash, such as `-l`, and changes how a command works. Some options take a value of their own.
 
 See: anatomy-of-a-command
+
+## Package
+A bundle of the files needed for a set of related commands or features, which a package manager can install.
+
+See: distributions
+
+## Package manager
+A tool that finds a package, fetches it, checks the other packages it needs and puts its files in place. Examples are apt on Debian, apk on Alpine and Homebrew on a Mac.
+
+See: distributions
 
 ## Parent process
 The process that started another one. The one it started is its child.
@@ -285,6 +300,11 @@ See: input-output-errors
 An account that may read and write any file and skips most permission checks. It is often called root.
 
 See: permissions
+
+## Symbolic link
+A file that points to another file or program by name. On a BusyBox system, many commands are links to the one program called busybox.
+
+See: which-tool-do-i-have, files-and-folders
 
 ## System call
 A request a program makes to the kernel, such as asking it to open a file. It is how a program asks the kernel to do something for it.
