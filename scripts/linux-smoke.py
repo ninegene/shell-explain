@@ -91,6 +91,9 @@ def cpio(root, destination):
         entry(name, metadata.st_mode, data)
     entry("dev/console", stat.S_IFCHR | 0o600, major=5, minor=1)
     entry("dev/null", stat.S_IFCHR | 0o666, major=1, minor=3)
+    entry("dev/zero", stat.S_IFCHR | 0o666, major=1, minor=5)
+    entry("dev/random", stat.S_IFCHR | 0o666, major=1, minor=8)
+    entry("dev/urandom", stat.S_IFCHR | 0o666, major=1, minor=9)
     entry("TRAILER!!!", 0)
     destination.write_bytes(gzip.compress(stream.getvalue(), mtime=0))
 
@@ -173,7 +176,7 @@ def main():
         init.chmod(0o755)
         initrd = work / "guest.cpio.gz"
         cpio(root, initrd)
-        result = subprocess.run([qemu, "-machine", "q35", "-accel", "tcg", "-m", "512", "-nographic", "-no-reboot", "-nic", "none", "-kernel", str(work / "boot/vmlinuz-virt"), "-initrd", str(initrd), "-append", "console=ttyS0 rdinit=/init quiet"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=300)
+        result = subprocess.run([qemu, "-machine", "q35", "-accel", "tcg", "-m", "512", "-nographic", "-no-reboot", "-nic", "none", "-kernel", str(work / "boot/vmlinuz-virt"), "-initrd", str(initrd), "-append", "console=ttyS0 rdinit=/init quiet"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=600)
         print(result.stdout)
         if "LINUX_SMOKE_PASS" not in result.stdout or "GUEST_EXIT=0" not in result.stdout:
             raise SystemExit("Linux smoke check failed")

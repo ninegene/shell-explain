@@ -37,12 +37,21 @@ func check() error {
 			return err
 		}
 		defer os.RemoveAll(tools)
+		missing := map[string]bool{}
 		for _, name := range applicable(c, impl) {
 			target := "/bin/busybox"
 			if impl != "busybox" {
 				target, err = exec.LookPath(provider(impl, name))
+				if err == nil && isBusyBox(target) {
+					// The name resolves to a BusyBox applet, not to a GNU program.
+					err = fmt.Errorf("%s is a BusyBox applet", target)
+				}
 				if err != nil {
-					return err
+					// Alpine's coreutils package leaves out a few commands that other
+					// packages provide, such as groups and uptime. Say so and go on.
+					fmt.Printf("Linux %s: %s is not installed in the guest, skipped\n", impl, name)
+					missing[name] = true
+					continue
 				}
 			}
 			if err = os.Symlink(target, filepath.Join(tools, name)); err != nil {
@@ -50,6 +59,9 @@ func check() error {
 			}
 		}
 		for _, name := range applicable(c, impl) {
+			if missing[name] {
+				continue
+			}
 			data, err := run("/explain", []string{name, "--format=json"}, "/", tools)
 			if err != nil {
 				return fmt.Errorf("%s/%s CLI: %w %s", impl, name, err, data)
@@ -233,4 +245,10 @@ func checkMissingApplets(c *catalog.Catalog) error {
 	}
 	fmt.Printf("Linux BusyBox: %d pages without a BusyBox view have no applet of that name\n", count)
 	return nil
+}
+
+// isBusyBox reports whether path resolves to the BusyBox binary.
+func isBusyBox(path string) bool {
+	real, err := filepath.EvalSymlinks(path)
+	return err == nil && strings.Contains(filepath.Base(real), "busybox")
 }
