@@ -32,7 +32,7 @@ Still open: detection probes only the commands in `detect.probed` (grep, sed, fi
 
 ## Completed-page evidence
 
-Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
 
 | Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
 | --- | --- | --- | --- | --- | --- |
@@ -75,6 +75,17 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `join` | 5 common, 1 GNU | system `/usr/bin/join`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list` in the guest) | n/a |
 | `nl` | 5 common, 1 GNU | system `/usr/bin/nl`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `fold` | 4 common, 1 GNU | system `/usr/bin/fold`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `env` | 4 common, 1 GNU (machine-dependent output checked by shape) | system `/usr/bin/env`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `printenv` | 4 common (machine-dependent output checked by shape) | system `/usr/bin/printenv`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `id` | 5 common (machine-dependent output checked by shape) | system `/usr/bin/id`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `whoami` | 3 common (machine-dependent output checked by shape) | system `/usr/bin/whoami`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `uname` | 5 common (machine-dependent output checked by shape) | system `/usr/bin/uname`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `hostname` | 3 common (no GNU view: not in coreutils) | system `/bin/hostname`, executed | n/a | BusyBox 1.37.0, executed | n/a |
+| `df` | 5 common (machine-dependent output checked by shape) | system `/bin/df`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `yes` | 4 common, 1 GNU | system `/usr/bin/yes`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `sleep` | 4 common, 1 GNU | system `/bin/sleep`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `expand` | 4 common, 1 GNU | system `/usr/bin/expand`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `unexpand` | 4 common | system `/usr/bin/unexpand`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -114,14 +125,14 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `cut` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [x] `date` (stage 4 batch 2d, 2026-11-08; see completed-page evidence)
 - [ ] `dd`
-- [ ] `df`
+- [x] `df` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [ ] `dir`
 - [ ] `dircolors`
 - [x] `dirname` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [x] `du` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [ ] `echo`
-- [ ] `env`
-- [ ] `expand`
+- [x] `env` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
+- [x] `expand` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [ ] `expr`
 - [ ] `factor`
 - [ ] `false`
@@ -130,8 +141,8 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `groups`
 - [x] `head` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `hostid`
-- [ ] `hostname`
-- [ ] `id`
+- [x] `hostname` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
+- [x] `id` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [ ] `install`
 - [x] `join` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `kill`
@@ -155,7 +166,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `pathchk`
 - [ ] `pinky`
 - [ ] `pr`
-- [ ] `printenv`
+- [x] `printenv` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [ ] `printf`
 - [ ] `ptx`
 - [ ] `pwd`
@@ -172,7 +183,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `sha512sum`
 - [ ] `shred`
 - [ ] `shuf`
-- [ ] `sleep`
+- [x] `sleep` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [x] `sort` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `split`
 - [x] `stat` (stage 4 batch 2d, 2026-11-08; see completed-page evidence)
@@ -191,8 +202,8 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `truncate`
 - [ ] `tsort`
 - [ ] `tty`
-- [ ] `uname`
-- [ ] `unexpand`
+- [x] `uname` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
+- [x] `unexpand` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [x] `uniq` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `unlink`
 - [ ] `uptime`
@@ -200,8 +211,8 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `vdir`
 - [x] `wc` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `who`
-- [ ] `whoami`
-- [ ] `yes`
+- [x] `whoami` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
+- [x] `yes` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 
 ### diffutils
 

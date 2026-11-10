@@ -169,7 +169,7 @@ def main():
         for target, command in [("explain", "./cmd/explain"), ("compat-check", "./cmd/compat-check")]:
             subprocess.run(["go", "build", "-trimpath", "-o", str(root / target), command], cwd=ROOT, env=env, check=True)
         init = root / "init"
-        init.write_text("#!/bin/sh\nexport PATH=/usr/bin:/bin:/sbin\nmount -t proc proc /proc\n/compat-check\nresult=$?\necho GUEST_EXIT=$result\npoweroff -f\n")
+        init.write_text("#!/bin/sh\nexport PATH=/usr/bin:/bin:/sbin\nmount -t proc proc /proc\nmount -t tmpfs tmpfs /tmp\n/compat-check\nresult=$?\necho GUEST_EXIT=$result\npoweroff -f\n")
         init.chmod(0o755)
         initrd = work / "guest.cpio.gz"
         cpio(root, initrd)
