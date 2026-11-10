@@ -173,7 +173,7 @@ test(
       original
         .replace('id: grep', 'id: demo')
         .replace('title: grep', 'title: demo')
-        .replace('aliases: [ggrep]', 'aliases: []'),
+        .replace('aliases: [ggrep, egrep, fgrep]', 'aliases: []'),
     );
     await until(async () => (await page('/commands/demo/')).ok);
     // Guides name grep as a related command, and the export refuses a name with

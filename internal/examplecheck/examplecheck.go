@@ -12,6 +12,10 @@ import (
 	"strings"
 )
 
+// Companions lists programs that a command runs by name, which must come from the same
+// implementation as the command: GNU diff3 and sdiff call diff.
+var Companions = map[string][]string{"diff3": {"diff"}, "sdiff": {"diff"}}
+
 // Dirs and Files describe the synthetic working directory examples run in.
 var Dirs = []string{"projects", "logs", "cache"}
 var Files = map[string]string{
@@ -658,6 +662,33 @@ var expected = map[string]expectation{
 	"coreutils --coreutils-prog=echo hello":                    {output: "hello\n"},
 	"coreutils --coreutils-prog=basename logs/server.log .log": {output: "server\n"},
 	"coreutils --coreutils-prog=true; echo $?":                 {output: "0\n"},
+	// diff, cmp, diff3, sdiff, patch, zcat (and the gunzip example on the gzip page).
+	"printf 'a\\nb\\n' > f1 && printf 'a\\nc\\n' > f2 && { diff -u f1 f2 | tail -n +3; }":                                                                                                              {output: "@@ -1,2 +1,2 @@\n a\n-b\n+c\n"},
+	"printf 'a\\nb\\n' > f1 && printf 'a\\nc\\n' > f2 && diff -q f1 f2; echo \"status $?\"":                                                                                                            {output: "Files f1 and f2 differ\nstatus 1\n"},
+	"printf 'a\\n' > f1 && cp f1 f2 && diff f1 f2 && echo same":                                                                                                                                        {output: "same\n"},
+	"printf 'a\\n' > f1 && printf 'b\\n' > f2 && { diff -q f1 f2 > /dev/null || echo differ; }":                                                                                                        {output: "differ\n"},
+	"printf 'x  y\\n' > w1 && printf 'x y\\n' > w2 && diff -w w1 w2 && echo same-ignoring-space":                                                                                                       {output: "same-ignoring-space\n"},
+	"mkdir d1 d2 && printf 'x\\n' > d1/f && printf 'x\\n' > d2/f && diff -r d1 d2 && echo same":                                                                                                        {output: "same\n"},
+	"printf 'a\\nb\\n' > f1 && printf 'a\\nc\\n' > f2 && diff f1 f2; test $? -eq 1 && echo differ":                                                                                                     {output: "2c2\n< b\n---\n> c\ndiffer\n"},
+	"printf 'a\\nb\\n' > f1 && cp f1 f2 && cmp -s f1 f2 && echo same":                                                                                                                                  {output: "same\n"},
+	"printf 'a\\nb\\n' > f1 && printf 'a\\nc\\n' > f2 && { cmp -s f1 f2 || echo differ; }":                                                                                                             {output: "differ\n"},
+	"printf 'a\\n' > f1 && cmp -s f1 f1 && echo same":                                                                                                                                                  {output: "same\n"},
+	"printf 'a\\n' > f1 && printf 'a\\nb\\n' > f2 && { cmp -s f1 f2 || echo differ; }":                                                                                                                 {output: "differ\n"},
+	"printf 'a\\nb\\n' > f1 && printf 'a\\nc\\n' > f2 && cmp f1 f2; test $? -eq 1 && echo differ":                                                                                                      {output: "f1 f2 differ: char 3, line 2\ndiffer\n"},
+	"printf 'a\\nb\\n' > mine && printf 'a\\nb\\n' > base && printf 'a\\nb\\nd\\n' > yours && diff3 mine base yours":                                                                                   {output: "====3\n1:2a\n2:2a\n3:3c\n  d\n"},
+	"printf 'A\\nb\\n' > mine && printf 'a\\nb\\n' > base && printf 'a\\nb\\nd\\n' > yours && diff3 -m mine base yours":                                                                                {output: "A\nb\nd\n"},
+	"printf 'a\\nb\\n' > f1 && printf 'a\\nc\\n' > f2 && sdiff f1 f2; test $? -eq 1 && echo differ":                                                                                                    {output: "a a\nb | c\ndiffer\n", spaces: true},
+	"printf 'a\\nb\\n' > f1 && printf 'a\\nc\\n' > f2 && sdiff -w 20 f1 f2; test $? -eq 1 && echo differ":                                                                                              {output: "a a\nb | c\ndiffer\n", spaces: true},
+	"printf 'a\\nb\\n' > f1 && printf 'a\\nc\\n' > f2 && sdiff -s f1 f2; test $? -eq 1 && echo differ":                                                                                                 {output: "b | c\ndiffer\n", spaces: true},
+	"printf 'a\\nb\\n' > old.txt && printf 'a\\nc\\n' > new.txt && { diff -u old.txt new.txt > change.patch; patch old.txt change.patch > /dev/null && cat old.txt; }":                                 {output: "a\nc\n"},
+	"printf 'a\\nb\\n' > old.txt && printf 'a\\nc\\n' > new.txt && { diff -u old.txt new.txt > change.patch; cp new.txt target.txt; patch -R target.txt change.patch > /dev/null && cat target.txt; }": {output: "a\nb\n"},
+	"printf 'a\\nb\\n' > old.txt && printf 'a\\nc\\n' > new.txt && { diff -u old.txt new.txt > change.patch; patch --dry-run old.txt change.patch > /dev/null && cat old.txt; }":                       {output: "a\nb\n"},
+	"printf 'x\\n' > f && printf 'y\\n' > g && { diff -u --label a/f --label b/f f g > d.patch; patch -p1 < d.patch > /dev/null && cat f; }":                                                           {output: "y\n"},
+	"printf data | gzip > f.gz && zcat < f.gz":                                                                                                                                                         {output: "data"},
+	"printf 'a\\nb\\n' | gzip > f.gz && zcat < f.gz | wc -l | tr -d ' '":                                                                                                                               {output: "2\n"},
+	"printf data | gzip > f.gz && gunzip -c f.gz":                                                                                                                                                      {output: "data"},
+	"printf data | gzip > f.gz && zcat f.gz":                                                                                                                                                           {output: "data"},
+	"printf data | gzip > f.gz && gzcat f.gz":                                                                                                                                                          {output: "data"},
 	// cd: only success is checked; the printed directory is a temporary path.
 	"cd projects":        {},
 	"cd ..":              {},

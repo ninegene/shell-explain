@@ -27,6 +27,12 @@ func TestMain(m *testing.M) {
 			fmt.Println("gzip 1.13\nCopyright (C) 2023 Free Software Foundation, Inc.")
 		case "gnu-coreutils":
 			fmt.Println("sort (GNU coreutils) 9.11")
+		case "gnu-zcat":
+			fmt.Println("zcat (gzip) 1.14\nCopyright (C) 2025 Free Software Foundation, Inc.")
+		case "gnu-patch":
+			fmt.Println("GNU patch 2.8\nCopyright (C) 2018 Free Software Foundation, Inc.")
+		case "apple-patch":
+			fmt.Println("patch 2.0-12u11-Apple")
 		case "gnu-dd":
 			// GNU dd leaves out the word GNU.
 			fmt.Println("dd (coreutils) 9.11")
@@ -89,7 +95,7 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		t.Fatal(err)
 	}
 	dir := t.TempDir()
-	for _, name := range []string{"sort", "gzip", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk", "groups", "logname", "tty", "users", "who", "uptime", "hostid", "pinky", "chown", "chgrp", "shred", "dir", "vdir", "dircolors", "mknod", "echo", "printf", "pwd", "true", "false", "test", "kill", "arch", "numfmt", "ptx", "stdbuf", "stty", "chroot", "chcon", "runcon", "coreutils", "unlisted-tool"} {
+	for _, name := range []string{"sort", "gzip", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk", "groups", "logname", "tty", "users", "who", "uptime", "hostid", "pinky", "chown", "chgrp", "shred", "dir", "vdir", "dircolors", "mknod", "echo", "printf", "pwd", "true", "false", "test", "kill", "arch", "numfmt", "ptx", "stdbuf", "stty", "chroot", "chcon", "runcon", "coreutils", "diff", "cmp", "diff3", "sdiff", "patch", "zcat", "unlisted-tool"} {
 		if err = os.Symlink(executable, filepath.Join(dir, name)); err != nil {
 			t.Fatal(err)
 		}
@@ -114,7 +120,7 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		}
 	}
 	// Each command added for the file-path batch is probed like the other coreutils.
-	for _, command := range []string{"touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk", "groups", "logname", "tty", "users", "who", "uptime", "hostid", "pinky", "chown", "chgrp", "shred", "dir", "vdir", "dircolors", "mknod", "echo", "printf", "pwd", "true", "false", "test", "kill", "arch", "numfmt", "ptx", "stdbuf", "stty", "chroot", "chcon", "runcon", "coreutils"} {
+	for _, command := range []string{"touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk", "groups", "logname", "tty", "users", "who", "uptime", "hostid", "pinky", "chown", "chgrp", "shred", "dir", "vdir", "dircolors", "mknod", "echo", "printf", "pwd", "true", "false", "test", "kill", "arch", "numfmt", "ptx", "stdbuf", "stty", "chroot", "chcon", "runcon", "coreutils", "diff", "cmp", "diff3", "sdiff", "patch", "zcat"} {
 		for _, tt := range []struct{ mode, impl string }{{"apple-version", "apple"}, {"gnu-coreutils", "gnu"}} {
 			t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", tt.mode)
 			s, err := d.Select(context.Background(), Request{Name: command, Command: command})
@@ -126,6 +132,17 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 	t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", "gnu-dd")
 	if s, err := d.Select(context.Background(), Request{Name: "dd", Command: "dd"}); err != nil || s.Implementation != "gnu" || s.Confidence != "detected" || s.Version != "9.11" {
 		t.Fatalf("GNU dd banner: %+v %v", s, err)
+	}
+	for _, tt := range []struct{ mode, impl, version string }{{"gnu-patch", "gnu", "2.8"}, {"apple-patch", "apple", "2.0"}, {"gnu-zcat", "gnu", "1.14"}} {
+		t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", tt.mode)
+		command := "patch"
+		if tt.mode == "gnu-zcat" {
+			command = "zcat"
+		}
+		s, err := d.Select(context.Background(), Request{Name: command, Command: command})
+		if err != nil || s.Implementation != tt.impl || s.Confidence != "detected" || s.Version != tt.version {
+			t.Fatalf("%s banner: %+v %v", tt.mode, s, err)
+		}
 	}
 	// Commands outside the probe list are never executed, even with a GNU-looking banner.
 	t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", "gnu-coreutils")

@@ -32,7 +32,7 @@ Still open: detection probes only the commands in `detect.probed` (grep, sed, fi
 
 ## Completed-page evidence
 
-Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10; tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout and truncate on 2026-11-10; dd, install, link, unlink, mkfifo, nohup, nice, sync, sum, tsort, pr and pathchk on 2026-11-10; groups, logname, tty, users, who, uptime, hostid, pinky, chown, chgrp, shred, dir, vdir, dircolors and mknod on 2026-11-10; echo, printf, pwd, true, false, test, kill and arch on 2026-11-10; numfmt, ptx, stdbuf, stty, chroot, chcon, runcon and coreutils on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10; tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout and truncate on 2026-11-10; dd, install, link, unlink, mkfifo, nohup, nice, sync, sum, tsort, pr and pathchk on 2026-11-10; groups, logname, tty, users, who, uptime, hostid, pinky, chown, chgrp, shred, dir, vdir, dircolors and mknod on 2026-11-10; echo, printf, pwd, true, false, test, kill and arch on 2026-11-10; numfmt, ptx, stdbuf, stty, chroot, chcon, runcon and coreutils on 2026-11-10; diff, cmp, diff3, sdiff, patch and zcat on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
 
 | Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
 | --- | --- | --- | --- | --- | --- |
@@ -151,6 +151,12 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `chcon` | 3 GNU, reviewed only (needs SELinux) | not shipped by macOS (checked on the host) | not executed | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `runcon` | 3 GNU, reviewed only (needs SELinux) | not shipped by macOS (checked on the host) | not executed | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `coreutils` | 3 GNU (multi-call program) | not shipped by macOS (checked on the host) | coreutils 9.11, executed in the Linux guest only (Homebrew does not install it) | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `diff` | 6 common, 1 GNU, 1 Apple | system `/usr/bin/diff` (Apple diff, based on FreeBSD diff), executed | GNU 3.12 from a conda install managed by mise on the host, executed, and Alpine diffutils 3.12 in the guest | BusyBox 1.37.0, executed | n/a |
+| `cmp` | 4 common, 1 GNU, 1 Apple | system `/usr/bin/cmp`, executed | GNU 3.12 from a conda install managed by mise on the host, executed, and Alpine diffutils 3.12 in the guest | BusyBox 1.37.0, executed | n/a |
+| `diff3` | 2 common | system `/usr/bin/diff3`, executed | GNU 3.12 from a conda install managed by mise on the host, executed, and Alpine diffutils 3.12 in the guest (with the matching `diff` put on the path) | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `sdiff` | 3 common (layout compared with blanks collapsed) | system `/usr/bin/sdiff`, executed | GNU 3.12 from a conda install managed by mise on the host, executed, and Alpine diffutils 3.12 in the guest | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `patch` | 4 common | system `/usr/bin/patch` (2.0-12u11-Apple), executed | GNU patch 2.8, executed on the host (mise conda) and in the guest (Alpine patch) | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `zcat` | 3 common, 1 GNU, 1 Apple | system `/usr/bin/zcat` and `gzcat`, executed | gzip 1.14 on the host and Alpine gzip in the guest (a shell script, so not identified automatically) | BusyBox 1.37.0, executed | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -281,10 +287,10 @@ Expected output is compared exactly, except directory-traversal order, which is 
 
 ### diffutils
 
-- [ ] `cmp`
-- [ ] `diff`
-- [ ] `diff3`
-- [ ] `sdiff`
+- [x] `cmp` (stage 4 batch 3j, 2026-11-10; see completed-page evidence)
+- [x] `diff` (stage 4 batch 3j, 2026-11-10; see completed-page evidence)
+- [x] `diff3` (stage 4 batch 3j, 2026-11-10; see completed-page evidence)
+- [x] `sdiff` (stage 4 batch 3j, 2026-11-10; see completed-page evidence)
 
 ### findutils
 
@@ -301,17 +307,17 @@ Expected output is compared exactly, except directory-traversal order, which is 
 
 ### grep
 
-- [ ] `egrep`
-- [ ] `fgrep`
+- [x] `egrep` (stage 4 batch 3j, 2026-11-10; an alias of the `grep` page, which explains the obsolescent spelling)
+- [x] `fgrep` (stage 4 batch 3j, 2026-11-10; an alias of the `grep` page, which explains the obsolescent spelling)
 - [x] `grep` — expanded and reviewed 2026-11-08 (see completed-page evidence)
 
 ### gzip
 
-- [ ] `gunzip`
+- [x] `gunzip` (stage 4 batch 3j, 2026-11-10; an alias of the `gzip` page, with an example)
 - [ ] `gzexe`
 - [x] `gzip` (stage 4 batch 2c, 2026-11-08; see completed-page evidence)
 - [ ] `uncompress`
-- [ ] `zcat`
+- [x] `zcat` (stage 4 batch 3j, 2026-11-10; see completed-page evidence)
 - [ ] `zcmp`
 - [ ] `zdiff`
 - [ ] `zegrep`
@@ -324,7 +330,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 
 ### patch
 
-- [ ] `patch`
+- [x] `patch` (stage 4 batch 3j, 2026-11-10; see completed-page evidence)
 
 ### sed
 
