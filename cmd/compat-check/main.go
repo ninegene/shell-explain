@@ -220,6 +220,7 @@ func checkMissingApplets(c *catalog.Catalog) error {
 		return fmt.Errorf("busybox --list: %w %s", err, out)
 	}
 	applets := strings.Fields(string(out))
+	fmt.Printf("Linux BusyBox applets (%d): %s\n", len(applets), strings.Join(applets, " "))
 	count := 0
 	for _, e := range c.Entries {
 		if slices.Contains(e.Implementations, "busybox") || !slices.Contains(e.Implementations, "gnu") {
