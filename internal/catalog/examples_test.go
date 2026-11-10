@@ -80,6 +80,10 @@ func TestAuthoredExamples(t *testing.T) {
 								if impl == "upstream" {
 									// Wrappers such as npm need their sibling programs (node).
 									toolPath = filepath.Dir(executable) + ":" + toolPath
+									if node, err := exec.LookPath("node"); err == nil {
+										// Tools written in JavaScript (prettier) start through `env node`.
+										toolPath = filepath.Dir(node) + ":" + toolPath
+									}
 								}
 							}
 							script := "cd .\n" + code

@@ -190,6 +190,18 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 | `bat` | 4 executed | bat 0.26.1 | numbers are compared with blanks collapsed |
 | `tree` | 4 executed | tree v2.3.2 | the version tested counts the starting folder in the directory total |
 | `sd` | 4 executed | sd v1.1.0 | |
+| `shellcheck` | 4 executed | ShellCheck 0.11.0 | |
+| `shfmt` | 4 executed | shfmt v3.14.1 | `-l` exits with status 1 when it lists a file, in this version |
+| `prettier` | 4 executed | Prettier 3.9.10 | runs on the host's Node.js |
+| `node` | 5 executed | Node.js long-term-support release on the host | |
+| `npm` | 3 executed, 2 reviewed only (they download packages) | the npm that comes with that Node.js | |
+| `npx` | 1 executed, 2 reviewed only (they download packages) | the npx that comes with that Node.js | |
+| `python3` | 4 executed, 1 reviewed only (it listens on a port) | Python 3 on the host | |
+| `uv` | 3 executed, 2 reviewed only (they may download) | uv on the host | |
+| `uvx` | 1 executed, 2 reviewed only (they download tools) | uvx of that uv | |
+| `go` | 5 executed | Go 1.27.3 | no network: each example builds in a temporary module |
+| `just` | 4 executed | just on the host | |
+| `bash` | 6 executed | GNU Bash 5.2.37 | macOS ships Bash 3.2, which the page warns about but the examples do not run on |
 
 ## Suggested order
 
@@ -381,7 +393,7 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 
 - [ ] `actionlint`
 - [ ] `aws`
-- [ ] `bash`
+- [x] `bash` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `bat` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `claude`
 - [ ] `codex`
@@ -395,32 +407,32 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `gh`
 - [x] `git` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `gitleaks`
-- [ ] `go`
+- [x] `go` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `gzcat` (stage 4 batch 3k, 2026-11-10; an alias of the `zcat` page)
 - [x] `jq` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `just`
+- [x] `just` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `killall` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [ ] `lefthook`
 - [ ] `limactl`
 - [ ] `lsof`
 - [ ] `markdownlint-cli2`
 - [ ] `mise`
-- [ ] `node`
-- [ ] `npm`
-- [ ] `npx`
+- [x] `node` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `npm` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `npx` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `pgrep` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [x] `pkill` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
-- [ ] `prettier`
+- [x] `prettier` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `ps` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [ ] `pulumi`
-- [ ] `python3`
+- [x] `python3` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `rg` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `rsync`
 - [ ] `scp`
 - [x] `sd` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `security`
-- [ ] `shellcheck`
-- [ ] `shfmt`
+- [x] `shellcheck` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `shfmt` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `ssh`
 - [ ] `ssh-add`
 - [ ] `ssh-agent`
@@ -430,8 +442,8 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [x] `top` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [x] `tree` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `unzip`
-- [ ] `uv`
-- [ ] `uvx`
+- [x] `uv` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `uvx` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `vim`
 - [ ] `zed`
 - [ ] `zip`
