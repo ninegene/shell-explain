@@ -32,7 +32,7 @@ Still open: detection probes only the commands in `detect.probed` (grep, sed, fi
 
 ## Completed-page evidence
 
-Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
 
 | Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
 | --- | --- | --- | --- | --- | --- |
@@ -65,6 +65,16 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `basename` | 4 common, 1 GNU | system `/usr/bin/basename`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `dirname` | 5 common, 1 GNU | system `/usr/bin/dirname`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `tee` | 5 common, 1 GNU | system `/usr/bin/tee`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `rmdir` | 4 common, 1 GNU | system `/bin/rmdir`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `mktemp` | 4 common, 1 GNU | system `/usr/bin/mktemp`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `readlink` | 4 common, 1 GNU | system `/usr/bin/readlink`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `realpath` | 4 common, 2 GNU | system `/bin/realpath`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `seq` | 6 common, 1 GNU | system `/usr/bin/seq`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `paste` | 6 common | system `/usr/bin/paste`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `comm` | 4 common, 1 GNU | system `/usr/bin/comm`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `join` | 5 common, 1 GNU | system `/usr/bin/join`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list` in the guest) | n/a |
+| `nl` | 5 common, 1 GNU | system `/usr/bin/nl`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `fold` | 4 common, 1 GNU | system `/usr/bin/fold`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -97,7 +107,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `chown`
 - [ ] `chroot`
 - [ ] `cksum`
-- [ ] `comm`
+- [x] `comm` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `coreutils`
 - [x] `cp` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
 - [ ] `csplit`
@@ -116,14 +126,14 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `factor`
 - [ ] `false`
 - [ ] `fmt`
-- [ ] `fold`
+- [x] `fold` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `groups`
 - [x] `head` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `hostid`
 - [ ] `hostname`
 - [ ] `id`
 - [ ] `install`
-- [ ] `join`
+- [x] `join` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `kill`
 - [ ] `link`
 - [x] `ln` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
@@ -133,15 +143,15 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `mkdir` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
 - [ ] `mkfifo`
 - [ ] `mknod`
-- [ ] `mktemp`
+- [x] `mktemp` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [x] `mv` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
 - [ ] `nice`
-- [ ] `nl`
+- [x] `nl` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `nohup`
 - [ ] `nproc`
 - [ ] `numfmt`
 - [ ] `od`
-- [ ] `paste`
+- [x] `paste` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `pathchk`
 - [ ] `pinky`
 - [ ] `pr`
@@ -149,12 +159,12 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `printf`
 - [ ] `ptx`
 - [ ] `pwd`
-- [ ] `readlink`
-- [ ] `realpath`
+- [x] `readlink` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
+- [x] `realpath` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [x] `rm` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
-- [ ] `rmdir`
+- [x] `rmdir` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `runcon`
-- [ ] `seq`
+- [x] `seq` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `sha1sum`
 - [ ] `sha224sum`
 - [ ] `sha256sum`

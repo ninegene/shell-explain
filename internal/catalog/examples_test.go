@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"testing"
 
 	"github.com/ninegene/shell-explain/content"
@@ -143,6 +144,28 @@ func TestEveryExampleHasExpectation(t *testing.T) {
 				if !examplecheck.HasExpectation(code) {
 					t.Errorf("%s/%s: no expected result for %q", e.ID, s.ID, code)
 				}
+			}
+		}
+	}
+}
+
+// A page that leaves out the Apple view claims macOS ships no such tool. Check
+// that on a Mac, so the claim cannot go stale unnoticed.
+func TestMissingAppleViewsMatchMacOS(t *testing.T) {
+	if runtime.GOOS != "darwin" {
+		t.Skip("only macOS can show what it ships")
+	}
+	c, err := Load(content.Files)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range c.Entries {
+		if !slices.Contains(e.Implementations, "gnu") || slices.Contains(e.Implementations, "apple") {
+			continue
+		}
+		for _, dir := range []string{"/usr/bin/", "/bin/", "/usr/sbin/", "/sbin/"} {
+			if _, err := os.Stat(dir + e.ID); err == nil {
+				t.Errorf("%s has no Apple view, but macOS ships %s%s", e.ID, dir, e.ID)
 			}
 		}
 	}

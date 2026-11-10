@@ -97,6 +97,9 @@ func check() error {
 	if err := checkGuides(c); err != nil {
 		return err
 	}
+	if err := checkMissingApplets(c); err != nil {
+		return err
+	}
 	return checkAwk()
 }
 
@@ -206,4 +209,27 @@ func run(name string, args []string, dir, tools string) ([]byte, error) {
 	cmd.Dir = dir
 	cmd.Env = []string{"PATH=" + tools + ":/usr/bin:/bin", "LC_ALL=C", "HOME=/tmp"}
 	return cmd.CombinedOutput()
+}
+
+// checkMissingApplets verifies the claim a page makes by leaving out BusyBox: for
+// every entry that is documented for GNU or Apple but not BusyBox, the guest's
+// BusyBox must not provide an applet of that name.
+func checkMissingApplets(c *catalog.Catalog) error {
+	out, err := run("/bin/busybox", []string{"--list"}, "/", "/nonexistent")
+	if err != nil {
+		return fmt.Errorf("busybox --list: %w %s", err, out)
+	}
+	applets := strings.Fields(string(out))
+	count := 0
+	for _, e := range c.Entries {
+		if slices.Contains(e.Implementations, "busybox") || !slices.Contains(e.Implementations, "gnu") {
+			continue
+		}
+		if slices.Contains(applets, e.ID) {
+			return fmt.Errorf("%s omits busybox, but the guest BusyBox has a %s applet", e.ID, e.ID)
+		}
+		count++
+	}
+	fmt.Printf("Linux BusyBox: %d pages without a BusyBox view have no applet of that name\n", count)
+	return nil
 }
