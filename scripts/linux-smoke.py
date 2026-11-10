@@ -147,7 +147,7 @@ def main():
             packages[record["P"]] = record
             for provided in record.get("p", "").split():
                 providers[provided.split("=")[0]] = record["P"]
-        pending = ["grep", "sed", "findutils", "coreutils", "tar", "gzip", "gawk", "mawk"]
+        pending = ["grep", "sed", "findutils", "coreutils", "tar", "gzip", "gawk", "mawk", "diffutils", "patch"]
         selected = set()
         while pending:
             name = pending.pop()

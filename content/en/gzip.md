@@ -3,10 +3,10 @@ schema_version: 1
 id: gzip
 title: gzip
 summary: Compress and decompress files with gzip.
-aliases: [ggzip]
+aliases: [ggzip, gunzip]
 tags: [files, compression]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-08
+updated: 2026-11-10
 references:
   - https://www.gnu.org/software/gzip/manual/gzip.html
   - https://man.freebsd.org/cgi/man.cgi?query=gzip&sektion=1
@@ -48,6 +48,12 @@ Compress into a chosen file, leaving the input alone, by writing to standard out
 
 ```sh
 gzip -c app.log > copy.log.gz && ls *.gz
+```
+
+Decompress to standard output with `gunzip -c`, the spelling that `gunzip` answers for on this page; the compressed file is left in place:
+
+```sh
+printf data | gzip > f.gz && gunzip -c f.gz
 ```
 
 ### Option: -k

@@ -26,6 +26,12 @@ func main() {
 	}
 	fmt.Println("LINUX_SMOKE_PASS")
 }
+// unidentifiable lists GNU commands that the probe cannot identify, with the reason.
+var unidentifiable = map[string]string{
+	"test": "GNU test prints no version banner, because a lone argument is a string test",
+	"zcat": "GNU zcat is a shell script, and scripts are never executed by the probe",
+}
+
 func check() error {
 	c, err := catalog.Load(content.Files)
 	if err != nil {
@@ -57,6 +63,18 @@ func check() error {
 			if err = os.Symlink(target, filepath.Join(tools, name)); err != nil {
 				return err
 			}
+			for _, companion := range examplecheck.Companions[name] {
+				// A program the command runs by name must come from the same implementation.
+				companionTarget := "/bin/busybox"
+				if impl != "busybox" {
+					if companionTarget, err = exec.LookPath(provider(impl, companion)); err != nil || isBusyBox(companionTarget) {
+						return fmt.Errorf("%s needs %s from the %s guest packages", name, companion, impl)
+					}
+				}
+				if err = os.Symlink(companionTarget, filepath.Join(tools, companion)); err != nil && !os.IsExist(err) {
+					return err
+				}
+			}
 		}
 		for _, name := range applicable(c, impl) {
 			if missing[name] {
@@ -73,10 +91,8 @@ func check() error {
 			if err = json.Unmarshal(data, &result); err != nil {
 				return err
 			}
-			if name == "test" && impl == "gnu" && result.Selection.Implementation == "common" {
-				// GNU `test --version` prints nothing (a lone argument is a string test), so
-				// the probe cannot identify it; `[ --version` does, but is a different name.
-				fmt.Printf("Linux detection: test -> not identified (GNU test prints no version banner)\n")
+			if reason, ok := unidentifiable[name]; ok && impl == "gnu" && result.Selection.Implementation == "common" {
+				fmt.Printf("Linux detection: %s -> not identified (%s)\n", name, reason)
 			} else if result.Selection.Implementation != impl {
 				return fmt.Errorf("%s detected as %+v", impl, result.Selection)
 			}

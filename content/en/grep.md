@@ -3,10 +3,10 @@ schema_version: 1
 id: grep
 title: grep
 summary: Find lines of text that match a pattern.
-aliases: [ggrep]
+aliases: [ggrep, egrep, fgrep]
 tags: [text, search, logs]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-08
+updated: 2026-11-10
 references:
   - https://www.gnu.org/software/grep/manual/
   - https://man.freebsd.org/cgi/man.cgi?query=grep&sektion=1
@@ -128,6 +128,8 @@ An exit status of 1 means no lines matched; it does not necessarily mean the com
 
 ### Portability
 The examples in Common use options that GNU grep, macOS grep, and BusyBox grep all accept; they were executed on GNU grep 3.12, macOS grep (BSD) 2.6.0-FreeBSD, and BusyBox 1.37.0 (see the development guide for the exact check). Optional regex engines and recursive-search details differ. Implementation detection does not guarantee every installed version supports every feature; inspect the installed manual for version-specific behavior.
+
+The names `egrep` and `fgrep` are older spellings of `grep -E` (extended regular expressions) and `grep -F` (fixed strings), and this page answers for them. GNU grep 3.12 prints a warning that they are obsolescent and then behaves as `grep -E` or `grep -F`; the macOS ones print no warning. Use the `grep` options in new scripts.
 
 ## GNU
 ### About GNU grep

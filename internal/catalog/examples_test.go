@@ -61,6 +61,15 @@ func TestAuthoredExamples(t *testing.T) {
 								if err := os.Symlink(executable, filepath.Join(tools, entry.ID)); err != nil {
 									t.Fatal(err)
 								}
+								for _, companion := range examplecheck.Companions[entry.ID] {
+									path := exampleTool(detect.Detector{OS: runtime.GOOS, Path: os.Getenv("PATH")}, companion, impl)
+									if path == "" {
+										t.Skipf("%s %s is unavailable or unidentified", impl, companion)
+									}
+									if err := os.Symlink(path, filepath.Join(tools, companion)); err != nil {
+										t.Fatal(err)
+									}
+								}
 								toolPath = tools + ":" + toolPath
 							}
 							script := "cd .\n" + code
