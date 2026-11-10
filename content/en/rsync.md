@@ -46,7 +46,7 @@ mkdir src && printf x > src/f && rsync -an src/ dst/ > /dev/null 2>&1; test -e d
 Copy to another computer over SSH; reviewed only because it needs a remote host:
 
 ```sh
-rsync -a src/ user@example.com:backup/
+rsync -a src/ user@example.org:backup/
 ```
 
 ### Option: -a

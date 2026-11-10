@@ -34,7 +34,7 @@ git init -q -b main && printf hi > a.txt && git add a.txt && git status --short
 Commit it with a message, and read the history; the name and address are given with `-c` so no setup is needed:
 
 ```sh
-git init -q -b main && printf hi > a.txt && git add a.txt && git -c user.name=Demo -c user.email=demo@example.com commit -q -m first && git log --format=%s
+git init -q -b main && printf hi > a.txt && git add a.txt && git -c user.name=Demo -c user.email=demo@example.org commit -q -m first && git log --format=%s
 ```
 
 See what changed since the last commit, as a summary:
