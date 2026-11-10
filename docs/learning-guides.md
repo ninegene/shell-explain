@@ -1,6 +1,6 @@
 # Learning guides: teaching the shell from the ground up
 
-Status: design accepted; the format, parser, export and a sample guide are implemented (see the Guides section of [content-format.md](content-format.md)), the `explain learn` and `explain glossary` commands are implemented, and so are the website's `/learn/` pages, glossary page, home-page "Start here" section and "Learn more" links on command pages. Series 1 (five guides), all nine Series 2 guides (terminal, shell and command; anatomy of a command; files and folders; text and binary files; the three streams; pipes and redirects; exit codes; PATH and the environment; permissions), all five Series 3 guides (a short history; who is who; one command, many versions; distributions; which tool do I have) and 71 glossary terms are written, and `Try it` commands are run by the tests on the host and in the Linux guest. The website's search box also finds guides and glossary words. The first four Series 4 guides (find a word; count, sort, summarize; rename and move; make a backup) are written. Not yet built: the two Series 4 guides on asking a web service and sending an email, which are deferred (see open question 3). This document records what to build and in what order, so each step can be reviewed before it is built. It extends [stage 4](roadmap.md) and must be finished before the public release in stage 5, because the home page will lead with it.
+Status: design accepted; the format, parser, export and a sample guide are implemented (see the Guides section of [content-format.md](content-format.md)), the `explain learn` and `explain glossary` commands are implemented, and so are the website's `/learn/` pages, glossary page, home-page "Start here" section and "Learn more" links on command pages. Series 1 (five guides), all nine Series 2 guides (terminal, shell and command; anatomy of a command; files and folders; text and binary files; the three streams; pipes and redirects; exit codes; PATH and the environment; permissions), all five Series 3 guides (a short history; who is who; one command, many versions; distributions; which tool do I have) and 71 glossary terms are written, and `Try it` commands are run by the tests on the host and in the Linux guest. The website's search box also finds guides and glossary words. The first four Series 4 guides (find a word; count, sort, summarize; rename and move; make a backup) are written. Not yet built: the Series 4 guide on asking a web service with `curl` (see open question 3). The email guide was dropped. This document records what to build and in what order, so each step can be reviewed before it is built. It extends [stage 4](roadmap.md) and must be finished before the public release in stage 5, because the home page will lead with it.
 
 ## Why this exists
 
@@ -122,8 +122,7 @@ Each guide starts from a result and shows two or three different routes to it, w
 | `count-and-sort` | Count, Sort, Summarize | A small report |
 | `rename-and-move` | Tidy Up Files | Files in new places |
 | `make-a-backup` | Make a Backup | A new archive file |
-| `fetch-from-the-web` | Ask a Web Service | A response from another computer |
-| `send-a-message` | Send an Email from the Terminal | An email arrives (with the honest warnings) |
+| `fetch-from-the-web` | Ask a Web Service | A response from another computer, using `curl` against well-known public APIs such as the GitHub API |
 
 ### Glossary: Words You Will See
 
@@ -221,7 +220,7 @@ Each step is a reviewed pull request, in this order.
 
 1. **Placement.** Treat this as a stage 4 deliverable that must land before the exit review (recommended, since the home page leads with it), or as a separate stage between 4 and 5.
 2. **Series names.** The four series titles above are working names; confirm or replace them.
-3. **Scope of Series 4.** Whether "send an email" and "ask a web service" belong in the first release, given they depend on tools (`curl`, `mail`) with more variation and risk than the rest.
+3. **Scope of Series 4.** Decided: no email guide, because `mail` is rarely used today. The "ask a web service" guide is in scope and uses `curl` with read-only requests to common public APIs (for example the GitHub API); examples are reviewed against the live service rather than run by the offline tests.
 4. **Pager default.** Page automatically on a terminal (recommended) or only with `--page`.
 5. **Quizzes.** The "Check yourself" answers are shown inline (recommended); an interactive quiz is out of scope.
 
