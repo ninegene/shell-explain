@@ -21,7 +21,7 @@ func TestAuthoredExamples(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	implementations := []string{"bash", "apple", "gnu", "busybox", "mawk"}
+	implementations := []string{"bash", "apple", "gnu", "busybox", "mawk", "upstream"}
 	for _, impl := range implementations {
 		for _, entry := range c.Entries {
 			selected, err := entry.Select(impl, "")
@@ -36,6 +36,12 @@ func TestAuthoredExamples(t *testing.T) {
 					shell, err = exec.LookPath("bash")
 					if err != nil {
 						t.Skip("Bash is unavailable")
+					}
+				} else if impl == "upstream" {
+					// A single upstream tool needs no detection: use the one on PATH.
+					executable, _ = exec.LookPath(entry.ID)
+					if executable == "" {
+						t.Skipf("%s is not installed", entry.ID)
 					}
 				} else {
 					executable = exampleTool(detect.Detector{OS: runtime.GOOS, Path: os.Getenv("PATH")}, entry.ID, impl)
@@ -71,6 +77,10 @@ func TestAuthoredExamples(t *testing.T) {
 									}
 								}
 								toolPath = tools + ":" + toolPath
+								if impl == "upstream" {
+									// Wrappers such as npm need their sibling programs (node).
+									toolPath = filepath.Dir(executable) + ":" + toolPath
+								}
 							}
 							script := "cd .\n" + code
 							if executable != "" && slices.Contains(entry.Implementations, "bash") {
