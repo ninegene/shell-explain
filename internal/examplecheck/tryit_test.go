@@ -84,8 +84,11 @@ func TestUnsafeTryIt(t *testing.T) {
 		`curl -s "file://$PWD/f" http://x.org`:        "curl",
 		`curl -s "file://$PWD/f" example.org`:         "curl",
 		`curl -s "file://$PWD/f" && curl example.org`: "curl",
-		"curl -s f.txt":                               "curl",
-		"curl -s file://$(pwd)/f":                     "curl",
+		`echo file://$PWD/x | curl example.org`:       "curl",
+		`for f in a; do curl "file://$PWD/f" example.org; done`: "curl",
+		`ls | xargs curl "file://$PWD/f" example.org`:           "curl",
+		"curl -s f.txt":           "curl",
+		"curl -s file://$(pwd)/f": "curl",
 	} {
 		if got := UnsafeTryIt(code); got != want {
 			t.Errorf("UnsafeTryIt(%q) = %q, want %q", code, got, want)

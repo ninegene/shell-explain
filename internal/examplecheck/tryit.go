@@ -3,6 +3,7 @@ package examplecheck
 import (
 	"fmt"
 	"regexp"
+	"slices"
 	"strings"
 )
 
@@ -122,14 +123,16 @@ var curlTakesValue = map[string]bool{"-o": true, "-w": true, "-H": true, "-X": t
 // curl would fetch over the network: every word of the curl command that is
 // not an option or an option's value must be a file:// URL.
 func curlTargetsAreFiles(line string) bool {
-	line = regexp.MustCompile(`&&|\|\||;`).ReplaceAllString(line, "\n")
+	line = curlSeparator.ReplaceAllString(line, "\n")
 	for _, segment := range strings.Split(line, "\n") {
 		words := strings.Fields(segment)
-		if len(words) == 0 || strings.Trim(words[0], "\"'") != "curl" {
+		// curl may follow other words, as in "do curl ..." or "xargs curl ...".
+		start := slices.IndexFunc(words, func(w string) bool { return strings.Trim(w, "\"'") == "curl" })
+		if start < 0 {
 			continue
 		}
 		skip := false
-		for _, w := range words[1:] {
+		for _, w := range words[start+1:] {
 			switch {
 			case skip:
 				skip = false
@@ -142,6 +145,8 @@ func curlTargetsAreFiles(line string) bool {
 	}
 	return true
 }
+
+var curlSeparator = regexp.MustCompile(`&&|\|\||[|;&]`)
 
 // mv is allowed because the guide on renaming and moving files needs it, but
 // only on files the block itself made in the current folder. A line with mv is
