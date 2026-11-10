@@ -1,6 +1,6 @@
 # Development and verification
 
-Stages 1–4 now have a local implementation. The project remains private; the command collection of stage 4 is complete per [the checklist](command-collection.md), apart from one planned beginner guide (`fetch-from-the-web`) that is tracked in [learning-guides.md](learning-guides.md). Current CLI/web usability is accepted; broader usability studies are deferred. No public binaries, installer, Homebrew tap, mise release, GitHub Pages deployment, or DNS configuration has been published.
+Stages 1–4 now have a local implementation. The project remains private; the command collection of stage 4 is complete per [the checklist](command-collection.md), and the five goal-first guides are written. Current CLI/web usability is accepted; broader usability studies are deferred. No public binaries, installer, Homebrew tap, mise release, GitHub Pages deployment, or DNS configuration has been published.
 
 ## Prerequisites
 

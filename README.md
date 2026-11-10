@@ -6,7 +6,7 @@ Practical command explanations for the terminal and the web, maintained in one s
 - Executable: **`explain`**, for example `./bin/explain grep` after a local build.
 - Planned website: **shell-explain.ninegene.com**, built with Astro and hosted on GitHub Pages after the public release in stage 5.
 - CLI language: Go, with original Markdown embedded for offline use.
-- Status: **stages 1–4 implemented locally**. Current CLI and web usability are accepted as sufficient. The command collection (194 pages: GNU, macOS, BusyBox, procps, Bash builtins and single-project tools) is complete, with one planned beginner guide (`fetch-from-the-web`) still to write before stage 5. No installer, public release, or deployment exists yet.
+- Status: **stages 1–4 implemented locally**. Current CLI and web usability are accepted as sufficient. The command collection (194 pages: GNU, macOS, BusyBox, procps, Bash builtins and single-project tools) is complete, and all planned beginner guides are written. No installer, public release, or deployment exists yet.
 
 ## Goal
 

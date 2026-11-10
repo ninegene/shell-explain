@@ -15,7 +15,7 @@
 | Detection | Per-command implementation/version evidence plus explicit overrides |
 | Distribution | Release binaries, curl installer, Homebrew tap, mise GitHub backend |
 | Licensing | Choose and add code/content licenses in stage 5, before public release |
-| Current status | Stages 1–4 implemented (194 command pages, checklist and exit review complete); one planned beginner guide (`fetch-from-the-web`) remains before stage 5; no public release/deployment |
+| Current status | Stages 1–4 implemented (194 command pages, checklist and exit review complete); all planned beginner guides are written; no public release/deployment |
 
 ## Implementation evidence
 
@@ -41,7 +41,7 @@ Implement Astro catalog/detail/tag pages, explicit implementation filters, stati
 
 ## Stage 4: build the commonly used command collection
 
-Status: complete on 2026-11-10. Every command in the checklist has a page with reviewed examples, applicable implementation coverage and recorded evidence, every lookup name and topic has a disposition, and the content, Go, Linux guest and website checks pass. The one remaining item from the learning-guides proposal below is the `fetch-from-the-web` guide (`curl` against public APIs), which is tracked in [learning-guides.md](learning-guides.md) and must land before stage 5. The text below is kept as the plan that was followed.
+Status: complete on 2026-11-10. Every command in the checklist has a page with reviewed examples, applicable implementation coverage and recorded evidence, every lookup name and topic has a disposition, and the content, Go, Linux guest and website checks pass. The last guide from the learning-guides proposal, `fetch-from-the-web`, landed on 2026-11-10. The text below is kept as the plan that was followed.
 
 The current shared format, CLI output, and static site usability are good enough to proceed. Do not keep stage 4 open for another broad usability iteration or restrict it to the initial four commands. Remaining non-blocking usability work moves to the future backlog below.
 

@@ -159,7 +159,8 @@ func check() error {
 // folder, on the guest's own tools (BusyBox ps, GNU coreutils and so on). Each
 // must be safe, succeed, and print what the guide shows.
 func checkGuides(c *catalog.Catalog) error {
-	count := 0
+	count, skipped := 0, 0
+	_, noCurl := exec.LookPath("curl")
 	for _, g := range c.Guides {
 		for _, s := range g.Sections {
 			if s.Title != "Try it" {
@@ -168,6 +169,10 @@ func checkGuides(c *catalog.Catalog) error {
 			for _, b := range examplecheck.TryItBlocks(s.Markdown) {
 				if why := examplecheck.UnsafeTryIt(b.Code); why != "" {
 					return fmt.Errorf("guide %s: %q is not allowed in a Try it block", g.ID, why)
+				}
+				if noCurl != nil && examplecheck.UsesCurl(b.Code) {
+					skipped++
+					continue
 				}
 				dir, err := os.MkdirTemp("", "guide-")
 				if err != nil {
@@ -188,7 +193,7 @@ func checkGuides(c *catalog.Catalog) error {
 			}
 		}
 	}
-	fmt.Printf("Linux guides: %d Try it commands ran and matched\n", count)
+	fmt.Printf("Linux guides: %d Try it commands ran and matched, %d skipped because curl is not installed\n", count, skipped)
 	return nil
 }
 

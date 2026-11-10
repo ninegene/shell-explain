@@ -43,7 +43,7 @@ func TryItBlocks(markdown string) []TryItBlock {
 }
 
 // unsafeTryIt names commands a beginner guide must never ask a reader to run.
-var unsafeTryIt = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])(sudo|su|rm|rmdir|kill|killall|pkill|shutdown|reboot|halt|poweroff|mkfs|fdisk|dd|chown|chgrp|ln|curl|wget|ssh|scp)([^a-zA-Z0-9_-]|$)|>\s*/(dev|etc|usr|bin|sbin|var|System|Library)\b`)
+var unsafeTryIt = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])(sudo|su|rm|rmdir|kill|killall|pkill|shutdown|reboot|halt|poweroff|mkfs|fdisk|dd|chown|chgrp|ln|wget|ssh|scp)([^a-zA-Z0-9_-]|$)|>\s*/(dev|etc|usr|bin|sbin|var|System|Library)\b`)
 
 // UnsafeTryIt returns the first thing in code that a "Try it" block must not
 // contain, or "" when it is safe: only reading, and writing inside the current
@@ -54,6 +54,9 @@ func UnsafeTryIt(code string) string {
 	code = strings.ReplaceAll(code, "\\\n", " ")
 	hasMove := false
 	for _, line := range strings.Split(code, "\n") {
+		if curlWord.MatchString(line) && !curlStaysLocal(line) {
+			return "curl"
+		}
 		if m := unsafeTryIt.FindStringSubmatch(line); m != nil {
 			if m[2] != "" {
 				return m[2]
@@ -78,6 +81,66 @@ func UnsafeTryIt(code string) string {
 		}
 	}
 	return ""
+}
+
+// curl is allowed in a Try it block only to read a file:// URL, so the tests
+// never touch the network: the line must name a file:// URL, no other URL
+// scheme, and no path outside the current folder.
+var (
+	curlWord  = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])curl([^a-zA-Z0-9_-]|$)`)
+	urlScheme = regexp.MustCompile(`(?i)[a-z][a-z0-9+.-]*://`)
+)
+
+// UsesCurl reports whether code runs curl, so a machine without curl can skip
+// the block instead of failing it.
+func UsesCurl(code string) bool { return curlWord.MatchString(code) }
+
+func curlStaysLocal(line string) bool {
+	if !strings.Contains(line, "file://") || strings.ContainsAny(line, "`") || strings.Contains(line, "$(") {
+		return false
+	}
+	for _, scheme := range urlScheme.FindAllString(line, -1) {
+		if !strings.EqualFold(scheme, "file://") {
+			return false
+		}
+	}
+	// "$PWD" is the one variable allowed: it keeps the URL in this folder.
+	rest := strings.ReplaceAll(line, "file://$PWD/", "file://")
+	if strings.Contains(rest, "file:///") || strings.Contains(rest, "$") {
+		return false
+	}
+	if leavesFolder.MatchString(strings.ReplaceAll(rest, "file://", "file:")) {
+		return false
+	}
+	return curlTargetsAreFiles(line)
+}
+
+// curlTakesValue lists the options whose next word is a value, not a URL.
+var curlTakesValue = map[string]bool{"-o": true, "-w": true, "-H": true, "-X": true, "-d": true, "-A": true, "-e": true, "--output": true, "--write-out": true, "--header": true, "--request": true, "--data": true}
+
+// curlTargetsAreFiles rejects a bare host name such as "example.org", which
+// curl would fetch over the network: every word of the curl command that is
+// not an option or an option's value must be a file:// URL.
+func curlTargetsAreFiles(line string) bool {
+	line = regexp.MustCompile(`&&|\|\||;`).ReplaceAllString(line, "\n")
+	for _, segment := range strings.Split(line, "\n") {
+		words := strings.Fields(segment)
+		if len(words) == 0 || strings.Trim(words[0], "\"'") != "curl" {
+			continue
+		}
+		skip := false
+		for _, w := range words[1:] {
+			switch {
+			case skip:
+				skip = false
+			case strings.HasPrefix(w, "-"):
+				skip = curlTakesValue[w]
+			case !strings.Contains(w, "file://"):
+				return false
+			}
+		}
+	}
+	return true
 }
 
 // mv is allowed because the guide on renaming and moving files needs it, but
