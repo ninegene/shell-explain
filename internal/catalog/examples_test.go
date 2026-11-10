@@ -31,7 +31,7 @@ func TestAuthoredExamples(t *testing.T) {
 			t.Run(entry.ID+"/"+impl, func(t *testing.T) {
 				shell := "/bin/sh"
 				executable := ""
-				if entry.ID == "cd" {
+				if impl == "bash" {
 					var err error
 					shell, err = exec.LookPath("bash")
 					if err != nil {
@@ -54,14 +54,22 @@ func TestAuthoredExamples(t *testing.T) {
 								t.Fatal(err)
 							}
 							toolPath := "/usr/bin:/bin"
+							toolDir := ""
 							if executable != "" {
 								tools := t.TempDir()
+								toolDir = tools
 								if err := os.Symlink(executable, filepath.Join(tools, entry.ID)); err != nil {
 									t.Fatal(err)
 								}
 								toolPath = tools + ":" + toolPath
 							}
-							cmd := exec.Command(shell, "-c", "cd .\n"+code)
+							script := "cd .\n" + code
+							if executable != "" && slices.Contains(entry.Implementations, "bash") {
+								// The shell would run its own builtin; a function makes the
+								// example run the executable that this view documents.
+								script = entry.ID + "() { \"" + filepath.Join(toolDir, entry.ID) + "\" \"$@\"; }\n" + script
+							}
+							cmd := exec.Command(shell, "-c", script)
 							cmd.Dir = dir
 							cmd.Env = []string{"PATH=" + toolPath, "HOME=" + dir, "OLDPWD=" + dir, "LC_ALL=C"}
 							output, err := cmd.CombinedOutput()
