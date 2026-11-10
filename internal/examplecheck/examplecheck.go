@@ -33,8 +33,15 @@ var textFiles = map[string]string{
 }
 var textEntries = []string{"cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "awk"}
 
+// emptyFixture lists the entries whose examples start in an empty folder, because they
+// create what they need and would otherwise see the base files (git status, tree, fd, rg).
+var emptyFixture = []string{"curl", "jq", "git", "rg", "fd", "bat", "tree", "sd"}
+
 // Setup creates the base fixture, plus any extra files the entry's examples need.
 func Setup(dir, entry string) error {
+	if slices.Contains(emptyFixture, entry) {
+		return nil
+	}
 	for _, sub := range Dirs {
 		if err := os.Mkdir(filepath.Join(dir, sub), 0755); err != nil {
 			return err
@@ -713,6 +720,59 @@ var expected = map[string]expectation{
 	"uncompress -c old.txt.Z": {notRun: true},
 	"printf '#!/bin/sh\\necho hi\\n' > prog && chmod +x prog && gzexe prog > /dev/null 2>&1 && ./prog":   {output: "hi\n"},
 	"printf '#!/bin/sh\\necho hi\\n' > prog && chmod +x prog && gzexe prog > /dev/null 2>&1 && ls prog*": {output: "prog\nprog~\n"},
+	// Upstream tools: curl, jq, git, rg, fd, bat, tree, sd. Examples that use the network
+	// (curl against api.github.com) are reviewed by hand against the live service and not run.
+	"printf 'hello\\n' > f.txt && curl -s \"file://$PWD/f.txt\"":                                                      {output: "hello\n"},
+	"printf 'hello\\n' > f.txt && curl -s -o out.txt \"file://$PWD/f.txt\" && cat out.txt":                            {output: "hello\n"},
+	"curl -s https://api.github.com/zen":                                                                              {notRun: true},
+	"curl -s https://api.github.com/repos/octocat/Hello-World | jq -r .full_name":                                     {notRun: true},
+	"curl -sI https://api.github.com | head -n 1":                                                                     {notRun: true},
+	"curl -s -o /dev/null -w '%{http_code}\\n' https://api.github.com/repos/octocat/Hello-World":                      {notRun: true},
+	"curl -s -H 'Accept: application/vnd.github+json' https://api.github.com/repos/octocat/Hello-World | jq -r .name": {notRun: true},
+	"curl -s -X POST -d '{\"text\":\"**hi**\"}' https://api.github.com/markdown":                                      {notRun: true},
+	"curl -sL https://raw.githubusercontent.com/octocat/Hello-World/master/README":                                    {notRun: true},
+	"echo '{\"a\":1,\"b\":[1,2,3]}' | jq .a":                                                                          {output: "1\n"},
+	"echo '{\"n\":\"x\"}' | jq -r .n":                                                                                 {output: "x\n"},
+	"echo '{\"b\":[1,2,3]}' | jq '.b | length'":                                                                       {output: "3\n"},
+	"echo '{\"b\":[1,2,3]}' | jq -c '.b[]' | paste -sd, -":                                                            {output: "1,2,3\n"},
+	"echo '[{\"n\":\"a\",\"v\":1},{\"n\":\"b\",\"v\":2}]' | jq -r '.[] | select(.v > 1) | .n'":                        {output: "b\n"},
+	"jq -n --arg x hi -c '{greeting:$x}'":                                                                             {output: "{\"greeting\":\"hi\"}\n"},
+	"echo '[3,1,2]' | jq -c sort":                                                                                     {output: "[1,2,3]\n"},
+	"echo '{\"a\":1}' | jq -c keys":                                                                                   {output: "[\"a\"]\n"},
+	"curl -s https://api.github.com/users/octocat | jq -r '.login, .type'":                                            {notRun: true},
+	"git init -q -b main && git status --short | wc -l | tr -d ' '":                                                   {output: "0\n"},
+	"git init -q -b main && printf hi > a.txt && git add a.txt && git status --short":                                 {output: "A  a.txt\n"},
+	"git init -q -b main && printf hi > a.txt && git add a.txt && git -c user.name=Demo -c user.email=demo@example.com commit -q -m first && git log --format=%s":                                                 {output: "first\n"},
+	"git init -q -b main && printf 'a\\n' > f && git add f && git -c user.name=D -c user.email=d@e.c commit -q -m one && printf 'b\\n' >> f && git diff --stat | tail -n 1":                                       {output: "1 file changed, 1 insertion(+)\n", spaces: true},
+	"git init -q -b main && git -c user.name=D -c user.email=d@e.c commit -q --allow-empty -m one && git switch -q -c feature && git branch --show-current":                                                       {output: "feature\n"},
+	"git init -q -b main && git -c user.name=D -c user.email=d@e.c commit -q --allow-empty -m one && git -c user.name=D -c user.email=d@e.c commit -q --allow-empty -m two && git log --format=%s | paste -sd, -": {output: "two,one\n"},
+	"git init -q -b main && git -c user.name=D -c user.email=d@e.c commit -q --allow-empty -m one && git tag v1 && git tag":                                                                                       {output: "v1\n"},
+	"git init -q -b main && git rev-parse --is-inside-work-tree":                                               {output: "true\n"},
+	"printf 'one\\ntwo\\nthree\\n' > f.txt && rg two f.txt":                                                    {output: "two\n"},
+	"printf 'one\\ntwo\\nthree\\n' > f.txt && rg -n two f.txt":                                                 {output: "2:two\n"},
+	"printf 'one\\ntwo\\nthree\\n' > f.txt && rg -c o f.txt":                                                   {output: "2\n"},
+	"printf 'one\\ntwo\\nthree\\n' > f.txt && rg -i TWO f.txt":                                                 {output: "two\n"},
+	"mkdir logs && printf 'two\\n' > logs/a.log && printf 'one\\ntwo\\n' > f.txt && rg two logs f.txt | sort":  {output: "f.txt:two\nlogs/a.log:two\n"},
+	"mkdir logs && printf 'two\\n' > logs/a.log && printf 'one\\n' > f.txt && rg -l two .":                     {output: "./logs/a.log\n", unordered: true},
+	"printf 'one\\ntwo\\n' > f.txt && { rg -w tw f.txt || echo none; }":                                        {output: "none\n"},
+	"mkdir src && printf 'x\\n' > src/m.rs && printf 'y\\n' > f.txt && rg -g '*.rs' --files":                   {output: "src/m.rs\n"},
+	"mkdir src && printf 'x\\n' > f.txt && printf 'y\\n' > src/n.md && fd txt":                                 {output: "f.txt\n"},
+	"mkdir -p src/sub && printf 'x\\n' > src/sub/n.md && fd -e md":                                             {output: "src/sub/n.md\n"},
+	"mkdir -p logs src/sub && fd -t d | sort":                                                                  {output: "logs/\nsrc/\nsrc/sub/\n"},
+	"mkdir logs && printf 'two\\n' > logs/a.log && fd . logs":                                                  {output: "logs/a.log\n"},
+	"mkdir src && printf 'x\\n' > src/m.rs && fd m src":                                                        {output: "src/m.rs\n"},
+	"printf 'one\\ntwo\\n' > f.txt && bat -p f.txt":                                                            {output: "one\ntwo\n"},
+	"printf 'one\\ntwo\\n' > f.txt && bat --decorations=always --style=numbers f.txt":                          {output: "1 one\n2 two\n", spaces: true},
+	"echo '{\"a\":1}' | bat -l json --style=plain":                                                             {output: "{\"a\":1}\n"},
+	"printf 'one\\ntwo\\nthree\\n' > f.txt && bat -p -r 2:2 f.txt":                                             {output: "two\n"},
+	"mkdir -p src/sub && printf 'x\\n' > src/m.rs && printf 'y\\n' > src/sub/n.md && tree --charset=ascii src": {output: "src\n|-- m.rs\n`-- sub\n    `-- n.md\n\n2 directories, 2 files\n"},
+	"mkdir -p src/sub logs && tree -d --charset=ascii .":                                                       {output: ".\n|-- logs\n`-- src\n    `-- sub\n\n4 directories\n"},
+	"mkdir -p src/sub logs && printf 'x\\n' > f.txt && tree -L 1 --charset=ascii .":                            {output: ".\n|-- f.txt\n|-- logs\n`-- src\n\n3 directories, 1 file\n"},
+	"mkdir -p src logs && printf 'x\\n' > f.txt && tree -I 'logs' -L 1 --charset=ascii .":                      {output: ".\n|-- f.txt\n`-- src\n\n2 directories, 1 file\n"},
+	"echo 'hello world' | sd world there":                                                                      {output: "hello there\n"},
+	"echo 'hello world' | sd '(\\w+) (\\w+)' '$2 $1'":                                                          {output: "world hello\n"},
+	"printf 'a.b\\n' | sd -F '.' '-'":                                                                          {output: "a-b\n"},
+	"printf 'aaa\\n' > s.txt && sd a b s.txt && cat s.txt":                                                     {output: "bbb\n"},
 	// cd: only success is checked; the printed directory is a temporary path.
 	"cd projects":        {},
 	"cd ..":              {},

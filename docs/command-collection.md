@@ -32,7 +32,7 @@ Still open: detection probes only the commands in `detect.probed` (grep, sed, fi
 
 ## Completed-page evidence
 
-Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10; tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout and truncate on 2026-11-10; dd, install, link, unlink, mkfifo, nohup, nice, sync, sum, tsort, pr and pathchk on 2026-11-10; groups, logname, tty, users, who, uptime, hostid, pinky, chown, chgrp, shred, dir, vdir, dircolors and mknod on 2026-11-10; echo, printf, pwd, true, false, test, kill and arch on 2026-11-10; numfmt, ptx, stdbuf, stty, chroot, chcon, runcon and coreutils on 2026-11-10; diff, cmp, diff3, sdiff, patch and zcat on 2026-11-10; the gzip family of batch 3k on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10; tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout and truncate on 2026-11-10; dd, install, link, unlink, mkfifo, nohup, nice, sync, sum, tsort, pr and pathchk on 2026-11-10; groups, logname, tty, users, who, uptime, hostid, pinky, chown, chgrp, shred, dir, vdir, dircolors and mknod on 2026-11-10; echo, printf, pwd, true, false, test, kill and arch on 2026-11-10; numfmt, ptx, stdbuf, stty, chroot, chcon, runcon and coreutils on 2026-11-10; diff, cmp, diff3, sdiff, patch and zcat on 2026-11-10; the gzip family of batch 3k on 2026-11-10; the upstream tools of batch 3l on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
 
 | Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
 | --- | --- | --- | --- | --- | --- |
@@ -169,6 +169,21 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
+
+### Upstream tools
+
+Single-project tools are documented with an `upstream` view, so there are no GNU, Apple or BusyBox columns. Their examples run on the tool installed on the host, in an empty temporary folder with a clean home folder, and are skipped when the tool is not installed. Examples that need the network or a signed-in account are reviewed by hand and never run by the tests. They are marked "reviewed only" below, and each was checked once against the live service on the date shown.
+
+| Page | Examples | Version tested | Notes |
+| --- | --- | --- | --- |
+| `curl` | 2 executed (`file://` URLs), 7 reviewed only (GitHub API) | curl 8.7.1 (macOS system build) | network examples checked by hand on 2026-11-10 against `api.github.com` and `raw.githubusercontent.com` |
+| `jq` | 8 executed, 1 reviewed only (GitHub API) | jq 1.8.2 | the network example checked by hand on 2026-11-10 |
+| `git` | 8 executed | git 2.56.0 | each example makes its own repository; names and addresses are given with `-c`, so no setup is needed |
+| `rg` | 8 executed | ripgrep 15.2.0 | the order of results is not stable, so one example sorts and one is compared as a set |
+| `fd` | 5 executed | fd 10.5.0 | |
+| `bat` | 4 executed | bat 0.26.1 | numbers are compared with blanks collapsed |
+| `tree` | 4 executed | tree v2.3.2 | the version tested counts the starting folder in the directory total |
+| `sd` | 4 executed | sd v1.1.0 | |
 
 ## Suggested order
 
@@ -361,22 +376,22 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `actionlint`
 - [ ] `aws`
 - [ ] `bash`
-- [ ] `bat`
+- [x] `bat` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `claude`
 - [ ] `codex`
 - [ ] `colima`
-- [ ] `curl`
+- [x] `curl` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `docker`
 - [ ] `docker-compose`
-- [ ] `fd`
+- [x] `fd` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `free`
 - [ ] `fzf`
 - [ ] `gh`
-- [ ] `git`
+- [x] `git` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `gitleaks`
 - [ ] `go`
 - [x] `gzcat` (stage 4 batch 3k, 2026-11-10; an alias of the `zcat` page)
-- [ ] `jq`
+- [x] `jq` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `just`
 - [ ] `killall`
 - [ ] `lefthook`
@@ -393,10 +408,10 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `ps`
 - [ ] `pulumi`
 - [ ] `python3`
-- [ ] `rg`
+- [x] `rg` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `rsync`
 - [ ] `scp`
-- [ ] `sd`
+- [x] `sd` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `security`
 - [ ] `shellcheck`
 - [ ] `shfmt`
@@ -407,7 +422,7 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `ssh-keygen`
 - [ ] `starship`
 - [ ] `top`
-- [ ] `tree`
+- [x] `tree` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `unzip`
 - [ ] `uv`
 - [ ] `uvx`
