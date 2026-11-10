@@ -23,7 +23,7 @@ The `kill` command sends signals to processes; the Bash builtin also understands
 Start a background process, stop it with the default signal and wait for it:
 
 ```sh
-sleep 5 & kill $!; wait $! 2> /dev/null; echo done
+{ sleep 5 & kill $!; wait $!; } 2> /dev/null; echo done
 ```
 
 Check that a process exists without sending a real signal, using signal 0; `$$` is the shell itself:
@@ -35,13 +35,13 @@ kill -0 $$ && echo alive
 Name the signal with `-s`:
 
 ```sh
-sleep 5 & kill -s TERM $!; wait $! 2> /dev/null; echo done
+{ sleep 5 & kill -s TERM $!; wait $!; } 2> /dev/null; echo done
 ```
 
 Use the strongest signal for a process that will not stop; the shell's own message is hidden:
 
 ```sh
-sleep 5 & kill -9 $!; wait $! 2> /dev/null; echo done
+{ sleep 5 & kill -9 $!; wait $!; } 2> /dev/null; echo done
 ```
 
 ### Option: -s
