@@ -202,6 +202,18 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 | `go` | 5 executed | Go 1.27.3 | no network: each example builds in a temporary module |
 | `just` | 4 executed | just on the host | |
 | `bash` | 6 executed | GNU Bash 5.2.37 | macOS ships Bash 3.2, which the page warns about but the examples do not run on |
+| `zip` | 4 executed | Info-ZIP Zip 3.0 (macOS build) | |
+| `unzip` | 5 executed | UnZip 6.00 (macOS build) | |
+| `lsof` | 3 executed, 2 reviewed only (they depend on what is running) | lsof 4.91 (macOS build) | |
+| `rsync` | 4 executed, 1 reviewed only (needs a remote host) | openrsync (the macOS `/usr/bin/rsync`) | macOS ships openrsync, not the rsync project's program |
+| `ssh-keygen` | 4 executed | OpenSSH of the macOS host | throw-away keys in a temporary folder |
+| `actionlint` | 3 executed | actionlint 1.7.12 | |
+| `markdownlint-cli2` | 3 executed | markdownlint-cli2 0.24.0 | runs on the host's Node.js |
+| `gitleaks` | 3 executed | gitleaks 8.30.1 | the made-up token is written in two pieces; gitleaks ignores well-known example keys |
+| `lefthook` | 3 executed | lefthook 2.2.2 | |
+| `mise` | 3 executed, 2 reviewed only (they install tools) | mise 2026.10.19 | |
+| `zoxide` | 3 executed | zoxide 0.10.0 | |
+| `starship` | 2 executed | starship 1.27.0 | |
 
 ## Suggested order
 
@@ -391,7 +403,7 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 
 Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, and `limactl` separate even when the reference routes them to another command’s sheet. Choose canonical IDs/aliases only after checking semantics and implementation selection.
 
-- [ ] `actionlint`
+- [x] `actionlint` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `aws`
 - [x] `bash` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `bat` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
@@ -406,17 +418,17 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `fzf`
 - [ ] `gh`
 - [x] `git` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `gitleaks`
+- [x] `gitleaks` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `go` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `gzcat` (stage 4 batch 3k, 2026-11-10; an alias of the `zcat` page)
 - [x] `jq` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `just` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `killall` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
-- [ ] `lefthook`
+- [x] `lefthook` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `limactl`
-- [ ] `lsof`
-- [ ] `markdownlint-cli2`
-- [ ] `mise`
+- [x] `lsof` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `markdownlint-cli2` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `mise` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `node` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `npm` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `npx` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
@@ -427,7 +439,7 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `pulumi`
 - [x] `python3` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `rg` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `rsync`
+- [x] `rsync` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `scp`
 - [x] `sd` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `security`
@@ -437,17 +449,17 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `ssh-add`
 - [ ] `ssh-agent`
 - [ ] `ssh-copy-id`
-- [ ] `ssh-keygen`
-- [ ] `starship`
+- [x] `ssh-keygen` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `starship` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `top` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [x] `tree` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `unzip`
+- [x] `unzip` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `uv` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `uvx` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `vim`
 - [ ] `zed`
-- [ ] `zip`
-- [ ] `zoxide`
+- [x] `zip` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `zoxide` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 
 ## Existing additional entry
 
