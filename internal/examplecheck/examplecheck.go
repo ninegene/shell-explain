@@ -13,8 +13,8 @@ import (
 )
 
 // Companions lists programs that a command runs by name, which must come from the same
-// implementation as the command: GNU diff3 and sdiff call diff.
-var Companions = map[string][]string{"diff3": {"diff"}, "sdiff": {"diff"}}
+// implementation as the command: GNU diff3 and sdiff call diff, and colima starts limactl.
+var Companions = map[string][]string{"diff3": {"diff"}, "sdiff": {"diff"}, "colima": {"limactl"}}
 
 // Dirs and Files describe the synthetic working directory examples run in.
 var Dirs = []string{"projects", "logs", "cache"}
@@ -35,7 +35,7 @@ var textEntries = []string{"cat", "head", "tail", "wc", "sort", "uniq", "cut", "
 
 // emptyFixture lists the entries whose examples start in an empty folder, because they
 // create what they need and would otherwise see the base files (git status, tree, fd, rg).
-var emptyFixture = []string{"curl", "jq", "git", "rg", "fd", "bat", "tree", "sd", "shellcheck", "shfmt", "prettier", "node", "npm", "npx", "python3", "uv", "uvx", "go", "just", "bash", "zip", "unzip", "lsof", "rsync", "ssh-keygen", "actionlint", "markdownlint-cli2", "gitleaks", "lefthook", "mise", "zoxide", "starship", "ssh", "scp", "ssh-add", "ssh-agent", "ssh-copy-id", "fzf", "vim", "zed", "security"}
+var emptyFixture = []string{"curl", "jq", "git", "rg", "fd", "bat", "tree", "sd", "shellcheck", "shfmt", "prettier", "node", "npm", "npx", "python3", "uv", "uvx", "go", "just", "bash", "zip", "unzip", "lsof", "rsync", "ssh-keygen", "actionlint", "markdownlint-cli2", "gitleaks", "lefthook", "mise", "zoxide", "starship", "ssh", "scp", "ssh-add", "ssh-agent", "ssh-copy-id", "fzf", "vim", "zed", "security", "docker", "docker-compose", "colima", "limactl", "aws", "gh", "pulumi", "claude", "codex"}
 
 // Setup creates the base fixture, plus any extra files the entry's examples need.
 func Setup(dir, entry string) error {
@@ -945,6 +945,63 @@ var expected = map[string]expectation{
 	"security add-generic-password -a alice -s example-service -w": {notRun: true},
 	"security delete-generic-password -s example-service":          {notRun: true},
 	"security help find-generic-password":                          {notRun: true},
+	// Containers, cloud and assistant CLIs: the executed examples read only the tool's own version, help and
+	// settings in a clean home folder with no credentials; anything that would call a service, a daemon or an
+	// account is reviewed only.
+	"docker --version | grep -c '^Docker version'": {output: "1\n"},
+	"docker run --help | head -n 1":                {output: "Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]\n"},
+	"docker context ls --format '{{.Name}}'":       {output: "default\n"},
+	"docker run --rm alpine echo hello":            {notRun: true},
+	"docker ps":                                    {notRun: true},
+	"docker build -t demo .":                       {notRun: true},
+	"docker exec -it demo sh":                      {notRun: true},
+	"docker-compose --version | cut -c1-22":        {output: "Docker Compose version\n"},
+	"printf 'services:\\n  web:\\n    image: nginx\\n' > compose.yaml && docker-compose config --services":                                   {output: "web\n"},
+	"printf 'services:\\n  web:\\n    image: nginx\\n' > compose.yaml && docker-compose config -q && echo valid":                             {output: "valid\n"},
+	"printf 'services:\\n  web:\\n    imag: nginx\\n' > bad.yaml && docker-compose -f bad.yaml config -q 2>&1 | grep -o 'services.web.imag'": {output: "services.web.imag\n"},
+	"docker-compose up -d": {notRun: true},
+	"docker-compose down":  {notRun: true},
+	"colima version 2> /dev/null | head -n 1 | cut -c1-14": {output: "colima version\n"},
+	"colima list 2> /dev/null | head -n 1 | cut -d' ' -f1": {output: "PROFILE\n"},
+	"colima start --cpu 4 --memory 8":                      {notRun: true},
+	"colima status":                                        {notRun: true},
+	"colima stop":                                          {notRun: true},
+	"limactl --version | cut -c1-7":                        {output: "limactl\n"},
+	"limactl help | head -n 1":                             {output: "Lima: Linux virtual machines\n"},
+	"limactl start template:default":                       {notRun: true},
+	"limactl shell default":                                {notRun: true},
+	"limactl list":                                         {notRun: true},
+	"limactl delete --force default":                       {notRun: true},
+	"aws --version 2>&1 | cut -c1-8":                       {output: "aws-cli/\n"},
+	"aws configure list 2> /dev/null | head -n 1":          {output: "NAME : VALUE : TYPE : LOCATION\n", spaces: true},
+	"aws configure get region; echo \"status $?\"":         {output: "status 1\n"},
+	"aws s3 help 2> /dev/null | head -n 1 | cut -c1-4":     {output: "S3()\n"},
+	"aws sts get-caller-identity":                          {notRun: true},
+	"aws s3 ls":                                            {notRun: true},
+	"aws ec2 describe-instances --query 'Reservations[].Instances[].InstanceId' --output text": {notRun: true},
+	"gh --version | head -n 1 | cut -c1-10":                                                    {output: "gh version\n"},
+	"gh help | head -n 1":                                                                      {output: "Work seamlessly with GitHub from the command line.\n"},
+	"gh auth status > /dev/null 2>&1; echo \"status $?\"":                                      {output: "status 1\n"},
+	"gh pr --help | head -n 1":                                                                 {output: "Work with GitHub pull requests.\n"},
+	"gh pr list":                                                                               {notRun: true},
+	"gh pr create --title \"Fix the typo\" --body \"Details here.\"":                           {notRun: true},
+	"gh api repos/octocat/Hello-World --jq .full_name":                                         {notRun: true},
+	"pulumi version | grep -c '^v3'":                                                           {output: "1\n"},
+	"pulumi --help | head -n 1":                                                                {output: "Pulumi - Modern Infrastructure as Code\n"},
+	"pulumi new --help | head -n 1 | cut -c1-40":                                               {output: "Create a new Pulumi project and stack fr\n"},
+	"pulumi new aws-typescript":                                                                {notRun: true},
+	"pulumi preview":                                                                           {notRun: true},
+	"pulumi up":                                                                                {notRun: true},
+	"pulumi destroy":                                                                           {notRun: true},
+	"claude --version | cut -d' ' -f2-":                                                        {output: "(Claude Code)\n"},
+	"claude --help | head -n 1":                                                                {output: "Usage: claude [options] [command] [prompt]\n"},
+	"claude -p \"Explain what this script does\" < script.sh":                                  {notRun: true},
+	"claude":            {notRun: true},
+	"claude --continue": {notRun: true},
+	"codex --version 2> /dev/null | cut -c1-9":      {output: "codex-cli\n"},
+	"codex --help 2> /dev/null | head -n 1":         {output: "Codex CLI\n"},
+	"codex exec \"Add a unit test for the parser\"": {notRun: true},
+	"codex": {notRun: true},
 	// cd: only success is checked; the printed directory is a temporary path.
 	"cd projects":        {},
 	"cd ..":              {},
