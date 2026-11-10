@@ -21,7 +21,7 @@ import (
 // identify an implementation. Add a command only after checking that GNU,
 // BSD/Apple and BusyBox builds reject or answer the flag without side effects
 // and without waiting for input; do not probe commands outside this list.
-var probed = []string{"grep", "sed", "find", "cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "ls", "mkdir", "cp", "mv", "rm", "chmod", "xargs", "gzip", "tar", "stat", "date", "awk", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate"}
+var probed = []string{"grep", "sed", "find", "cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "ls", "mkdir", "cp", "mv", "rm", "chmod", "xargs", "gzip", "tar", "stat", "date", "awk", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk"}
 
 // appleSystemDirs hold macOS's own executables; coreutils such as cat live in /bin and the
 // checksum tools such as sha256sum in /sbin.
@@ -141,8 +141,9 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 				s.Implementation = "apple"
 			case strings.Contains(banner, "BusyBox"):
 				s.Implementation = "busybox"
-			case strings.Contains(first, "(GNU ") || strings.HasPrefix(first, "GNU Awk ") || (strings.HasPrefix(first, "gzip ") && strings.Contains(banner, "Free Software Foundation")):
-				// GNU gzip prints "gzip 1.13" plus a Free Software Foundation notice,
+			case strings.Contains(first, "(GNU ") || strings.Contains(first, "(coreutils)") || strings.HasPrefix(first, "GNU Awk ") || (strings.HasPrefix(first, "gzip ") && strings.Contains(banner, "Free Software Foundation")):
+				// GNU gzip prints "gzip 1.13" plus a Free Software Foundation notice, GNU dd prints
+				// "dd (coreutils) 9.11" without the word GNU,
 				// and gawk prints "GNU Awk 5.3.2, API 4.0, ...".
 				s.Implementation = "gnu"
 			case strings.HasPrefix(first, "mawk "):
