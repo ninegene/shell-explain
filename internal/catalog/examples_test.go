@@ -68,7 +68,12 @@ func TestAuthoredExamples(t *testing.T) {
 									t.Fatal(err)
 								}
 								for _, companion := range examplecheck.Companions[entry.ID] {
-									path := exampleTool(detect.Detector{OS: runtime.GOOS, Path: os.Getenv("PATH")}, companion, impl)
+									var path string
+									if impl == "upstream" {
+										path, _ = exec.LookPath(companion)
+									} else {
+										path = exampleTool(detect.Detector{OS: runtime.GOOS, Path: os.Getenv("PATH")}, companion, impl)
+									}
 									if path == "" {
 										t.Skipf("%s %s is unavailable or unidentified", impl, companion)
 									}

@@ -223,6 +223,15 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 | `vim` | 4 executed, 1 reviewed only (opens the editor) | vim on the host | |
 | `zed` | 1 executed (version), 3 reviewed only (they open a window) | Zed 1.26.2 | |
 | `security` | 5 reviewed only | macOS system tool | none was run, because the examples touch keychains |
+| `docker` | 3 executed (client version, help, contexts), 4 reviewed only (they need a daemon) | Docker 29.9.2 (client, no daemon) | |
+| `docker-compose` | 4 executed (version and compose-file checks), 2 reviewed only (they start containers) | Docker Compose v5.6.1 | |
+| `colima` | 2 executed (version, list), 3 reviewed only (they start a virtual machine) | colima v0.10.3 | `limactl` is put on the example path, because colima starts it |
+| `limactl` | 2 executed (version, help), 4 reviewed only | limactl 2.2.1 | |
+| `aws` | 4 executed (version, settings, help), 3 reviewed only (they call AWS) | aws-cli 2.38 | clean home folder, no credentials, never run against a real account |
+| `gh` | 4 executed (version, help, login state), 3 reviewed only (they call GitHub as the user) | gh 2.103.2 | clean home folder, so no login exists |
+| `pulumi` | 3 executed (version, help), 4 reviewed only (they plan or change infrastructure) | Pulumi v3.272.0 | `up`, `destroy` and `refresh` are never run by this project |
+| `claude` | 2 executed (version, help), 3 reviewed only (they send text to a service) | Claude Code 2.1.310 | |
+| `codex` | 2 executed (version, help), 2 reviewed only | codex-cli 0.164.0 | its warning about helper programs under a temporary folder is hidden |
 
 ## Suggested order
 
@@ -413,19 +422,19 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, and `limactl` separate even when the reference routes them to another command’s sheet. Choose canonical IDs/aliases only after checking semantics and implementation selection.
 
 - [x] `actionlint` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `aws`
+- [x] `aws` (stage 4 batch 3q, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `bash` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `bat` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `claude`
-- [ ] `codex`
-- [ ] `colima`
+- [x] `claude` (stage 4 batch 3q, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `codex` (stage 4 batch 3q, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `colima` (stage 4 batch 3q, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `curl` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `docker`
-- [ ] `docker-compose`
+- [x] `docker` (stage 4 batch 3q, 2026-11-10; see the upstream tools table in the completed-page evidence)
+- [x] `docker-compose` (stage 4 batch 3q, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `fd` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `free` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [x] `fzf` (stage 4 batch 3p, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `gh`
+- [x] `gh` (stage 4 batch 3q, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `git` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `gitleaks` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `go` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
@@ -434,7 +443,7 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [x] `just` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `killall` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [x] `lefthook` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `limactl`
+- [x] `limactl` (stage 4 batch 3q, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `lsof` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `markdownlint-cli2` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `mise` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
@@ -445,7 +454,7 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [x] `pkill` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [x] `prettier` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `ps` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
-- [ ] `pulumi`
+- [x] `pulumi` (stage 4 batch 3q, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `python3` (stage 4 batch 3n, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `rg` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [x] `rsync` (stage 4 batch 3o, 2026-11-10; see the upstream tools table in the completed-page evidence)
