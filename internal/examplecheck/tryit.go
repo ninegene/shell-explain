@@ -49,6 +49,7 @@ var unsafeTryIt = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])(sudo|su|rm|rmdir|kill|k
 // contain, or "" when it is safe: only reading, and writing inside the current
 // folder.
 func UnsafeTryIt(code string) string {
+	hasMove := false
 	for _, line := range strings.Split(code, "\n") {
 		if m := unsafeTryIt.FindStringSubmatch(line); m != nil {
 			if m[2] != "" {
@@ -56,20 +57,53 @@ func UnsafeTryIt(code string) string {
 			}
 			return "a redirect to a system path"
 		}
-		if moveWord.MatchString(line) && leavesFolder.MatchString(line) {
-			return "mv outside the current folder"
+		if moveWord.MatchString(line) {
+			hasMove = true
+			if movesOutside(line) {
+				return "mv outside the current folder"
+			}
+		}
+	}
+	if hasMove {
+		// A cd away from the current folder would make a relative mv unsafe.
+		for _, line := range strings.Split(code, "\n") {
+			if cdWord.MatchString(line) && (leavesFolder.MatchString(line) || strings.ContainsAny(line, "$`")) {
+				return "mv outside the current folder"
+			}
 		}
 	}
 	return ""
 }
 
 // mv is allowed because the guide on renaming and moving files needs it, but
-// only on relative paths: a word that starts with a slash, a tilde or two dots
-// could reach the reader's own files.
+// only on files the block itself made in the current folder. A line with mv is
+// rejected when any word starts with a slash or a tilde, when ".." appears
+// anywhere, or when it uses a backtick, a command substitution or a variable.
+// The one variable allowed is the loop variable of a for line, so the
+// rename-many example works.
 var (
 	moveWord     = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])mv([^a-zA-Z0-9_-]|$)`)
-	leavesFolder = regexp.MustCompile(`(^|\s)["']?(/|~|\.\.)`)
+	cdWord       = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])cd([^a-zA-Z0-9_-]|$)`)
+	leavesFolder = regexp.MustCompile(`(^|\s)["']?(/|~)|\.\.`)
+	loopLine     = regexp.MustCompile(`^\s*for\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\b`)
+	variableRef  = regexp.MustCompile(`\$\{?([A-Za-z_][A-Za-z0-9_]*)|\$[^A-Za-z_{]|\$\{[^A-Za-z_]`)
 )
+
+func movesOutside(line string) bool {
+	if leavesFolder.MatchString(line) || strings.ContainsAny(line, "`") || strings.Contains(line, "$(") {
+		return true
+	}
+	loop := ""
+	if m := loopLine.FindStringSubmatch(line); m != nil {
+		loop = m[1]
+	}
+	for _, m := range variableRef.FindAllStringSubmatch(line, -1) {
+		if m[1] == "" || m[1] != loop {
+			return true
+		}
+	}
+	return false
+}
 
 // CheckTryIt compares a command's output with the output the guide shows.
 func CheckTryIt(b TryItBlock, output string) error {
