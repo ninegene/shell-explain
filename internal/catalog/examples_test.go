@@ -93,7 +93,7 @@ func exampleTool(d detect.Detector, command, implementation string) string {
 		if d.OS != "darwin" {
 			return ""
 		}
-		candidates = []string{"/usr/bin/" + command, "/bin/" + command, "/sbin/" + command}
+		candidates = []string{"/usr/bin/" + command, "/bin/" + command, "/sbin/" + command, "/usr/sbin/" + command}
 	}
 	for _, name := range candidates {
 		selected, err := d.Select(context.Background(), detect.Request{Name: name, Command: command})

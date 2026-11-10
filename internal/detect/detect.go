@@ -21,11 +21,11 @@ import (
 // identify an implementation. Add a command only after checking that GNU,
 // BSD/Apple and BusyBox builds reject or answer the flag without side effects
 // and without waiting for input; do not probe commands outside this list.
-var probed = []string{"grep", "sed", "find", "cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "ls", "mkdir", "cp", "mv", "rm", "chmod", "xargs", "gzip", "tar", "stat", "date", "awk", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk"}
+var probed = []string{"grep", "sed", "find", "cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "ls", "mkdir", "cp", "mv", "rm", "chmod", "xargs", "gzip", "tar", "stat", "date", "awk", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk", "groups", "logname", "tty", "users", "who", "uptime", "hostid", "pinky", "chown", "chgrp", "shred", "dir", "vdir", "dircolors", "mknod"}
 
 // appleSystemDirs hold macOS's own executables; coreutils such as cat live in /bin and the
 // checksum tools such as sha256sum in /sbin.
-var appleSystemDirs = []string{"/usr/bin", "/bin", "/sbin"}
+var appleSystemDirs = []string{"/usr/bin", "/bin", "/sbin", "/usr/sbin"}
 
 type Selection struct {
 	Implementation string   `json:"implementation"`

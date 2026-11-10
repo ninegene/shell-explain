@@ -32,7 +32,7 @@ Still open: detection probes only the commands in `detect.probed` (grep, sed, fi
 
 ## Completed-page evidence
 
-Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10; tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout and truncate on 2026-11-10; dd, install, link, unlink, mkfifo, nohup, nice, sync, sum, tsort, pr and pathchk on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10; tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout and truncate on 2026-11-10; dd, install, link, unlink, mkfifo, nohup, nice, sync, sum, tsort, pr and pathchk on 2026-11-10; groups, logname, tty, users, who, uptime, hostid, pinky, chown, chgrp, shred, dir, vdir, dircolors and mknod on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
 
 | Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
 | --- | --- | --- | --- | --- | --- |
@@ -120,6 +120,21 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `tsort` | 3 common | system `/usr/bin/tsort`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `pr` | 3 common (layout compared with blanks collapsed) | system `/usr/bin/pr`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `pathchk` | 3 common | system `/usr/bin/pathchk`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `groups` | 2 common (shape only) | system `/usr/bin/groups`, executed | coreutils 9.11 on macOS only | BusyBox 1.37.0, executed; GNU ran on macOS with Homebrew coreutils only (not installed in the Alpine guest) | n/a |
+| `logname` | 2 common (shape only) | system `/usr/bin/logname`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `tty` | 3 common, 1 GNU, 1 Apple | system `/usr/bin/tty`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `users` | 2 common (success only) | system `/usr/bin/users`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `who` | 2 common, 1 GNU, 1 Apple (success only) | system `/usr/bin/who`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `uptime` | 2 common (shape only) | system `/usr/bin/uptime`, executed | coreutils 9.11 on macOS only | BusyBox 1.37.0, executed; GNU ran on macOS with Homebrew coreutils only (not installed in the Alpine guest) | n/a |
+| `hostid` | 1 common (shape only) | not shipped by macOS (checked on the host) | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `pinky` | 2 GNU (success only) | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `chown` | 4 common (own IDs only) | system `/usr/sbin/chown`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `chgrp` | 3 common (own group only) | system `/usr/bin/chgrp`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `shred` | 3 common | not shipped by macOS (checked on the host) | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `dir` | 2 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `vdir` | 2 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `dircolors` | 3 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `mknod` | 2 common | system `/sbin/mknod`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -147,9 +162,9 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `basenc` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `cat` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `chcon`
-- [ ] `chgrp`
+- [x] `chgrp` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `chmod` (stage 4 batch 2c, 2026-11-08; see completed-page evidence)
-- [ ] `chown`
+- [x] `chown` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [ ] `chroot`
 - [x] `cksum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `comm` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
@@ -160,8 +175,8 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `date` (stage 4 batch 2d, 2026-11-08; see completed-page evidence)
 - [x] `dd` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
 - [x] `df` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
-- [ ] `dir`
-- [ ] `dircolors`
+- [x] `dir` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
+- [x] `dircolors` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `dirname` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [x] `du` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [ ] `echo`
@@ -172,9 +187,9 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `false`
 - [x] `fmt` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `fold` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
-- [ ] `groups`
+- [x] `groups` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `head` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
-- [ ] `hostid`
+- [x] `hostid` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `hostname` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [x] `id` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [x] `install` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
@@ -182,12 +197,12 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `kill`
 - [x] `link` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
 - [x] `ln` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
-- [ ] `logname`
+- [x] `logname` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `ls` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
 - [x] `md5sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `mkdir` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
 - [x] `mkfifo` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
-- [ ] `mknod`
+- [x] `mknod` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `mktemp` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [x] `mv` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
 - [x] `nice` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
@@ -198,7 +213,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `od` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `paste` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [x] `pathchk` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
-- [ ] `pinky`
+- [x] `pinky` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `pr` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
 - [x] `printenv` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [ ] `printf`
@@ -215,7 +230,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `sha256sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `sha384sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `sha512sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
-- [ ] `shred`
+- [x] `shred` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `shuf` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `sleep` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [x] `sort` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
@@ -235,16 +250,16 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `true`
 - [x] `truncate` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `tsort` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
-- [ ] `tty`
+- [x] `tty` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `uname` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [x] `unexpand` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [x] `uniq` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [x] `unlink` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
-- [ ] `uptime`
-- [ ] `users`
-- [ ] `vdir`
+- [x] `uptime` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
+- [x] `users` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
+- [x] `vdir` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `wc` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
-- [ ] `who`
+- [x] `who` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `whoami` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [x] `yes` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 
