@@ -32,7 +32,7 @@ Still open: detection probes only the commands in `detect.probed` (grep, sed, fi
 
 ## Completed-page evidence
 
-Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
 
 | Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
 | --- | --- | --- | --- | --- | --- |
@@ -86,6 +86,17 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `sleep` | 4 common, 1 GNU | system `/bin/sleep`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `expand` | 4 common, 1 GNU | system `/usr/bin/expand`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `unexpand` | 4 common | system `/usr/bin/unexpand`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `md5sum` | 5 common | system `/sbin/md5sum`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `sha1sum` | 5 common | system `/sbin/sha1sum`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `sha256sum` | 5 common | system `/sbin/sha256sum`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `sha512sum` | 5 common | system `/sbin/sha512sum`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `sha224sum` | 5 common | system `/sbin/sha224sum`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `sha384sum` | 5 common | system `/sbin/sha384sum`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `cksum` | 4 common, 1 GNU | system `/usr/bin/cksum`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `base64` | 4 common, 1 GNU, 1 Apple | system `/usr/bin/base64`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `b2sum` | 3 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `base32` | 3 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `basenc` | 4 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -106,18 +117,18 @@ Expected output is compared exactly, except directory-traversal order, which is 
 
 - [ ] `[` (alias of `test`; add the `test` page)
 - [ ] `arch`
-- [ ] `b2sum`
-- [ ] `base32`
-- [ ] `base64`
+- [x] `b2sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
+- [x] `base32` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
+- [x] `base64` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `basename` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
-- [ ] `basenc`
+- [x] `basenc` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `cat` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `chcon`
 - [ ] `chgrp`
 - [x] `chmod` (stage 4 batch 2c, 2026-11-08; see completed-page evidence)
 - [ ] `chown`
 - [ ] `chroot`
-- [ ] `cksum`
+- [x] `cksum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `comm` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `coreutils`
 - [x] `cp` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
@@ -150,7 +161,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `ln` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [ ] `logname`
 - [x] `ls` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
-- [ ] `md5sum`
+- [x] `md5sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `mkdir` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
 - [ ] `mkfifo`
 - [ ] `mknod`
@@ -176,11 +187,11 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `rmdir` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `runcon`
 - [x] `seq` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
-- [ ] `sha1sum`
-- [ ] `sha224sum`
-- [ ] `sha256sum`
-- [ ] `sha384sum`
-- [ ] `sha512sum`
+- [x] `sha1sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
+- [x] `sha224sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
+- [x] `sha256sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
+- [x] `sha384sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
+- [x] `sha512sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [ ] `shred`
 - [ ] `shuf`
 - [x] `sleep` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)

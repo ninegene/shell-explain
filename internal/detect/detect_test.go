@@ -86,7 +86,7 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		t.Fatal(err)
 	}
 	dir := t.TempDir()
-	for _, name := range []string{"sort", "gzip", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "unlisted-tool"} {
+	for _, name := range []string{"sort", "gzip", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "unlisted-tool"} {
 		if err = os.Symlink(executable, filepath.Join(dir, name)); err != nil {
 			t.Fatal(err)
 		}
@@ -111,7 +111,7 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		}
 	}
 	// Each command added for the file-path batch is probed like the other coreutils.
-	for _, command := range []string{"touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand"} {
+	for _, command := range []string{"touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc"} {
 		for _, tt := range []struct{ mode, impl string }{{"apple-version", "apple"}, {"gnu-coreutils", "gnu"}} {
 			t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", tt.mode)
 			s, err := d.Select(context.Background(), Request{Name: command, Command: command})
