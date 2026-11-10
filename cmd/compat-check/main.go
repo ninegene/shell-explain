@@ -73,7 +73,11 @@ func check() error {
 			if err = json.Unmarshal(data, &result); err != nil {
 				return err
 			}
-			if result.Selection.Implementation != impl {
+			if name == "test" && impl == "gnu" && result.Selection.Implementation == "common" {
+				// GNU `test --version` prints nothing (a lone argument is a string test), so
+				// the probe cannot identify it; `[ --version` does, but is a different name.
+				fmt.Printf("Linux detection: test -> not identified (GNU test prints no version banner)\n")
+			} else if result.Selection.Implementation != impl {
 				return fmt.Errorf("%s detected as %+v", impl, result.Selection)
 			}
 			fmt.Printf("Linux detection: %s -> %s (%s, version %s)\n", name, impl, result.Selection.Confidence, result.Selection.Version)
@@ -95,7 +99,12 @@ func check() error {
 					if err = examplecheck.Setup(dir, name); err != nil {
 						return err
 					}
-					output, err := run("/bin/sh", []string{"-c", code}, dir, tools)
+					script := code
+					if slices.Contains(entry.Implementations, "bash") {
+						// Run the executable under test, not the shell's builtin of the same name.
+						script = name + "() { \"" + filepath.Join(tools, name) + "\" \"$@\"; }\n" + code
+					}
+					output, err := run("/bin/sh", []string{"-c", script}, dir, tools)
 					if err != nil {
 						return fmt.Errorf("%s/%s example %s: %w %s", impl, name, code, err, output)
 					}

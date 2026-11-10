@@ -40,7 +40,11 @@ test('search, aliases, tags, implementation filter, and empty state', async ({
   await page.getByLabel('Implementation coverage').selectOption('bash');
   await expect(page.locator('#no-results')).toBeVisible();
   await page.getByLabel('Find a command or a use case').fill('');
-  await expect(page.locator('[data-entry]:visible')).toHaveCount(1);
+  await expect(page.locator('[data-entry]:visible')).toHaveCount(
+    catalog.entries.filter((e: { implementations: string[] }) =>
+      e.implementations.includes('bash'),
+    ).length,
+  );
   await page.getByLabel('Implementation coverage').selectOption('');
   await page.getByLabel('Find a command or a use case').fill('search logs');
   await expect(page.locator('[data-entry]:visible')).toHaveCount(1);
