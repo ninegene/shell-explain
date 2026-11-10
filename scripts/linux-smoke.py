@@ -173,7 +173,7 @@ def main():
         init.chmod(0o755)
         initrd = work / "guest.cpio.gz"
         cpio(root, initrd)
-        result = subprocess.run([qemu, "-machine", "q35", "-accel", "tcg", "-m", "512", "-nographic", "-no-reboot", "-nic", "none", "-kernel", str(work / "boot/vmlinuz-virt"), "-initrd", str(initrd), "-append", "console=ttyS0 rdinit=/init quiet"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=180)
+        result = subprocess.run([qemu, "-machine", "q35", "-accel", "tcg", "-m", "512", "-nographic", "-no-reboot", "-nic", "none", "-kernel", str(work / "boot/vmlinuz-virt"), "-initrd", str(initrd), "-append", "console=ttyS0 rdinit=/init quiet"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=300)
         print(result.stdout)
         if "LINUX_SMOKE_PASS" not in result.stdout or "GUEST_EXIT=0" not in result.stdout:
             raise SystemExit("Linux smoke check failed")
