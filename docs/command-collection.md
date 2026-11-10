@@ -32,7 +32,7 @@ Still open: detection probes only the commands in `detect.probed` (grep, sed, fi
 
 ## Completed-page evidence
 
-Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10; tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout and truncate on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
 
 | Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
 | --- | --- | --- | --- | --- | --- |
@@ -97,6 +97,17 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `b2sum` | 3 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `base32` | 3 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `basenc` | 4 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `tac` | 4 common | not shipped by macOS (checked on the host) | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `shuf` | 4 common, 2 GNU (random output checked by shape) | not shipped by macOS (checked on the host) | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `od` | 5 common, 1 GNU (column spacing ignored) | system `/usr/bin/od`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `split` | 5 common, 1 GNU | system `/usr/bin/split`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `csplit` | 3 common, 1 GNU | system `/usr/bin/csplit`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `fmt` | 3 common | system `/usr/bin/fmt`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `factor` | 4 common, 1 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `expr` | 6 common, 1 GNU | system `/bin/expr`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `nproc` | 2 common, 1 GNU (output checked by shape) | not shipped by macOS (checked on the host) | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `timeout` | 4 common, 1 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `truncate` | 4 common, 1 GNU | system `/usr/bin/truncate`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -132,7 +143,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `comm` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `coreutils`
 - [x] `cp` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
-- [ ] `csplit`
+- [x] `csplit` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `cut` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [x] `date` (stage 4 batch 2d, 2026-11-08; see completed-page evidence)
 - [ ] `dd`
@@ -144,10 +155,10 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `echo`
 - [x] `env` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [x] `expand` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
-- [ ] `expr`
-- [ ] `factor`
+- [x] `expr` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
+- [x] `factor` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [ ] `false`
-- [ ] `fmt`
+- [x] `fmt` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `fold` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `groups`
 - [x] `head` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
@@ -170,9 +181,9 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `nice`
 - [x] `nl` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `nohup`
-- [ ] `nproc`
+- [x] `nproc` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [ ] `numfmt`
-- [ ] `od`
+- [x] `od` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `paste` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [ ] `pathchk`
 - [ ] `pinky`
@@ -193,24 +204,24 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `sha384sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `sha512sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [ ] `shred`
-- [ ] `shuf`
+- [x] `shuf` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `sleep` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [x] `sort` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
-- [ ] `split`
+- [x] `split` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `stat` (stage 4 batch 2d, 2026-11-08; see completed-page evidence)
 - [ ] `stdbuf`
 - [ ] `stty`
 - [ ] `sum`
 - [ ] `sync`
-- [ ] `tac`
+- [x] `tac` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `tail` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [x] `tee` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [ ] `test`
-- [ ] `timeout`
+- [x] `timeout` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `touch` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [x] `tr` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `true`
-- [ ] `truncate`
+- [x] `truncate` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [ ] `tsort`
 - [ ] `tty`
 - [x] `uname` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)

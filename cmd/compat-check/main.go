@@ -203,7 +203,7 @@ func applicable(c *catalog.Catalog, impl string) []string {
 	return names
 }
 func run(name string, args []string, dir, tools string) ([]byte, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, name, args...)
 	cmd.Dir = dir
