@@ -65,9 +65,11 @@ func UnsafeTryIt(code string) string {
 		}
 	}
 	if hasMove {
-		// A cd away from the current folder would make a relative mv unsafe.
-		for _, line := range strings.Split(code, "\n") {
-			if cdWord.MatchString(line) && (leavesFolder.MatchString(line) || strings.ContainsAny(line, "$`")) {
+		// A cd must go to a plain folder name inside the current folder: a bare
+		// cd goes home and "cd -" goes back, which would make a relative mv
+		// unsafe.
+		for _, m := range cdTarget.FindAllStringSubmatch(code, -1) {
+			if !plainFolder.MatchString(strings.TrimSpace(m[1])) {
 				return "mv outside the current folder"
 			}
 		}
@@ -82,8 +84,11 @@ func UnsafeTryIt(code string) string {
 // The one variable allowed is the loop variable of a for line, so the
 // rename-many example works.
 var (
-	moveWord     = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])mv([^a-zA-Z0-9_-]|$)`)
-	cdWord       = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])cd([^a-zA-Z0-9_-]|$)`)
+	moveWord = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])mv([^a-zA-Z0-9_-]|$)`)
+	cdTarget = regexp.MustCompile(`(?m)(?:^|[^a-zA-Z0-9_-])cd(?:[ 	]+([^;&|
+]*))?[ 	]*(?:[;&|
+]|$)`)
+	plainFolder  = regexp.MustCompile(`^[A-Za-z0-9_][A-Za-z0-9_.-]*(/[A-Za-z0-9_][A-Za-z0-9_.-]*)*/?$`)
 	leavesFolder = regexp.MustCompile(`(^|\s)["']?(/|~)|\.\.`)
 	loopLine     = regexp.MustCompile(`^\s*for\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\b`)
 	variableRef  = regexp.MustCompile(`\$\{?([A-Za-z_][A-Za-z0-9_]*)|\$[^A-Za-z_{]|\$\{[^A-Za-z_]`)
