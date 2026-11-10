@@ -67,11 +67,26 @@ Ask whether you are inside a repository, which is useful in scripts:
 git init -q -b main && git rev-parse --is-inside-work-tree
 ```
 
+Give a command a short name with a command alias; here `st` stands for `status`, set for this one call with `-c`:
+
+```sh
+git init -q -b main && git -c alias.st=status st --short | wc -l | tr -d ' '
+```
+
+Store a setting in the repository with `git config`, and read it back:
+
+```sh
+git init -q -b main && git config --local user.name Demo && git config --get user.name
+```
+
 ### Option: -C
 Run as if started in this folder, as in `git -C path status`.
 
 ### Option: -c
 Set a configuration value for this one command, as in `-c user.name=Demo`.
+
+### Aliases and configuration
+Git keeps its settings in three layers: the repository (`.git/config`), your user (`~/.gitconfig`) and the system, and the nearest layer wins. `git config --list --show-origin` shows each setting and the file it comes from. A command alias is a setting named `alias.NAME`: `git config --global alias.st status` makes `git st` run `git status`. A value that starts with `!` runs a shell command instead of a git command. This is separate from shell aliases, which belong to your shell and are not part of git.
 
 ### Common mistakes
 A commit needs a name and an email; if none is set, `git commit` stops and tells you to set them with `git config`. `git add` only stages: nothing is saved in history until `git commit`. Commands that rewrite history, such as `git reset --hard`, `git clean -fd` and `git push --force`, can destroy work and cannot always be undone; read what they will do first. Never commit passwords or keys: they stay in the history even after the file is removed. Old tutorials use `master` as the first branch name; the name is a setting, so say it with `git init -b main`.

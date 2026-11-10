@@ -3,7 +3,7 @@ schema_version: 1
 id: limactl
 title: limactl
 summary: Create and manage Linux virtual machines with Lima.
-aliases: []
+aliases: [lima]
 tags: [virtual-machines, macos, devops]
 implementations: [upstream]
 updated: 2026-11-10
@@ -12,7 +12,7 @@ references:
 ---
 ## Common
 ### Overview
-`limactl` is the command of Lima, which runs Linux virtual machines on macOS and Linux with file sharing and port forwarding set up. You create a machine from a template, start it, open a shell in it with `limactl shell` and stop it. Tools such as Colima use Lima underneath.
+`limactl` is the command of Lima, which runs Linux virtual machines on macOS and Linux with file sharing and port forwarding set up. You create a machine from a template, start it, open a shell in it with `limactl shell` and stop it. Tools such as Colima use Lima underneath. This page also answers for `lima`, a separate small command that Lima installs and that is an alias for `limactl shell default`: it runs a command, or opens a shell, in the default machine.
 
 ### Background
 `limactl` is an open-source tool whose documentation is at lima-vm.io. The tool tested here is limactl 2.2.1. Creating and starting machines downloads an image and runs a virtual machine, so those commands are reviewed only.

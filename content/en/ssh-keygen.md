@@ -3,7 +3,7 @@ schema_version: 1
 id: ssh-keygen
 title: ssh-keygen
 summary: Create and inspect SSH keys.
-aliases: []
+aliases: [sshkeygen]
 tags: [ssh, security, keys]
 implementations: [upstream]
 updated: 2026-11-10
@@ -12,7 +12,7 @@ references:
 ---
 ## Common
 ### Overview
-`ssh-keygen` makes the key pairs that SSH uses to log in without a password: a private key that you keep secret, and a public key (ending in `.pub`) that you put on the servers you want to reach. It can also show the fingerprint of a key, extract the public key from a private one and change a passphrase.
+`ssh-keygen` makes the key pairs that SSH uses to log in without a password: a private key that you keep secret, and a public key (ending in `.pub`) that you put on the servers you want to reach. It can also show the fingerprint of a key, extract the public key from a private one and change a passphrase. This page also answers for `sshkeygen`, a common misspelling; the real command has a hyphen.
 
 ### Background
 `ssh-keygen` is part of OpenSSH, whose manual is on man.openbsd.org. The tool tested here is the OpenSSH that macOS ships.

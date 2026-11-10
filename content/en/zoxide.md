@@ -3,7 +3,7 @@ schema_version: 1
 id: zoxide
 title: zoxide
 summary: Jump to folders you use often with a few letters.
-aliases: []
+aliases: [z]
 tags: [shell, navigation, productivity]
 implementations: [upstream]
 updated: 2026-11-10
@@ -12,7 +12,7 @@ references:
 ---
 ## Common
 ### Overview
-`zoxide` remembers the folders you visit and lets you jump to one with a short part of its name. After you set it up in your shell with `zoxide init`, the command `z proj` takes you to the folder that matches `proj` best, judged by how often and how recently you went there. It is a smarter `cd`.
+`zoxide` remembers the folders you visit and lets you jump to one with a short part of its name. After you set it up in your shell with `zoxide init`, the command `z proj` takes you to the folder that matches `proj` best, judged by how often and how recently you went there. It is a smarter `cd`. This page also answers for `z`, the command that `zoxide init` defines in your shell: `z` is a shell function and not a program on the `PATH`, so it exists only after the setup line has run.
 
 ### Background
 `zoxide` is an open-source tool whose manual is in its repository. It keeps a small database in your data folder. The tool tested here is zoxide 0.10.0.

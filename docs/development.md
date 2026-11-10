@@ -1,6 +1,6 @@
 # Development and verification
 
-Stages 1–3 now have a local implementation. The project remains private; stage 4 next expands the command collection per [the checklist](command-collection.md). Current CLI/web usability is accepted; broader usability studies are deferred. No public binaries, installer, Homebrew tap, mise release, GitHub Pages deployment, or DNS configuration has been published.
+Stages 1–4 now have a local implementation. The project remains private; the command collection of stage 4 is complete per [the checklist](command-collection.md), apart from one planned beginner guide (`fetch-from-the-web`) that is tracked in [learning-guides.md](learning-guides.md). Current CLI/web usability is accepted; broader usability studies are deferred. No public binaries, installer, Homebrew tap, mise release, GitHub Pages deployment, or DNS configuration has been published.
 
 ## Prerequisites
 
@@ -89,7 +89,7 @@ The web test command first runs a development-server regression in a temporary r
 
 ## Known limits
 
-- The current corpus has one hundred and ninety-two original entries; stage 4 continues to expand it: grep, sed, find, cd, cat, head, tail, wc, sort, uniq, cut, tr, ls, mkdir, cp, mv, rm, chmod, xargs, gzip, tar, stat, date, awk, touch, ln, du, basename, dirname, tee, rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl, fold, env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand, unexpand, md5sum, sha1sum, sha224sum, sha256sum, sha384sum, sha512sum, cksum, base64, b2sum, base32, basenc, tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout, truncate, dd, install, link, unlink, mkfifo, nohup, nice, sync, sum, tsort, pr, pathchk, groups, logname, tty, users, who, uptime, hostid, pinky, chown, chgrp, shred, dir, vdir, dircolors, mknod, echo, printf, pwd, true, false, test, kill, arch, numfmt, ptx, stdbuf, stty, chroot, chcon, runcon, coreutils, diff, cmp, diff3, sdiff, patch, zcat, zgrep, zless, zmore, zcmp, zdiff, zforce, znew, uncompress, and gzexe, curl, jq, git, rg, fd, bat, tree, sd, ps, pgrep, pkill, top, free, killall, shellcheck, shfmt, prettier, node, npm, npx, python3, uv, uvx, go, just, bash, zip, unzip, lsof, rsync, ssh-keygen, actionlint, markdownlint-cli2, gitleaks, lefthook, mise, zoxide, starship, ssh, scp, ssh-add, ssh-agent, ssh-copy-id, fzf, vim, zed, security, docker, docker-compose, colima, limactl, aws, gh, pulumi, claude, codex, wget, locate, updatedb, gawkbug, and rmt. Unknown commands/options return an explicit error rather than generated help.
+- The current corpus has 194 original command and topic pages (see the [checklist](command-collection.md) for the list and the evidence for each). Unknown commands/options return an explicit error rather than generated help.
 - macOS system and Homebrew GNU examples are exercised when available. An optional real Linux smoke check also validates BusyBox/GNU selection and examples. These checks cover concrete tool builds, not every BusyBox configuration or historical version.
 - FreeBSD/OpenBSD variants are not shipped. FreeBSD manual links are comparative references, not Apple version guarantees.
 - Version banners are evidence for implementation selection, not proof of every documented option's availability. Every page states this limitation.

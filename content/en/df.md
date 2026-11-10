@@ -3,7 +3,7 @@ schema_version: 1
 id: df
 title: df
 summary: Show free and used space on mounted file systems.
-aliases: [gdf]
+aliases: [gdf, dh]
 tags: [files, system, size]
 implementations: [gnu, apple, busybox]
 updated: 2026-11-10
@@ -14,7 +14,7 @@ references:
 ---
 ## Common
 ### Overview
-`df` (disk free) shows, for each mounted file system, its size, how much is used, how much is available and where it is mounted. Give a path and it reports only the file system that holds that path. It answers "is the disk full?"; use `du` to find out which folder is using the space.
+`df` (disk free) shows, for each mounted file system, its size, how much is used, how much is available and where it is mounted. Give a path and it reports only the file system that holds that path. It answers "is the disk full?"; use `du` to find out which folder is using the space. This page also answers for `dh`, a common shell alias for `df -h`; `dh` is not a program that systems install.
 
 ### Background
 A `df` command appeared in Version 1 AT&T UNIX, according to the macOS manual, which also says POSIX defines only `-k`, `-P` and `-t`. Today the name covers GNU df, the df that macOS ships, and the df applet in BusyBox. They agree on `-k`, `-P` and on `-h` for readable sizes.

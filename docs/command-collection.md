@@ -1,6 +1,6 @@
 # Stage 4 command collection checklist
 
-Stage 4's next work is to expand the existing four-command collection. The current CLI and web usability are accepted as sufficient; this checklist tracks planned content, not completed explanations.
+Stage 4 expanded the original four-command collection to the full inventory below. The checklist now records what was done; each entry names its batch and date, and the evidence tables say what was executed and what was reviewed only.
 
 ## Inventory source and scope
 
@@ -175,6 +175,8 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `wget` | 5 common reviewed only (they download), 2 GNU and 1 BusyBox executed (help and version text) | not shipped by macOS | GNU Wget 1.25.0 on the host (not installed in the Linux guest) | BusyBox 1.37.0, usage text executed | n/a |
 | `locate` | 1 common reviewed only; 4 GNU executed (private database); macOS reviewed only | system `/usr/bin/locate` (BSD), not executed: its database is off by default | GNU findutils 4.10.0 on the host (a conda install managed by mise); not installed in the Linux guest | no BusyBox applet | n/a |
 | `updatedb` | 3 GNU executed | not shipped by macOS (`/usr/libexec/locate.updatedb` is another program) | GNU findutils 4.10.0 on the host; not installed in the Linux guest | no BusyBox applet | n/a |
+| `findutils` | 2 reviewed only (package overview) | not applicable (macOS ships BSD tools) | GNU findutils 4.10.0 | not applicable | n/a |
+| `diffutils` | 2 reviewed only (package overview) | not applicable (macOS ships BSD tools) | GNU diffutils 3.12 | not applicable | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -187,7 +189,7 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 | --- | --- | --- | --- |
 | `curl` | 2 executed (`file://` URLs), 7 reviewed only (GitHub API) | curl 8.7.1 (macOS system build) | network examples checked by hand on 2026-11-10 against `api.github.com` and `raw.githubusercontent.com` |
 | `jq` | 8 executed, 1 reviewed only (GitHub API) | jq 1.8.2 | the network example checked by hand on 2026-11-10 |
-| `git` | 8 executed | git 2.56.0 | each example makes its own repository; names and addresses are given with `-c`, so no setup is needed |
+| `git` | 10 executed | git 2.56.0 | each example makes its own repository; names and addresses are given with `-c`, so no setup is needed |
 | `rg` | 8 executed | ripgrep 15.2.0 | the order of results is not stable, so one example sorts and one is compared as a set |
 | `fd` | 5 executed | fd 10.5.0 | |
 | `bat` | 4 executed | bat 0.26.1 | numbers are compared with blanks collapsed |
@@ -492,19 +494,19 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 
 These normalize reference lookup names toward proposed canonical commands; they are not literal dispatch mappings or assertions that executables are interchangeable. For example, the reference sends `lima` and `limactl` to the colima sheet, and `python3` to the python sheet. Decide whether each needs an alias, a separate page, or a documented topic; verify behavior before closing the row.
 
-| Lookup name | Proposed canonical command | Disposition verified |
+| Lookup name | Proposed canonical command | Disposition (verified 2026-11-10) |
 | --- | --- | --- |
-| `compose` | `docker-compose` | Pending |
-| `dh` | `df` | Pending |
-| `keychain` | `security` | Pending |
-| `lima` | `limactl` | Pending |
-| `markdownlint` | `markdownlint-cli2` | Pending |
-| `python` | `python3` | Pending |
-| `ripgrep` | `rg` | Pending |
-| `sshadd` | `ssh-add` | Pending |
-| `sshcopyid` | `ssh-copy-id` | Pending |
-| `sshkeygen` | `ssh-keygen` | Pending |
-| `z` | `zoxide` | Pending |
+| `compose` | `docker-compose` | Alias of the `docker-compose` page; the page says it is also run as `docker compose`. |
+| `dh` | `df` | Alias of the `df` page, which says that `dh` is a common shell alias for `df -h` and not an installed program. |
+| `keychain` | `security` | No alias: `keychain` is also the name of a different program (an SSH key manager), so mapping it to the macOS `security` command would mislead. The `security` page is reached by its own name. |
+| `lima` | `limactl` | Alias of the `limactl` page. `lima` is a real command (checked with `lima --help`: an alias for `limactl shell default`), and the page says so. The reference's mapping to the `colima` sheet is not followed, since colima is a different tool with its own page. |
+| `markdownlint` | `markdownlint-cli2` | No alias: `markdownlint` is the name of an older, separate command-line package (and of the library), so it is not the same tool as `markdownlint-cli2`. |
+| `python` | `python3` | Alias of the `python3` page, which warns that `python` is missing on many systems and can be Python 2 on old ones. |
+| `ripgrep` | `rg` | Alias of the `rg` page (already present). |
+| `sshadd` | `ssh-add` | Alias of the `ssh-add` page; the page says it is a common misspelling. |
+| `sshcopyid` | `ssh-copy-id` | Alias of the `ssh-copy-id` page, with the same note. |
+| `sshkeygen` | `ssh-keygen` | Alias of the `ssh-keygen` page, with the same note. |
+| `z` | `zoxide` | Alias of the `zoxide` page, which explains that `z` is a shell function defined by `zoxide init` and not an executable. |
 
 `python3` and `python` can resolve to different interpreters; record version/lookup limits. `z` is shell integration supplied by zoxide, not the standalone executable. `gzcat`, `gunzip`, and `zcat` need implementation-aware treatment even if they share gzip material.
 
@@ -512,17 +514,17 @@ These normalize reference lookup names toward proposed canonical commands; they 
 
 Record a disposition for each; do not manufacture executable pages for bootstrap-specific helpers.
 
-- [ ] `findutils`, `diffutils`, and the `coreutils` package overview: explain package membership alongside actual command pages.
-- [ ] `aliases`, `git-aliases`, `git-config`: preserve reusable alias/configuration guidance in appropriate command pages; machine-local introspection belongs to optional shell integration or the bootstrap.
-- [ ] `command`, `path`: cover reusable command resolution/PATH behavior and relevant builtins; live parent-shell inspection remains outside the standalone binary.
-- [ ] `completion`: reusable Bash/zsh completion guidance or an explicit future-topic disposition.
-- [ ] `tools`: the bootstrap-specific installed-tool listing is replaced by the standalone catalog/list; no machine-installation claim.
-- [ ] `iTerm`: GUI app, not a command spelled `iTerm`; record whether generic terminal guidance or the actual `open` command deserves future coverage. No bootstrap profile/configuration migration.
+- [x] `findutils`, `diffutils`, and the `coreutils` package overview: three package pages (`findutils`, `diffutils`, `coreutils`) explain which programs each package supplies and how it differs from the macOS and BusyBox tools; each program has its own page. (2026-11-10)
+- [x] `aliases`, `git-aliases`, `git-config`: the `git` page now has an "Aliases and configuration" section and two executed examples (`alias.NAME` and `git config`). Shell aliases are not covered by a page: they depend on an interactive shell, so they are a future topic, and machine-local listing of a user's aliases stays out of scope. (2026-11-10)
+- [x] `command`, `path`: covered by the existing beginner guides `path-and-environment` and `which-tool-do-i-have` (command resolution, `PATH`, and `command -v`/`which` as the way to see which program runs). No separate command page is added, and live parent-shell inspection remains outside the standalone binary. (2026-11-10)
+- [x] `completion`: explicit future topic. Completion setup depends on the user's shell and its configuration files, and is not covered by a command page in stage 4. (2026-11-10)
+- [x] `tools`: replaced by `explain list`, which lists the documented commands with their implementations; it makes no claim about what is installed on the machine. (2026-11-10)
+- [x] `iTerm`: a GUI application, not a command, so there is no page. Generic terminal guidance is the existing guide `terminal-shell-command`; the macOS `open` command is a possible future page. No bootstrap profile or configuration is migrated. (2026-11-10)
 
 ## Stage 4 exit review
 
-- [ ] Every inventory command is covered and every lookup/topic has an explicit verified disposition; no unchecked required commands remain.
-- [ ] Common examples/options and applicable implementation variants are reviewed, with upstream references and truthful execution evidence.
-- [ ] Schema/selection changes needed for the collection are documented and tested in both CLI and web.
-- [ ] Full content/Go/static-site/parity checks pass; no known blocking accuracy or rendering regressions remain.
-- [ ] Update README, development status, and roadmap to mark stage 4 complete. Publication, licensing, installers, and deployment remain stage 5.
+- [x] Every inventory command is covered and every lookup/topic has an explicit verified disposition; no unchecked required commands remain. (Checked 2026-11-10: the checklist has no unchecked item.)
+- [x] Common examples/options and applicable implementation variants are reviewed, with upstream references and truthful execution evidence. (The evidence tables above name what ran where, and mark the examples that are reviewed only: network, accounts, daemons, terminals, administrator rights, SELinux and compress-dependent ones.)
+- [x] Schema/selection changes needed for the collection are documented and tested in both CLI and web. (The `procps` and `upstream` implementations, `/sbin` and `/usr/sbin` as Apple system paths, builtin-and-program pages with a Bash view, companion programs, reviewed-only examples and GNU banners that name no GNU are described in docs/content-format.md, docs/detection.md and docs/development.md, with Go and website tests.)
+- [x] Full content/Go/static-site/parity checks pass; no known blocking accuracy or rendering regressions remain. (`just check`, `go test ./...`, `python3 -B scripts/linux-smoke.py` and `just web-test` were run on 2026-11-10 for this change.)
+- [x] Update README, development status, and roadmap to mark stage 4 complete. Publication, licensing, installers, and deployment remain stage 5. (Done 2026-11-10. The planned `fetch-from-the-web` beginner guide is the one open item from the learning-guides proposal and is tracked there.)
