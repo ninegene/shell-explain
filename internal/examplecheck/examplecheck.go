@@ -35,7 +35,7 @@ var textEntries = []string{"cat", "head", "tail", "wc", "sort", "uniq", "cut", "
 
 // emptyFixture lists the entries whose examples start in an empty folder, because they
 // create what they need and would otherwise see the base files (git status, tree, fd, rg).
-var emptyFixture = []string{"curl", "jq", "git", "rg", "fd", "bat", "tree", "sd", "shellcheck", "shfmt", "prettier", "node", "npm", "npx", "python3", "uv", "uvx", "go", "just", "bash"}
+var emptyFixture = []string{"curl", "jq", "git", "rg", "fd", "bat", "tree", "sd", "shellcheck", "shfmt", "prettier", "node", "npm", "npx", "python3", "uv", "uvx", "go", "just", "bash", "zip", "unzip", "lsof", "rsync", "ssh-keygen", "actionlint", "markdownlint-cli2", "gitleaks", "lefthook", "mise", "zoxide", "starship"}
 
 // Setup creates the base fixture, plus any extra files the entry's examples need.
 func Setup(dir, entry string) error {
@@ -853,6 +853,52 @@ var expected = map[string]expectation{
 	"echo 'echo piped' | bash":                                     {output: "piped\n"},
 	"printf 'echo hi\\n' > s.sh && bash -n s.sh && echo syntax-ok": {output: "syntax-ok\n"},
 	"bash -c 'if [[ abc == a* ]]; then echo match; fi'":            {output: "match\n"},
+	// Upstream tools: zip, unzip, lsof, rsync, ssh-keygen, actionlint, markdownlint-cli2, gitleaks, lefthook,
+	// mise, zoxide, starship. Examples that need a remote host, the network or a particular machine are reviewed only.
+	"printf data > f.txt && zip -q a.zip f.txt && unzip -Z1 a.zip":                                                {output: "f.txt\n"},
+	"mkdir d && printf x > d/g && zip -qr b.zip d && unzip -Z1 b.zip":                                             {output: "d/\nd/g\n"},
+	"mkdir d && printf x > d/g && zip -q -j c.zip d/g && unzip -Z1 c.zip":                                         {output: "g\n"},
+	"printf a > one.txt && printf b > two.txt && zip -q a.zip one.txt && zip -q a.zip two.txt && unzip -Z1 a.zip": {output: "one.txt\ntwo.txt\n"},
+	"printf data > f.txt && zip -q a.zip f.txt && unzip -p a.zip f.txt":                                           {output: "data"},
+	"printf data > f.txt && zip -q a.zip f.txt && unzip -q a.zip -d out && cat out/f.txt":                         {output: "data"},
+	"printf data > f.txt && zip -q a.zip f.txt && unzip -t a.zip | tail -n 1":                                     {output: "No errors detected in compressed data of a.zip.\n", spaces: true},
+	"printf data > f.txt && zip -q a.zip f.txt && unzip -l a.zip | tail -n 1":                                     {output: "4 1 file\n", spaces: true},
+	"lsof -p $$ | head -n 1 | cut -d' ' -f1":                                                                      {output: "COMMAND\n"},
+	"lsof -t -p $$ | grep -c \"^$$\\$\"":                                                                          {output: "1\n"},
+	"lsof -a -p $$ -d cwd -Fn | tail -n 1 | cut -c1-2":                                                            {output: "n/\n"},
+	"lsof -i :8080":            {notRun: true},
+	"lsof /var/log/system.log": {notRun: true},
+	"mkdir src dst && printf x > src/f && rsync -a src/ dst/ && cat dst/f":                                                                               {output: "x"},
+	"mkdir src dst && printf x > src/f && rsync -r src/ dst && ls dst":                                                                                   {output: "f\n"},
+	"mkdir src dst && printf x > src/f && touch dst/extra && rsync -a --delete src/ dst/ && ls dst":                                                      {output: "f\n"},
+	"mkdir src && printf x > src/f && rsync -an src/ dst/ > /dev/null 2>&1; test -e dst/f || echo not-copied":                                            {output: "not-copied\n"},
+	"rsync -a src/ user@example.com:backup/":                                                                                                             {notRun: true},
+	"ssh-keygen -q -t ed25519 -N '' -f key && ls key key.pub":                                                                                            {output: "key\nkey.pub\n"},
+	"ssh-keygen -q -t ed25519 -N '' -f key && ssh-keygen -lf key.pub | cut -d' ' -f1":                                                                    {output: "256\n"},
+	"ssh-keygen -q -t ed25519 -N '' -f key && ssh-keygen -y -f key | cut -d' ' -f1":                                                                      {output: "ssh-ed25519\n"},
+	"ssh-keygen -q -t ed25519 -N '' -f key && ssh-keygen -lf key.pub | awk '{print $NF}'":                                                                {output: "(ED25519)\n"},
+	"printf 'on: push\\njobs:\\n  a:\\n    runs-on: ubuntu-latest\\n    steps:\\n      - run: echo hi\\n' > wf.yml && actionlint wf.yml && echo clean":   {output: "clean\n"},
+	"printf 'on: push\\njobs:\\n  a:\\n    steps:\\n      - run: echo hi\\n' > bad.yml && { actionlint bad.yml | head -n 1; }":                           {output: "bad.yml:3:3: \"runs-on\" section is missing in job \"a\" [syntax-check]\n"},
+	"actionlint -version | head -n 1 | grep -c '^[0-9]'":                                                                                                 {output: "1\n"},
+	"printf '# Title\\n\\n\\n\\ntext\\n' > a.md && { markdownlint-cli2 a.md 2>&1 | grep -c MD012; }":                                                     {output: "2\n"},
+	"printf '# Title\\n\\n\\n\\ntext\\n' > a.md && { markdownlint-cli2 a.md 2>&1 | grep -m1 MD012 | cut -d' ' -f1,3; }":                                  {output: "a.md:3 MD012/no-multiple-blanks\n"},
+	"printf '# Title\\n\\n\\n\\ntext\\n' > a.md && markdownlint-cli2 --fix a.md > /dev/null 2>&1; markdownlint-cli2 a.md > /dev/null 2>&1 && echo clean": {output: "clean\n"},
+	"gitleaks version": {output: "8.30.1\n"},
+	"printf 'token = %s%s\\n' ghp_ R8kT3vQ9mZ2xW5nB7yL4cH6jD1fG0sAe9Pw3 > secret.txt && gitleaks detect --no-git --no-banner -s . > /dev/null 2>&1; echo \"status $?\"": {output: "status 1\n"},
+	"printf 'hello\\n' > note.txt && gitleaks detect --no-git --no-banner -s . > /dev/null 2>&1; echo \"status $?\"":                                                    {output: "status 0\n"},
+	"lefthook version": {output: "2.2.2\n"},
+	"git init -q -b main && printf 'pre-commit:\\n  commands:\\n    hello:\\n      run: echo hello\\n' > lefthook.yml && lefthook install > /dev/null 2>&1 && test -f .git/hooks/pre-commit && echo installed": {output: "installed\n"},
+	"git init -q -b main && printf 'pre-commit:\\n  commands:\\n    hello:\\n      run: echo hello\\n' > lefthook.yml && lefthook install > /dev/null 2>&1 && lefthook run pre-commit 2>&1 | grep -c hello":    {output: "1\n"},
+	"mise --version 2> /dev/null | head -n 1 | grep -c '^[0-9]'":                       {output: "1\n"},
+	"mise set FOO=bar > /dev/null 2>&1 && cat mise.toml":                               {output: "[env]\nFOO = \"bar\"\n"},
+	"mise set FOO=bar > /dev/null 2>&1 && mise exec -- sh -c 'echo $FOO' 2> /dev/null": {output: "bar\n"},
+	"mise use node@lts": {notRun: true},
+	"mise ls":           {notRun: true},
+	"zoxide --version":  {output: "zoxide 0.10.0\n"},
+	"mkdir p && zoxide add \"$PWD/p\" && zoxide query p | sed \"s#$PWD/##\"": {output: "p\n"},
+	"zoxide init bash | head -n 1 | cut -c1-30":                              {output: "# shellcheck shell=bash\n"},
+	"starship --version | head -n 1 | cut -d' ' -f1":                         {output: "starship\n"},
+	"starship init bash | head -n 1 | grep -c starship":                      {output: "1\n"},
 	// cd: only success is checked; the printed directory is a temporary path.
 	"cd projects":        {},
 	"cd ..":              {},
