@@ -51,7 +51,7 @@ Print nothing; only set the exit status.
 `cmp` reports the first difference only, and without `-s` it prints a message that differs between implementations, so scripts should use `-s` and the exit status. A file that is a prefix of the other differs. `cmp` reads both files completely when they are the same, so it can be slow on big files; for that case a checksum may be easier to store. For text files, `diff` shows all the differences.
 
 ### Portability
-Only `-s` and the exit status are in the Common examples. The message text and the `-l` list of differing bytes are described in the GNU and Apple sections. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
+Only `-s` and the exit status are in the Common examples. The message text and the `-l` list of differing bytes are described in the GNU and Apple sections. The Common examples were executed on GNU diffutils 3.12, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
 ### About GNU cmp

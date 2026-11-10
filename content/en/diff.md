@@ -78,7 +78,7 @@ Ignore changes that only add or remove blank lines.
 A status of 1 is not an error: `diff` uses it for "different", so a script with `set -e` stops on files that differ, and `diff f1 f2 || true` is needed. Without `-u`, the output is in the old normal format, which `patch` can also read but which has no context. The first two lines of `-u` output contain file times, so they differ between runs: strip them when you compare outputs. `diff -r` also lists files that exist in only one folder. Binary files are reported as "differ" without a line diff.
 
 ### Portability
-Only the unified format and the options above are in the Common examples. The default format, `-y` (side by side), `-c` and `-e` are shown in the GNU and Apple sections; BusyBox 1.37.0 supports a smaller set. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
+Only the unified format and the options above are in the Common examples. The default format, `-y` (side by side), `-c` and `-e` are shown in the GNU and Apple sections; BusyBox 1.37.0 supports a smaller set. The Common examples were executed on GNU diffutils 3.12, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
 ### About GNU diff

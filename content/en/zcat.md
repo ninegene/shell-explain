@@ -42,7 +42,7 @@ printf data | gzip > f.gz && gunzip -c f.gz
 On macOS, `zcat f.gz` fails with "can\'t stat: f.gz (f.gz.Z)", because that `zcat` looks for a `.Z` file by default; use `zcat < f.gz`, `gzcat f.gz` or `gunzip -c f.gz` instead. `zcat` reads gzip data, and on GNU also the old `.Z` format; it is not for `.zip`, `.bz2` or `.xz` files, which have their own tools. A file that is not compressed gives an error, not its own text.
 
 ### Portability
-Only the standard-input form and `gunzip -c` are in the Common examples. The file-name form `zcat f.gz` works on GNU and BusyBox but not on macOS. The Common examples were executed on GNU coreutils 9.11, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
+Only the standard-input form and `gunzip -c` are in the Common examples. The file-name form `zcat f.gz` works on GNU and BusyBox but not on macOS. The Common examples were executed on GNU gzip 1.14, macOS system tools, and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
 ### About GNU zcat
