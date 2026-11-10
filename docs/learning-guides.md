@@ -1,6 +1,6 @@
 # Learning guides: teaching the shell from the ground up
 
-Status: design accepted; the format, parser, export and a sample guide are implemented (see the Guides section of [content-format.md](content-format.md)), the `explain learn` and `explain glossary` commands are implemented, and so are the website's `/learn/` pages, glossary page, home-page "Start here" section and "Learn more" links on command pages. Series 1 (five guides), all nine Series 2 guides (terminal, shell and command; anatomy of a command; files and folders; text and binary files; the three streams; pipes and redirects; exit codes; PATH and the environment; permissions), the first three Series 3 guides (a short history; who is who; one command, many versions) and 65 glossary terms are written, and `Try it` commands are run by the tests on the host and in the Linux guest. Not yet built: guides and glossary terms in the website's search, the other two Series 3 guides (distributions; which tool do I have) and Series 4. This document records what to build and in what order, so each step can be reviewed before it is built. It extends [stage 4](roadmap.md) and must be finished before the public release in stage 5, because the home page will lead with it.
+Status: design accepted; the format, parser, export and a sample guide are implemented (see the Guides section of [content-format.md](content-format.md)), the `explain learn` and `explain glossary` commands are implemented, and so are the website's `/learn/` pages, glossary page, home-page "Start here" section and "Learn more" links on command pages. Series 1 (five guides), all nine Series 2 guides (terminal, shell and command; anatomy of a command; files and folders; text and binary files; the three streams; pipes and redirects; exit codes; PATH and the environment; permissions), all five Series 3 guides (a short history; who is who; one command, many versions; distributions; which tool do I have) and 69 glossary terms are written, and `Try it` commands are run by the tests on the host and in the Linux guest. Not yet built: guides and glossary terms in the website's search, and Series 4. This document records what to build and in what order, so each step can be reviewed before it is built. It extends [stage 4](roadmap.md) and must be finished before the public release in stage 5, because the home page will lead with it.
 
 ## Why this exists
 
@@ -109,7 +109,7 @@ Titles are written to be inviting, with the plain topic underneath. Each guide h
 | `family-tree` | A Short History: Unix, BSD, GNU, Linux | Place each name on a timeline and say who made what |
 | `whos-who` | Who's Who: Unix, BSD, FreeBSD, macOS, GNU, Linux, Ubuntu, BusyBox | Say what each name is: a kernel, a toolset, a whole system, or a company's product |
 | `same-command-many-versions` | One Command, Many Versions | Explain why `sed -i` differs on a Mac and on Linux |
-| `distributions` | Ubuntu, Debian, Alpine, Fedora: What Is a Distribution? | Say what a distribution adds and what a package manager does |
+| `distributions` | Ubuntu, Debian, Alpine: What Is a Distribution? | Say what a distribution adds and what a package manager does |
 | `which-tool-do-i-have` | Which Tool Do I Have? | Find out the installed implementation in under a minute |
 
 ### Series 4: Getting things done (goal first)
