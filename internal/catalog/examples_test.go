@@ -21,7 +21,7 @@ func TestAuthoredExamples(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	implementations := []string{"bash", "apple", "gnu", "busybox", "mawk", "upstream"}
+	implementations := []string{"bash", "apple", "gnu", "busybox", "mawk", "procps", "upstream"}
 	for _, impl := range implementations {
 		for _, entry := range c.Entries {
 			selected, err := entry.Select(impl, "")

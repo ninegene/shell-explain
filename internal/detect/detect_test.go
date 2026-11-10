@@ -27,6 +27,8 @@ func TestMain(m *testing.M) {
 			fmt.Println("gzip 1.13\nCopyright (C) 2023 Free Software Foundation, Inc.")
 		case "gnu-coreutils":
 			fmt.Println("sort (GNU coreutils) 9.11")
+		case "procps":
+			fmt.Println("ps from procps-ng 4.0.5")
 		case "gnu-zcat":
 			fmt.Println("zcat (gzip) 1.14\nCopyright (C) 2025 Free Software Foundation, Inc.")
 		case "gnu-patch":
@@ -95,7 +97,7 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		t.Fatal(err)
 	}
 	dir := t.TempDir()
-	for _, name := range []string{"sort", "gzip", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk", "groups", "logname", "tty", "users", "who", "uptime", "hostid", "pinky", "chown", "chgrp", "shred", "dir", "vdir", "dircolors", "mknod", "echo", "printf", "pwd", "true", "false", "test", "kill", "arch", "numfmt", "ptx", "stdbuf", "stty", "chroot", "chcon", "runcon", "coreutils", "diff", "cmp", "diff3", "sdiff", "patch", "zcat", "zgrep", "zless", "zmore", "zcmp", "zdiff", "zforce", "znew", "uncompress", "gzexe", "unlisted-tool"} {
+	for _, name := range []string{"sort", "gzip", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk", "groups", "logname", "tty", "users", "who", "uptime", "hostid", "pinky", "chown", "chgrp", "shred", "dir", "vdir", "dircolors", "mknod", "echo", "printf", "pwd", "true", "false", "test", "kill", "arch", "numfmt", "ptx", "stdbuf", "stty", "chroot", "chcon", "runcon", "coreutils", "diff", "cmp", "diff3", "sdiff", "patch", "zcat", "zgrep", "zless", "zmore", "zcmp", "zdiff", "zforce", "znew", "uncompress", "gzexe", "ps", "pgrep", "pkill", "top", "free", "killall", "unlisted-tool"} {
 		if err = os.Symlink(executable, filepath.Join(dir, name)); err != nil {
 			t.Fatal(err)
 		}
@@ -142,6 +144,13 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		s, err := d.Select(context.Background(), Request{Name: command, Command: command})
 		if err != nil || s.Implementation != tt.impl || s.Confidence != "detected" || s.Version != tt.version {
 			t.Fatalf("%s banner: %+v %v", tt.mode, s, err)
+		}
+	}
+	for _, command := range []string{"ps", "pgrep", "pkill", "top", "free"} {
+		t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", "procps")
+		s, err := d.Select(context.Background(), Request{Name: command, Command: command})
+		if err != nil || s.Implementation != "procps" || s.Confidence != "detected" || s.Version != "4.0.5" {
+			t.Fatalf("%s procps banner: %+v %v", command, s, err)
 		}
 	}
 	// Commands outside the probe list are never executed, even with a GNU-looking banner.
