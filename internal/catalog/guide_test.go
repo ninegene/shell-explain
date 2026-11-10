@@ -10,6 +10,31 @@ import (
 	"github.com/ninegene/shell-explain/content"
 )
 
+var updatedLine = regexp.MustCompile(`(?m)^updated: .*\n`)
+
+// withUpdated replaces the first updated line of a file, or removes it when
+// value is empty. Tests use it so they do not depend on a page's current date.
+func withUpdated(s, value string) string {
+	line := ""
+	if value != "" {
+		line = "updated: " + value + "\n"
+	}
+	loc := updatedLine.FindStringIndex(s)
+	if loc == nil {
+		return s
+	}
+	return s[:loc[0]] + line + s[loc[1]:]
+}
+
+// afterUpdated inserts extra front matter on the line after updated.
+func afterUpdated(s, extra string) string {
+	loc := updatedLine.FindStringIndex(s)
+	if loc == nil {
+		return s
+	}
+	return s[:loc[1]] + extra + s[loc[1]:]
+}
+
 // isolatedGuide removes the sample guide's links to other guides, so a test
 // can load it on its own. The shipped guide links to its neighbours.
 func isolatedGuide(guide string) string {
@@ -63,8 +88,8 @@ func TestInvalidGuides(t *testing.T) {
 		"zero order":             strings.Replace(valid, "order: 1", "order: 0", 1),
 		"bad level":              strings.Replace(valid, "level: beginner", "level: expert", 1),
 		"no reading time":        strings.Replace(valid, "reading_minutes: 5", "reading_minutes: 0", 1),
-		"bad date":               strings.Replace(valid, "updated: 2026-11-08", "updated: 2026-13-45", 1),
-		"missing date":           strings.Replace(valid, "updated: 2026-11-08\n", "", 1),
+		"bad date":               withUpdated(valid, "2026-13-45"),
+		"missing date":           withUpdated(valid, ""),
 		"unsafe ref":             strings.Replace(valid, "https://docs.kernel.org/", "javascript:alert(1)", 1),
 		"no references":          strings.Replace(valid, "references:\n  - https://www.gnu.org/software/bash/manual/\n  - https://docs.kernel.org/\n", "references: []\n", 1),
 		"missing section":        strings.Replace(valid, "## Check yourself", "## Quiz", 1),
@@ -165,7 +190,7 @@ func TestGlossaryParsing(t *testing.T) {
 	valid := string(raw)
 	for name, s := range map[string]string{
 		"wrong id":       strings.Replace(valid, "id: glossary", "id: words", 1),
-		"bad date":       strings.Replace(valid, "updated: 2026-11-08", "updated: soon", 1),
+		"bad date":       withUpdated(valid, "soon"),
 		"duplicate term": valid + "\n## Shell\nAgain.\n",
 		"no terms":       strings.SplitN(valid, "\n## ", 2)[0] + "\n",
 		"only See":       strings.Replace(valid, "## Command\nA short instruction", "## Command\nSee: big-picture\n\n## Extra\nA short instruction", 1),
@@ -220,7 +245,7 @@ func TestLoadChecksReferencesAndRevision(t *testing.T) {
 		"related command missing": {string(grep), strings.Replace(withLs, "related_commands: [grep]", "related_commands: [nosuch]", 1), string(terms)},
 		"related guide missing":   {string(grep), strings.Replace(withLs, "related_guides: []", "related_guides: [nosuch]", 1), string(terms)},
 		"related guide is itself": {string(grep), strings.Replace(withLs, "related_guides: []", "related_guides: [big-picture]", 1), string(terms)},
-		"command related guide":   {strings.Replace(string(grep), "updated: 2026-11-08\n", "updated: 2026-11-08\nrelated_guides: [nosuch]\n", 1), withLs, string(terms)},
+		"command related guide":   {afterUpdated(string(grep), "related_guides: [nosuch]\n"), withLs, string(terms)},
 		"glossary guide missing":  {string(grep), withLs, strings.Replace(string(terms), "See: big-picture", "See: nosuch", 1)},
 		"filename mismatch":       {string(grep), strings.Replace(withLs, "id: big-picture", "id: other", 1), string(terms)},
 	} {
@@ -229,7 +254,7 @@ func TestLoadChecksReferencesAndRevision(t *testing.T) {
 		}
 	}
 	// A command page may point at an existing guide.
-	linked := strings.Replace(string(grep), "updated: 2026-11-08\n", "updated: 2026-11-08\nrelated_guides: [big-picture]\n", 1)
+	linked := afterUpdated(string(grep), "related_guides: [big-picture]\n")
 	c, err := load(linked, withLs, string(terms))
 	if err != nil || len(c.Entries[0].RelatedGuides) != 1 {
 		t.Fatalf("command related_guides: %v", err)
