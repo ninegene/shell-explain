@@ -45,7 +45,7 @@ type SeriesInfo struct {
 var Series = []SeriesInfo{
 	{ID: "how-a-computer-works", Title: "How a Computer Works, Just Enough", Promise: "What happens between your keyboard and the screen."},
 	{ID: "terminal-shell-commands", Title: "Terminal, Shell and Commands", Promise: "What you are typing into, and how it becomes a result."},
-	{ID: "why-so-many-versions", Title: "Why Are There So Many Versions?", Promise: "Why one command behaves differently on a Mac, Ubuntu and Alpine."},
+	{ID: "why-so-many-versions", Title: "Why Are There So Many Versions?", Promise: "Where Unix, BSD, GNU and Linux came from, and why one command differs from system to system."},
 	{ID: "getting-things-done", Title: "Getting Things Done", Promise: "Start from the result you want and pick a route to it."},
 }
 

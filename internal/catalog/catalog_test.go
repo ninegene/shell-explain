@@ -94,11 +94,11 @@ func TestInvalidContent(t *testing.T) {
 		"missing Background":    strings.Replace(valid, "### Background", "### History", 1),
 		"missing About":         strings.Replace(valid, "### About GNU grep", "### Notes on GNU grep", 1),
 		"table in command page": strings.Replace(valid, "Use `grep`", "| a | b |\n| - | - |\n| 1 | 2 |\n\nUse `grep`", 1),
-		"missing updated":       strings.Replace(valid, "updated: 2026-11-08\n", "", 1),
-		"updated wrong order":   strings.Replace(valid, "updated: 2026-11-08", "updated: 08-11-2026", 1),
-		"updated not a date":    strings.Replace(valid, "updated: 2026-11-08", "updated: yesterday", 1),
-		"updated impossible":    strings.Replace(valid, "updated: 2026-11-08", "updated: 2026-13-45", 1),
-		"updated unpadded":      strings.Replace(valid, "updated: 2026-11-08", "updated: 2026-1-5", 1),
+		"missing updated":       withUpdated(valid, ""),
+		"updated wrong order":   withUpdated(valid, "08-11-2026"),
+		"updated not a date":    withUpdated(valid, "yesterday"),
+		"updated impossible":    withUpdated(valid, "2026-13-45"),
+		"updated unpadded":      withUpdated(valid, "2026-1-5"),
 	}
 	for name, s := range tests {
 		t.Run(name, func(t *testing.T) {

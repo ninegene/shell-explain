@@ -143,6 +143,6 @@ d
 4. Why does `./hello.sh` fail before `chmod +x`? Answer: the file has no execute setting, so the system refuses to run it.
 
 ## Where next
-You have now met the main ideas of using a shell: the terminal and the shell, commands and options, paths, streams, pipes, exit status, text and binary files, PATH and permissions. A later series will look at why the same command differs between systems.
+You have now met the main ideas of using a shell: the terminal and the shell, commands and options, paths, streams, pipes, exit status, text and binary files, PATH and permissions. The next series, starting with `explain learn family-tree`, looks at where these tools came from and why the same command differs between systems.
 
 To look at permissions on real files, see `explain ls`, `explain chmod` and `explain stat`.

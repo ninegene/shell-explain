@@ -3,7 +3,7 @@ schema_version: 1
 id: glossary
 title: Words You Will See
 summary: Short definitions of the words beginners meet when they start using a terminal.
-updated: 2026-11-08
+updated: 2026-11-09
 ---
 
 ## Absolute path
@@ -36,6 +36,16 @@ A small program that finds the kernel on the disk, loads it into memory and star
 
 See: who-is-boss
 
+## BSD
+Short for Berkeley Software Distribution: the versions of Unix released by the University of California at Berkeley, from 3BSD in 1980 to 4.4BSD in 1993, and the family of systems derived from them.
+
+See: family-tree, whos-who
+
+## BusyBox
+One small program that holds tiny versions of many common Unix tools. It is used on small and embedded systems, and its tools generally have fewer options than the GNU ones.
+
+See: whos-who, same-command-many-versions
+
 ## Byte
 A number from 0 to 255. A file is a row of bytes.
 
@@ -60,6 +70,11 @@ See: big-picture, computer-body
 The folder the shell is working in. A relative path starts from it. `pwd` prints it, and `cd` changes it.
 
 See: files-and-folders
+
+## Darwin
+The open core of macOS, according to Apple: its kernel and the BSD command-line environment, with technology derived from FreeBSD, Mach and NeXT.
+
+See: whos-who, family-tree
 
 ## Directory
 A folder: a place that holds files and other directories.
@@ -106,6 +121,16 @@ Another word for an option.
 
 See: anatomy-of-a-command
 
+## FreeBSD
+A complete Unix-like operating system based on the 4.4BSD-Lite release from the University of California at Berkeley.
+
+See: family-tree, whos-who
+
+## GNU
+A project announced by Richard Stallman in 1983, with work starting in January 1984, to write a complete free system compatible with Unix. It also names the large set of tools the project produced.
+
+See: family-tree, whos-who
+
 ## Hardware
 The physical parts of a computer that you can touch: the processor, the memory, the disk, the keyboard and the screen.
 
@@ -116,10 +141,25 @@ Your personal folder. In the shell, `~` stands for it.
 
 See: files-and-folders
 
+## Implementation
+One particular program that does the job a command name stands for. GNU sed, macOS sed and BusyBox sed are three implementations of sed.
+
+See: same-command-many-versions, whos-who
+
 ## Kernel
 The core of the operating system. It decides which program gets the CPU and memory, and it talks to the hardware on behalf of programs.
 
 See: big-picture, what-is-an-os, who-is-boss
+
+## Linux
+A Unix-like kernel written from scratch by Linus Torvalds, first developed in 1991 and made free software in 1992. The GNU Project calls a complete system built from GNU tools and this kernel GNU/Linux.
+
+See: family-tree, whos-who
+
+## macOS
+Apple's operating system for the Mac. It is built on Darwin and adds graphical layers on top.
+
+See: whos-who, family-tree
 
 ## Memory
 Fast, temporary storage for the programs and data the computer is working on right now. What it holds is lost when the power goes off.
@@ -170,6 +210,11 @@ See: pipes-and-redirects
 Commands joined with pipes, so that the output of each one becomes the input of the next.
 
 See: pipes-and-redirects
+
+## POSIX
+A standard that describes what a Unix-like system should provide, including the commands and their options. The first, POSIX.1-1988, was followed by POSIX.1-1990. Richard Stallman coined the name.
+
+See: family-tree, same-command-many-versions
 
 ## Process
 A program that is running. It has its own PID and its own memory.
@@ -246,6 +291,11 @@ A request a program makes to the kernel, such as asking it to open a file. It is
 
 See: what-is-an-os
 
+## System V
+The version of Unix sold by AT&T, first released in 1983. With BSD, it is one of the two main dialects Unix split into after Version 7.
+
+See: family-tree
+
 ## Terminal
 A window or screen that shows text and passes your key presses to the shell.
 
@@ -255,6 +305,16 @@ See: big-picture, terminal-shell-command
 A file whose bytes stand for characters, arranged in lines.
 
 See: text-and-binary
+
+## Unix
+The operating system from AT&T Bell Labs, whose Version 7 was released in 1979, and the family of systems descended from it.
+
+See: family-tree
+
+## Unix-like
+Behaving like Unix without being a direct descendant. Linux, a clone written from scratch, and the GNU system, written to be compatible with Unix, are Unix-like.
+
+See: family-tree, whos-who
 
 ## UTF-8
 The common way to write text as bytes today. ASCII characters keep their numbers, and other characters take two or more bytes.
