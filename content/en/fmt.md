@@ -44,7 +44,7 @@ Set the maximum line width, as in `-w 15`.
 `fmt` treats a line that starts with extra spaces as the start of a new paragraph, so indented lists may not reflow the way you expect. It does not understand Markdown or code, so do not run it on source files. The goal width is a little shorter than the maximum, so lines may be slightly shorter than `-w` suggests.
 
 ### Portability
-This page has no BusyBox view: BusyBox has no `fmt` applet. Only `-w` is in the Common examples; Both have `-s` (split only), but `-p` means different things: GNU takes a prefix, and macOS allows indented paragraphs. The Common examples were executed on GNU coreutils 9.11 and macOS system tools (see the development guide for the exact check). The Common examples were executed on GNU coreutils 9.11 and macOS system tools (see the development guide for the exact check).
+This page has no BusyBox view: BusyBox has no `fmt` applet. Only `-w` is in the Common examples; Both have `-s` (split only), but `-p` means different things: GNU takes a prefix, and macOS allows indented paragraphs. The Common examples were executed on GNU coreutils 9.11 and macOS system tools (see the development guide for the exact check).
 
 ## GNU
 ### About GNU fmt

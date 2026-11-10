@@ -47,7 +47,7 @@ tac notes.txt | nl | head -n 1
 `tac` reverses lines, not the characters inside them; use `rev` for that. It needs the whole input before it can print, so it does not work on endless input such as `tail -f`. A file whose last line has no newline ends up with its first and second lines run together unless you add one.
 
 ### Portability
-This page has no Apple view: macOS has no `tac`, and `tail -r file` is its equivalent, which GNU `tail` does not have. The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check). The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check).
+This page has no Apple view: macOS has no `tac`, and `tail -r file` is its equivalent, which GNU `tail` does not have. The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
 ### About GNU tac

@@ -50,7 +50,7 @@ Send this signal instead of `TERM` when the time is up.
 A command can ignore `TERM`, in which case it keeps running; use `-s KILL` or GNU's `-k` to follow up. `timeout` stops the command it started, but the command's children may survive. The exit status for a timeout is 124 on GNU, and may be different on other implementations, so test for "not 0" unless you know which you have. The time can have a suffix such as `m` for minutes in GNU.
 
 ### Portability
-This page has no Apple view: macOS has no `timeout`; a script there can install `gtimeout` from GNU coreutils. Only whole seconds and `-s` are in the Common examples. The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check). The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check).
+This page has no Apple view: macOS has no `timeout`; a script there can install `gtimeout` from GNU coreutils. Only whole seconds and `-s` are in the Common examples. The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
 ### About GNU timeout

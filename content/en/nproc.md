@@ -35,7 +35,7 @@ jobs=$(nproc); test "$jobs" -ge 1 && echo ok
 `nproc` honors limits such as the `OMP_NUM_THREADS` variable in GNU, so it may print less than the machine has; `nproc --all` ignores them. Using every processor for a build can make the machine unresponsive, so leave one or two free. On macOS, `nproc` is not available and a script needs `sysctl -n hw.ncpu` there.
 
 ### Portability
-This page has no Apple view: macOS has no `nproc`. A portable script can try `nproc`, then `getconf _NPROCESSORS_ONLN`, then `sysctl -n hw.ncpu`. The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check). The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check).
+This page has no Apple view: macOS has no `nproc`. A portable script can try `nproc`, then `getconf _NPROCESSORS_ONLN`, then `sysctl -n hw.ncpu`. The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
 ### About GNU nproc

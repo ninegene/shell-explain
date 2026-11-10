@@ -47,7 +47,7 @@ printf 'only\n' | shuf -n 1
 `shuf` is not a source of security-grade randomness; use a proper tool for keys. Without `-n`, every line is read into memory. Run twice, it gives different results, so a test that compares output needs `sort` or a count. `-n` larger than the number of lines just prints all of them.
 
 ### Portability
-This page has no Apple view: macOS has no `shuf`. Common substitutes there are `sort -R` (which groups equal lines together) and `jot -r`. The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check). The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check).
+This page has no Apple view: macOS has no `shuf`. Common substitutes there are `sort -R` (which groups equal lines together) and `jot -r`. The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
 ### About GNU shuf

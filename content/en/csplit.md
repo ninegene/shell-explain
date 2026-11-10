@@ -47,7 +47,7 @@ Use this prefix instead of `xx` for the names of the pieces.
 Without `-s`, `csplit` prints the size in bytes of every piece, which can look like noise in a script. If the pattern is not found, `csplit` fails and may leave pieces behind. The pattern is a regular expression and a line number counts from 1. The first piece ends just before the line you name, so the matching line starts the next piece.
 
 ### Portability
-This page has no BusyBox view: BusyBox has no `csplit` applet. The `{*}` repeat count and `--suppress-matched` are GNU features; macOS rejects `{*}` and needs a number such as `{1}`. The Common examples were executed on GNU coreutils 9.11 and macOS system tools (see the development guide for the exact check). The Common examples were executed on GNU coreutils 9.11 and macOS system tools (see the development guide for the exact check).
+This page has no BusyBox view: BusyBox has no `csplit` applet. The `{*}` repeat count and `--suppress-matched` are GNU features; macOS rejects `{*}` and needs a number such as `{1}`. The Common examples were executed on GNU coreutils 9.11 and macOS system tools (see the development guide for the exact check).
 
 ## GNU
 ### About GNU csplit

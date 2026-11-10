@@ -47,7 +47,7 @@ factor 17 | awk '{print NF - 1}'
 A prime prints as `17: 17`, which is easy to read as a mistake. Very large numbers can take a long time, and the limit differs between implementations. `factor` accepts only non-negative whole numbers.
 
 ### Portability
-This page has no Apple view: macOS has no `factor`. The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check). The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check).
+This page has no Apple view: macOS has no `factor`. The Common examples were executed on GNU coreutils 9.11 and BusyBox 1.37.0 (see the development guide for the exact check).
 
 ## GNU
 ### About GNU factor
