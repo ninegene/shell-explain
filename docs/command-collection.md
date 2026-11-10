@@ -32,7 +32,7 @@ Still open: detection probes only the commands in `detect.probed` (grep, sed, fi
 
 ## Completed-page evidence
 
-Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10; tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout and truncate on 2026-11-10; dd, install, link, unlink, mkfifo, nohup, nice, sync, sum, tsort, pr and pathchk on 2026-11-10; groups, logname, tty, users, who, uptime, hostid, pinky, chown, chgrp, shred, dir, vdir, dircolors and mknod on 2026-11-10; echo, printf, pwd, true, false, test, kill and arch on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09; rmdir, mktemp, readlink, realpath, seq, paste, comm, join, nl and fold on 2026-11-10; env, printenv, id, whoami, uname, hostname, df, yes, sleep, expand and unexpand on 2026-11-10; the checksum and encoding tools of batch 3d on 2026-11-10; tac, shuf, od, split, csplit, fmt, factor, expr, nproc, timeout and truncate on 2026-11-10; dd, install, link, unlink, mkfifo, nohup, nice, sync, sum, tsort, pr and pathchk on 2026-11-10; groups, logname, tty, users, who, uptime, hostid, pinky, chown, chgrp, shred, dir, vdir, dircolors and mknod on 2026-11-10; echo, printf, pwd, true, false, test, kill and arch on 2026-11-10; numfmt, ptx, stdbuf, stty, chroot, chcon, runcon and coreutils on 2026-11-10) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
 
 | Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
 | --- | --- | --- | --- | --- | --- |
@@ -143,6 +143,14 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `test` | 9 common | system `/bin/test`, executed | coreutils 9.11, executed in the Linux guest only (GNU `test --version` prints no banner, so it is not auto-identified) | BusyBox 1.37.0 and coreutils 9.11, executed | Bash 5.2.37 builtin, executed on macOS |
 | `kill` | 4 common | system `/bin/kill`, executed | no GNU view (the coreutils builds used do not include `kill`) | BusyBox 1.37.0, executed | Bash 5.2.37 builtin, executed on macOS |
 | `arch` | 2 common (shape only) | system `/usr/bin/arch`, executed | no GNU view (not installed by the coreutils builds used) | BusyBox 1.37.0, executed | n/a |
+| `numfmt` | 7 GNU | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `ptx` | 2 GNU (layout compared with blanks collapsed) | not shipped by macOS (checked on the host) | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `stdbuf` | 3 common | system `/usr/bin/stdbuf`, executed | coreutils 9.11, executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `stty` | 4 common, reviewed only (needs a terminal) | system `/bin/stty`, not executed | not executed | BusyBox 1.37.0, not executed | n/a |
+| `chroot` | 3 common, reviewed only (needs administrator rights) | system `/usr/sbin/chroot`, not executed | not executed | not executed | n/a |
+| `chcon` | 3 GNU, reviewed only (needs SELinux) | not shipped by macOS (checked on the host) | not executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `runcon` | 3 GNU, reviewed only (needs SELinux) | not shipped by macOS (checked on the host) | not executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `coreutils` | 3 GNU (multi-call program) | not shipped by macOS (checked on the host) | coreutils 9.11, executed in the Linux guest only (Homebrew does not install it) | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -169,14 +177,14 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `basename` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [x] `basenc` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `cat` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
-- [ ] `chcon`
+- [x] `chcon` (stage 4 batch 3i, 2026-11-10; see completed-page evidence)
 - [x] `chgrp` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
 - [x] `chmod` (stage 4 batch 2c, 2026-11-08; see completed-page evidence)
 - [x] `chown` (stage 4 batch 3g, 2026-11-10; see completed-page evidence)
-- [ ] `chroot`
+- [x] `chroot` (stage 4 batch 3i, 2026-11-10; see completed-page evidence)
 - [x] `cksum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `comm` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
-- [ ] `coreutils`
+- [x] `coreutils` (stage 4 batch 3i, 2026-11-10; see completed-page evidence)
 - [x] `cp` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
 - [x] `csplit` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `cut` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
@@ -217,7 +225,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `nl` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [x] `nohup` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
 - [x] `nproc` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
-- [ ] `numfmt`
+- [x] `numfmt` (stage 4 batch 3i, 2026-11-10; see completed-page evidence)
 - [x] `od` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `paste` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [x] `pathchk` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
@@ -225,13 +233,13 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `pr` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
 - [x] `printenv` (stage 4 batch 3c, 2026-11-10; see completed-page evidence)
 - [x] `printf` (stage 4 batch 3h, 2026-11-10; see completed-page evidence)
-- [ ] `ptx`
+- [x] `ptx` (stage 4 batch 3i, 2026-11-10; see completed-page evidence)
 - [x] `pwd` (stage 4 batch 3h, 2026-11-10; see completed-page evidence)
 - [x] `readlink` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [x] `realpath` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [x] `rm` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
 - [x] `rmdir` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
-- [ ] `runcon`
+- [x] `runcon` (stage 4 batch 3i, 2026-11-10; see completed-page evidence)
 - [x] `seq` (stage 4 batch 3b, 2026-11-10; see completed-page evidence)
 - [x] `sha1sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
 - [x] `sha224sum` (stage 4 batch 3d, 2026-11-10; see completed-page evidence)
@@ -244,8 +252,8 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [x] `sort` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [x] `split` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
 - [x] `stat` (stage 4 batch 2d, 2026-11-08; see completed-page evidence)
-- [ ] `stdbuf`
-- [ ] `stty`
+- [x] `stdbuf` (stage 4 batch 3i, 2026-11-10; see completed-page evidence)
+- [x] `stty` (stage 4 batch 3i, 2026-11-10; see completed-page evidence)
 - [x] `sum` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
 - [x] `sync` (stage 4 batch 3f, 2026-11-10; see completed-page evidence)
 - [x] `tac` (stage 4 batch 3e, 2026-11-10; see completed-page evidence)
