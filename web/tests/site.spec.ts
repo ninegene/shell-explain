@@ -531,7 +531,7 @@ test('desktop and mobile accessibility, keyboard navigation, and overflow', asyn
   ).toBeFocused();
   await page.keyboard.press('Enter');
   await page.getByLabel('Find a command or a use case').focus();
-  await page.keyboard.type('xargs');
+  await page.keyboard.type('ggrep');
   await expect(page.locator('[data-entry]:visible')).toHaveCount(1);
 });
 

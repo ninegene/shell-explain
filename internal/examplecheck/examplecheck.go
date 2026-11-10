@@ -1026,6 +1026,14 @@ var expected = map[string]expectation{
 	"tar --rsh-command=/usr/bin/ssh -cf backup@tapehost.example.org:/dev/st0 project/":                             {notRun: true},
 	"tar --rsh-command=/usr/bin/ssh -tf backup@tapehost.example.org:/dev/st0":                                      {notRun: true},
 	"tar --rsh-command=/usr/bin/ssh --rmt-command=/usr/sbin/rmt -cf backup@tapehost.example.org:/dev/st0 project/": {notRun: true},
+	// git aliases and configuration run; the package pages (findutils, diffutils) only name versions of
+	// programs that have their own pages, so their examples are reviewed only.
+	"git init -q -b main && git -c alias.st=status st --short | wc -l | tr -d ' '":           {output: "0\n"},
+	"git init -q -b main && git config --local user.name Demo && git config --get user.name": {output: "Demo\n"},
+	"xargs --version | head -n 1":  {notRun: true},
+	"locate --version | head -n 1": {notRun: true},
+	"diff --version | head -n 1":   {notRun: true},
+	"cmp --version | head -n 1":    {notRun: true},
 	// cd: only success is checked; the printed directory is a temporary path.
 	"cd projects":        {},
 	"cd ..":              {},

@@ -3,7 +3,7 @@ schema_version: 1
 id: ssh-add
 title: ssh-add
 summary: Add private keys to the SSH agent, or list the keys it holds.
-aliases: []
+aliases: [sshadd]
 tags: [ssh, security, keys]
 implementations: [upstream]
 updated: 2026-11-10
@@ -12,7 +12,7 @@ references:
 ---
 ## Common
 ### Overview
-`ssh-add` gives your private keys to a running `ssh-agent`, so that you type the passphrase of a key once instead of each time you connect. With `-l` it lists the keys the agent holds, with `-L` it prints their public keys and with `-D` it removes them all. It needs a running agent: without one it reports that it cannot connect.
+`ssh-add` gives your private keys to a running `ssh-agent`, so that you type the passphrase of a key once instead of each time you connect. With `-l` it lists the keys the agent holds, with `-L` it prints their public keys and with `-D` it removes them all. It needs a running agent: without one it reports that it cannot connect. This page also answers for `sshadd`, a common misspelling; the real command has a hyphen.
 
 ### Background
 `ssh-add` is part of OpenSSH, whose manual is on man.openbsd.org. The tool tested here is the OpenSSH that macOS ships. The examples that start their own agent use a short socket path in `/tmp`, because the path of a long temporary folder is too long for a Unix socket.

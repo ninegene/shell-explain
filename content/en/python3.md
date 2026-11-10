@@ -3,7 +3,7 @@ schema_version: 1
 id: python3
 title: python3
 summary: Run Python programs and scripts.
-aliases: []
+aliases: [python]
 tags: [developer, python, runtime]
 implementations: [upstream]
 updated: 2026-11-10
@@ -13,7 +13,7 @@ references:
 ---
 ## Common
 ### Overview
-`python3` runs Python. Give it a file to run a script, `-c` to run a line of code, or `-m` to run a module such as `json.tool` or `http.server`. Without arguments it starts an interactive prompt. On many systems the command `python` is missing or points to an old version, so `python3` is the name to use.
+`python3` runs Python. Give it a file to run a script, `-c` to run a line of code, or `-m` to run a module such as `json.tool` or `http.server`. Without arguments it starts an interactive prompt. On many systems the command `python` is missing or points to an old version, so `python3` is the name to use. This page also answers for the name `python`, but `python` is missing on many systems and points to Python 2 on some old ones, so it is not a safe synonym: check `python --version` before you use it in a script.
 
 ### Background
 `python3` is the command of the Python interpreter. Its options are in the command-line page of the Python documentation. The tool tested here is the Python 3 on the host.

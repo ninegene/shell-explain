@@ -3,7 +3,7 @@ schema_version: 1
 id: docker-compose
 title: docker-compose
 summary: Run several containers as one application, described in a file.
-aliases: []
+aliases: [compose]
 tags: [containers, developer, devops]
 implementations: [upstream]
 updated: 2026-11-10
@@ -12,7 +12,7 @@ references:
 ---
 ## Common
 ### Overview
-`docker-compose` starts an application made of several containers (a web server, a database, a cache) from one file, `compose.yaml`. The file lists the services, their images and how they connect, and one command starts, stops or rebuilds all of them. It can also check and print the file, which needs no running daemon, and the examples use that.
+`docker-compose` starts an application made of several containers (a web server, a database, a cache) from one file, `compose.yaml`. The file lists the services, their images and how they connect, and one command starts, stops or rebuilds all of them. It can also check and print the file, which needs no running daemon, and the examples use that. This page also answers for the short name `compose`, as in `docker compose`.
 
 ### Background
 `docker-compose` is Docker Compose, documented on docs.docker.com. The tool tested here is Docker Compose v5.6.1, run as the stand-alone command `docker-compose` (the same program is also available as `docker compose`). Commands that start containers need a daemon and are reviewed only. No example on this page calls a cloud service: the executed ones read the tool's own help and settings in a clean home folder with no credentials, and the ones that would call a service are reviewed only.
