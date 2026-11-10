@@ -32,6 +32,7 @@ func TestUnsafeTryIt(t *testing.T) {
 	for _, safe := range []string{
 		"ls", "df -h .", "du -sh .", "uname -s", "ps -o pid,ppid,comm", "echo $$", "sleep 1",
 		"mkdir practice\ncd practice\necho hello > hello.txt\ncat hello.txt",
+		"mv tidy/a.txt tidy/b.txt", "mv tidy/a.log tidy/old/", `for f in tidy/*.txt; do mv "$f" "${f%.txt}.md"; done`,
 		"ls -l ~/Documents",
 	} {
 		if got := UnsafeTryIt(safe); got != "" {
@@ -49,7 +50,11 @@ func TestUnsafeTryIt(t *testing.T) {
 		"ls && rm hello.txt":       "rm",
 		"kill 1234":                "kill",
 		"dd if=/dev/zero of=x":     "dd",
-		"mv a b":                   "mv",
+		"mv /etc/hosts x":          "mv outside the current folder",
+		"mv x ~/y":                 "mv outside the current folder",
+		"mv ../x y":                "mv outside the current folder",
+		"mv x ..":                  "mv outside the current folder",
+		`mv "/tmp/x" y`:            "mv outside the current folder",
 		"curl https://example.org": "curl",
 		"echo x > /etc/hosts":      "a redirect to a system path",
 		"echo x >/dev/sda":         "a redirect to a system path",

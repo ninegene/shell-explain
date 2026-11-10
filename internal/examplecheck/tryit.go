@@ -43,7 +43,7 @@ func TryItBlocks(markdown string) []TryItBlock {
 }
 
 // unsafeTryIt names commands a beginner guide must never ask a reader to run.
-var unsafeTryIt = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])(sudo|su|rm|rmdir|kill|killall|pkill|shutdown|reboot|halt|poweroff|mkfs|fdisk|dd|chown|chgrp|mv|ln|curl|wget|ssh|scp)([^a-zA-Z0-9_-]|$)|>\s*/(dev|etc|usr|bin|sbin|var|System|Library)\b`)
+var unsafeTryIt = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])(sudo|su|rm|rmdir|kill|killall|pkill|shutdown|reboot|halt|poweroff|mkfs|fdisk|dd|chown|chgrp|ln|curl|wget|ssh|scp)([^a-zA-Z0-9_-]|$)|>\s*/(dev|etc|usr|bin|sbin|var|System|Library)\b`)
 
 // UnsafeTryIt returns the first thing in code that a "Try it" block must not
 // contain, or "" when it is safe: only reading, and writing inside the current
@@ -56,9 +56,20 @@ func UnsafeTryIt(code string) string {
 			}
 			return "a redirect to a system path"
 		}
+		if moveWord.MatchString(line) && leavesFolder.MatchString(line) {
+			return "mv outside the current folder"
+		}
 	}
 	return ""
 }
+
+// mv is allowed because the guide on renaming and moving files needs it, but
+// only on relative paths: a word that starts with a slash, a tilde or two dots
+// could reach the reader's own files.
+var (
+	moveWord     = regexp.MustCompile(`(^|[^a-zA-Z0-9_-])mv([^a-zA-Z0-9_-]|$)`)
+	leavesFolder = regexp.MustCompile(`(^|\s)["']?(/|~|\.\.)`)
+)
 
 // CheckTryIt compares a command's output with the output the guide shows.
 func CheckTryIt(b TryItBlock, output string) error {
