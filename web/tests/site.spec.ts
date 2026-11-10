@@ -55,6 +55,75 @@ test('search, aliases, tags, implementation filter, and empty state', async ({
   expect(errors).toEqual([]);
 });
 
+test('search also finds guides and glossary words', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('/commands/');
+  const query = page.getByLabel('Find a command or a use case');
+  // Nothing from the learning content shows until someone types.
+  await expect(page.locator('[data-learn]:visible')).toHaveCount(0);
+  await expect(page.locator('[data-learn-results]')).toBeHidden();
+
+  await query.fill('stderr');
+  // A guide is found by its own text and by the glossary words that link to it.
+  const guideHits = catalog.guides.filter(
+    (g: {
+      id: string;
+      title: string;
+      subtitle: string;
+      summary: string;
+      tags: string[];
+    }) =>
+      [
+        g.title,
+        g.subtitle,
+        g.summary,
+        ...g.tags,
+        ...catalog.glossary.terms
+          .filter((t: { guides: string[] }) => t.guides.includes(g.id))
+          .map((t: { term: string }) => t.term),
+      ]
+        .join(' ')
+        .toLowerCase()
+        .includes('stderr'),
+  ).length;
+  expect(guideHits).toBeGreaterThan(0);
+  await expect(page.locator('[data-learn="guide"]:visible')).toHaveCount(
+    guideHits,
+  );
+  const word = page.locator('[data-learn="term"]:visible a', {
+    hasText: 'stderr',
+  });
+  await expect(word.first()).toHaveAttribute('href', '/learn/glossary/#stderr');
+  await expect(
+    page.locator('[data-learn="guide"]:visible a').first(),
+  ).toHaveAttribute('href', /^\/learn\/[a-z-]+\/$/);
+
+  // A one-letter query matches everything: only a few words are listed, with
+  // a link to the full glossary.
+  await query.fill('e');
+  await expect(page.locator('[data-learn="term"]:visible')).toHaveCount(8);
+  await expect(page.locator('#learn-more')).toBeVisible();
+
+  // Choosing an implementation hides them: they are not implementation-specific.
+  await query.fill('stderr');
+  await page.getByLabel('Implementation coverage').selectOption('gnu');
+  await expect(page.locator('[data-learn]:visible')).toHaveCount(0);
+  await page.getByLabel('Implementation coverage').selectOption('');
+
+  // The empty state appears only when nothing at all matches.
+  await query.fill('zzzzqqqq');
+  await expect(page.locator('#no-results')).toBeVisible();
+  await query.fill('pipe');
+  await expect(page.locator('#no-results')).toBeHidden();
+  await expect(page.locator('[data-learn]:visible').first()).toBeVisible();
+
+  // A tag page lists commands for that tag only.
+  await page.goto('/tags/logs/');
+  await expect(page.locator('[data-learn-results]')).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
 for (const entry of catalog.entries) {
   for (const implementation of ['common', ...entry.implementations]) {
     test(`CLI/web parity: ${entry.id}/${implementation}`, async ({ page }) => {
@@ -432,6 +501,24 @@ test('desktop and mobile accessibility, keyboard navigation, and overflow', asyn
         ),
       ).toBe(true);
     }
+  }
+  // The page with guide and word results showing is scanned too.
+  for (const size of [
+    { width: 1440, height: 1000 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(size);
+    await page.goto('/commands/?q=stderr');
+    await expect(page.locator('[data-learn]:visible').first()).toBeVisible();
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+      .analyze();
+    expect(results.violations).toEqual([]);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
   }
   await page.goto('/commands/');
   await page.keyboard.press('Tab');

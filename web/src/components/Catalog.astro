@@ -1,5 +1,6 @@
 ---
 import { commands, labels } from '../lib/catalog';
+import { glossary, glossaryURL, guides, guideURL } from '../lib/guides';
 interface Props {
   tag?: string;
 }
@@ -7,6 +8,16 @@ const { tag } = Astro.props;
 const entries = (await commands()).filter(
   (e) => !tag || e.data.tags.includes(tag),
 );
+// Guides and glossary words are searched with the commands, but only on the
+// main catalog: a tag page lists commands for one tag.
+const learn = !tag;
+// A guide is also found by the glossary words that point to it, so "stderr"
+// finds the guide on the three streams even though its summary says "errors".
+const wordsFor = (id: string) =>
+  glossary.terms.filter((t) => t.guides.includes(id)).map((t) => t.term);
+const plain = (markdown: string) => markdown.replace(/`/g, '');
+const firstSentence = (markdown: string) =>
+  plain(markdown).split(/(?<=\.)\s/)[0];
 ---
 
 <div class="catalog" data-catalog>
@@ -17,7 +28,7 @@ const entries = (await commands()).filter(
         id="query"
         name="q"
         type="search"
-        placeholder="Try grep, replace, or directories…"
+        placeholder="Try grep, replace, directories, or stderr…"
         autocomplete="off"
       />
     </div>
@@ -80,8 +91,47 @@ const entries = (await commands()).filter(
       </article>
     ))}
   </div>
+  {learn && (
+    <section class="learn-results" data-learn-results hidden>
+      <h2 id="learn-heading">Guides and words</h2>
+      <ul class="learn-list" aria-labelledby="learn-heading">
+        {guides.map((g) => (
+          <li
+            data-learn="guide"
+            data-search={[
+              g.title,
+              g.subtitle,
+              g.summary,
+              ...g.tags,
+              ...wordsFor(g.id),
+            ]
+              .join(' ')
+              .toLowerCase()}
+          >
+            <a href={guideURL(g.id)}>{g.title}</a>
+            <span class="learn-kind">Guide</span>
+            <p>{g.summary}</p>
+          </li>
+        ))}
+        {glossary.terms.map((t) => (
+          <li
+            data-learn="term"
+            data-search={[t.term, plain(t.markdown)].join(' ').toLowerCase()}
+          >
+            <a href={glossaryURL(t.id)}>{t.term}</a>
+            <span class="learn-kind">Word</span>
+            <p>{firstSentence(t.markdown)}</p>
+          </li>
+        ))}
+      </ul>
+      <p id="learn-more" hidden>
+        More words match. <a href={glossaryURL()}>See the full glossary.</a>
+      </p>
+    </section>
+  )}
   <p id="no-results" class="empty-state" hidden>
-    No matching commands yet. Try a shorter query or choose all implementations.
+    No matching commands, guides or words yet. Try a shorter query or choose all
+    implementations.
   </p>
 </div>
 <script>
@@ -91,6 +141,15 @@ const entries = (await commands()).filter(
     const query = catalog.querySelector<HTMLInputElement>('#query')!;
     const impl = catalog.querySelector<HTMLSelectElement>('#implementation')!;
     const cards = [...catalog.querySelectorAll<HTMLElement>('[data-entry]')];
+    const learnSection = catalog.querySelector<HTMLElement>(
+      '[data-learn-results]',
+    );
+    const learnItems = [
+      ...catalog.querySelectorAll<HTMLElement>('[data-learn]'),
+    ];
+    const learnMore = catalog.querySelector<HTMLElement>('#learn-more');
+    // Few words are shown at a time; the glossary page has the rest.
+    const maxWords = 8;
     const apply = () => {
       const words = query.value
         .toLowerCase()
@@ -106,9 +165,35 @@ const entries = (await commands()).filter(
         card.hidden = !visible;
         if (visible) count++;
       }
+      // Guides and words are not specific to one implementation, so they
+      // appear only for a typed query with no implementation chosen.
+      let learnCount = 0;
+      let wordsShown = 0;
+      let wordsHidden = false;
+      for (const item of learnItems) {
+        let visible =
+          !!learnSection &&
+          words.length > 0 &&
+          !impl.value &&
+          words.every((w) => item.dataset.search!.includes(w));
+        if (visible && item.dataset.learn === 'term') {
+          if (wordsShown >= maxWords) {
+            visible = false;
+            wordsHidden = true;
+          } else wordsShown++;
+        }
+        item.hidden = !visible;
+        if (visible) learnCount++;
+      }
+      if (learnSection) learnSection.hidden = learnCount === 0;
+      if (learnMore) learnMore.hidden = !wordsHidden;
+      const noun = count === 1 ? 'command' : 'commands';
       catalog.querySelector('#result-count')!.textContent =
-        `${count} ${count === 1 ? 'command' : 'commands'}`;
-      catalog.querySelector<HTMLElement>('#no-results')!.hidden = count > 0;
+        learnCount > 0
+          ? `${count} ${noun}, ${learnCount} ${learnCount === 1 ? 'guide or word' : 'guides and words'}`
+          : `${count} ${noun}`;
+      catalog.querySelector<HTMLElement>('#no-results')!.hidden =
+        count > 0 || learnCount > 0;
       const url = new URL(location.href);
       if (query.value) url.searchParams.set('q', query.value);
       else url.searchParams.delete('q');

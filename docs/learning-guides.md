@@ -1,6 +1,6 @@
 # Learning guides: teaching the shell from the ground up
 
-Status: design accepted; the format, parser, export and a sample guide are implemented (see the Guides section of [content-format.md](content-format.md)), the `explain learn` and `explain glossary` commands are implemented, and so are the website's `/learn/` pages, glossary page, home-page "Start here" section and "Learn more" links on command pages. Series 1 (five guides), all nine Series 2 guides (terminal, shell and command; anatomy of a command; files and folders; text and binary files; the three streams; pipes and redirects; exit codes; PATH and the environment; permissions), all five Series 3 guides (a short history; who is who; one command, many versions; distributions; which tool do I have) and 69 glossary terms are written, and `Try it` commands are run by the tests on the host and in the Linux guest. Not yet built: guides and glossary terms in the website's search, and Series 4. This document records what to build and in what order, so each step can be reviewed before it is built. It extends [stage 4](roadmap.md) and must be finished before the public release in stage 5, because the home page will lead with it.
+Status: design accepted; the format, parser, export and a sample guide are implemented (see the Guides section of [content-format.md](content-format.md)), the `explain learn` and `explain glossary` commands are implemented, and so are the website's `/learn/` pages, glossary page, home-page "Start here" section and "Learn more" links on command pages. Series 1 (five guides), all nine Series 2 guides (terminal, shell and command; anatomy of a command; files and folders; text and binary files; the three streams; pipes and redirects; exit codes; PATH and the environment; permissions), all five Series 3 guides (a short history; who is who; one command, many versions; distributions; which tool do I have) and 69 glossary terms are written, and `Try it` commands are run by the tests on the host and in the Linux guest. The website's search box also finds guides and glossary words. Not yet built: Series 4. This document records what to build and in what order, so each step can be reviewed before it is built. It extends [stage 4](roadmap.md) and must be finished before the public release in stage 5, because the home page will lead with it.
 
 ## Why this exists
 
@@ -196,7 +196,7 @@ Reading behaviour:
 - **`/learn/<id>/`.** The guide, a table of contents, series navigation with previous and next, related command links, and links from glossary words to their definitions. Diagrams and tables work at mobile widths.
 - **`/learn/glossary/`.** All terms with stable anchors.
 - **Command pages.** A "Learn more" box when the page lists related guides.
-- **Search.** The existing search includes guides and glossary terms.
+- **Search.** The existing search includes guides and glossary terms. On the website, the command search box lists matching guides and words under the commands once a query is typed: a guide is found by its own text and by the glossary words that link to it, only a few words are listed with a link to the full glossary, and the results are hidden when an implementation is chosen, because guides do not belong to one.
 
 ## Verification
 
