@@ -27,6 +27,9 @@ func TestMain(m *testing.M) {
 			fmt.Println("gzip 1.13\nCopyright (C) 2023 Free Software Foundation, Inc.")
 		case "gnu-coreutils":
 			fmt.Println("sort (GNU coreutils) 9.11")
+		case "gnu-dd":
+			// GNU dd leaves out the word GNU.
+			fmt.Println("dd (coreutils) 9.11")
 		case "busybox":
 			fmt.Println("grep: unrecognized option --version\nBusyBox v1.37.0 multi-call binary")
 		case "gawk":
@@ -86,7 +89,7 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		t.Fatal(err)
 	}
 	dir := t.TempDir()
-	for _, name := range []string{"sort", "gzip", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "unlisted-tool"} {
+	for _, name := range []string{"sort", "gzip", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk", "unlisted-tool"} {
 		if err = os.Symlink(executable, filepath.Join(dir, name)); err != nil {
 			t.Fatal(err)
 		}
@@ -111,7 +114,7 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		}
 	}
 	// Each command added for the file-path batch is probed like the other coreutils.
-	for _, command := range []string{"touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate"} {
+	for _, command := range []string{"touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk"} {
 		for _, tt := range []struct{ mode, impl string }{{"apple-version", "apple"}, {"gnu-coreutils", "gnu"}} {
 			t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", tt.mode)
 			s, err := d.Select(context.Background(), Request{Name: command, Command: command})
@@ -119,6 +122,10 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 				t.Fatalf("%s %s: %+v %v", command, tt.mode, s, err)
 			}
 		}
+	}
+	t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", "gnu-dd")
+	if s, err := d.Select(context.Background(), Request{Name: "dd", Command: "dd"}); err != nil || s.Implementation != "gnu" || s.Confidence != "detected" || s.Version != "9.11" {
+		t.Fatalf("GNU dd banner: %+v %v", s, err)
 	}
 	// Commands outside the probe list are never executed, even with a GNU-looking banner.
 	t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", "gnu-coreutils")
