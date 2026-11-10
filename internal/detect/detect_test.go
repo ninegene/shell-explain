@@ -86,7 +86,7 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		t.Fatal(err)
 	}
 	dir := t.TempDir()
-	for _, name := range []string{"sort", "gzip", "unlisted-tool"} {
+	for _, name := range []string{"sort", "gzip", "touch", "ln", "du", "basename", "dirname", "tee", "unlisted-tool"} {
 		if err = os.Symlink(executable, filepath.Join(dir, name)); err != nil {
 			t.Fatal(err)
 		}
@@ -108,6 +108,16 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 		s, err := d.Select(context.Background(), Request{Name: "gzip", Command: "gzip"})
 		if err != nil || s.Implementation != tt.impl || s.Confidence != "detected" || s.Version != tt.version {
 			t.Fatalf("%s: %+v %v", tt.mode, s, err)
+		}
+	}
+	// Each command added for the file-path batch is probed like the other coreutils.
+	for _, command := range []string{"touch", "ln", "du", "basename", "dirname", "tee"} {
+		for _, tt := range []struct{ mode, impl string }{{"apple-version", "apple"}, {"gnu-coreutils", "gnu"}} {
+			t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", tt.mode)
+			s, err := d.Select(context.Background(), Request{Name: command, Command: command})
+			if err != nil || s.Implementation != tt.impl || s.Confidence != "detected" {
+				t.Fatalf("%s %s: %+v %v", command, tt.mode, s, err)
+			}
 		}
 	}
 	// Commands outside the probe list are never executed, even with a GNU-looking banner.

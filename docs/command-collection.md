@@ -32,7 +32,7 @@ Still open: detection probes only the commands in `detect.probed` (grep, sed, fi
 
 ## Completed-page evidence
 
-Reviewed and executed on 2026-11-08 (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
+Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on 2026-11-09) (macOS Homebrew coreutils 9.11 was exercised through its `g`-prefixed names). Every authored example has a recorded expected result in `internal/examplecheck` (a test enforces this), and the same fixture and expectations run in both runners below. Evidence covers the listed builds, not every version or BusyBox configuration.
 
 | Page | Examples | Apple/macOS 26.6.2 | GNU (Homebrew) | BusyBox 1.37.0 / GNU (Alpine 3.24.3, QEMU) | Bash |
 | --- | --- | --- | --- | --- | --- |
@@ -59,6 +59,12 @@ Reviewed and executed on 2026-11-08 (macOS Homebrew coreutils 9.11 was exercised
 | `stat` | 2 common; 3 GNU, 3 Apple, 2 BusyBox | system `/usr/bin/stat`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `date` | 5 common; 2 GNU, 2 Apple, 1 BusyBox | system `/bin/date`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `awk` | 8 common; 2 GNU, 1 BusyBox | system `/usr/bin/awk` (awk version 20200816), executed | gawk 5.4.0, executed (with Homebrew gawk first on PATH, because a version-manager wrapper script is never probed) | BusyBox 1.37.0, gawk 5.3.2 and mawk 1.3.4, executed | n/a |
+| `touch` | 6 common, 1 GNU | system `/usr/bin/touch`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `ln` | 7 common, 1 GNU | system `/bin/ln`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `du` | 6 common, 1 GNU (sizes checked by shape only) | system `/usr/bin/du`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `basename` | 4 common, 1 GNU | system `/usr/bin/basename`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `dirname` | 5 common, 1 GNU | system `/usr/bin/dirname`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
+| `tee` | 5 common, 1 GNU | system `/usr/bin/tee`, executed | coreutils 9.11, executed | BusyBox 1.37.0 and coreutils 9.11, executed | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -82,7 +88,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `b2sum`
 - [ ] `base32`
 - [ ] `base64`
-- [ ] `basename`
+- [x] `basename` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [ ] `basenc`
 - [x] `cat` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `chcon`
@@ -101,8 +107,8 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `df`
 - [ ] `dir`
 - [ ] `dircolors`
-- [ ] `dirname`
-- [ ] `du`
+- [x] `dirname` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
+- [x] `du` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [ ] `echo`
 - [ ] `env`
 - [ ] `expand`
@@ -120,7 +126,7 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `join`
 - [ ] `kill`
 - [ ] `link`
-- [ ] `ln`
+- [x] `ln` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [ ] `logname`
 - [x] `ls` (stage 4 batch 2b, 2026-11-08; see completed-page evidence)
 - [ ] `md5sum`
@@ -166,10 +172,10 @@ Expected output is compared exactly, except directory-traversal order, which is 
 - [ ] `sync`
 - [ ] `tac`
 - [x] `tail` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
-- [ ] `tee`
+- [x] `tee` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [ ] `test`
 - [ ] `timeout`
-- [ ] `touch`
+- [x] `touch` (stage 4 batch 3a, 2026-11-09; see completed-page evidence)
 - [x] `tr` (stage 4 batch 2a, 2026-11-08; see completed-page evidence)
 - [ ] `true`
 - [ ] `truncate`
