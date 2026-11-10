@@ -21,7 +21,7 @@ import (
 // identify an implementation. Add a command only after checking that GNU,
 // BSD/Apple and BusyBox builds reject or answer the flag without side effects
 // and without waiting for input; do not probe commands outside this list.
-var probed = []string{"grep", "sed", "find", "cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "ls", "mkdir", "cp", "mv", "rm", "chmod", "xargs", "gzip", "tar", "stat", "date", "awk", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk", "groups", "logname", "tty", "users", "who", "uptime", "hostid", "pinky", "chown", "chgrp", "shred", "dir", "vdir", "dircolors", "mknod", "echo", "printf", "pwd", "true", "false", "test", "kill", "arch", "numfmt", "ptx", "stdbuf", "stty", "chroot", "chcon", "runcon", "coreutils", "diff", "cmp", "diff3", "sdiff", "patch", "zcat", "zgrep", "zless", "zmore", "zcmp", "zdiff", "zforce", "znew", "uncompress", "gzexe"}
+var probed = []string{"grep", "sed", "find", "cat", "head", "tail", "wc", "sort", "uniq", "cut", "tr", "ls", "mkdir", "cp", "mv", "rm", "chmod", "xargs", "gzip", "tar", "stat", "date", "awk", "touch", "ln", "du", "basename", "dirname", "tee", "rmdir", "mktemp", "readlink", "realpath", "seq", "paste", "comm", "join", "nl", "fold", "env", "printenv", "id", "whoami", "uname", "hostname", "df", "yes", "sleep", "expand", "unexpand", "md5sum", "sha1sum", "sha224sum", "sha256sum", "sha384sum", "sha512sum", "cksum", "base64", "b2sum", "base32", "basenc", "tac", "shuf", "od", "split", "csplit", "fmt", "factor", "expr", "nproc", "timeout", "truncate", "dd", "install", "link", "unlink", "mkfifo", "nohup", "nice", "sync", "sum", "tsort", "pr", "pathchk", "groups", "logname", "tty", "users", "who", "uptime", "hostid", "pinky", "chown", "chgrp", "shred", "dir", "vdir", "dircolors", "mknod", "echo", "printf", "pwd", "true", "false", "test", "kill", "arch", "numfmt", "ptx", "stdbuf", "stty", "chroot", "chcon", "runcon", "coreutils", "diff", "cmp", "diff3", "sdiff", "patch", "zcat", "ps", "pgrep", "pkill", "top", "free", "zgrep", "zless", "zmore", "zcmp", "zdiff", "zforce", "znew", "uncompress", "gzexe"}
 
 // appleSystemDirs hold macOS's own executables; coreutils such as cat live in /bin and the
 // checksum tools such as sha256sum in /sbin.
@@ -146,6 +146,9 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 				// "dd (coreutils) 9.11" without the word GNU, GNU patch prints "GNU patch 2.8", GNU zcat prints "zcat (gzip) 1.14",
 				// and gawk prints "GNU Awk 5.3.2, API 4.0, ...".
 				s.Implementation = "gnu"
+			case strings.Contains(first, "procps-ng"):
+				// procps-ng tools print "ps from procps-ng 4.0.5".
+				s.Implementation = "procps"
 			case strings.HasPrefix(first, "mawk "):
 				// mawk 1.3.4 prints "mawk 1.3.4 20260302".
 				s.Implementation = "mawk"

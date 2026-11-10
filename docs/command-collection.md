@@ -24,7 +24,7 @@ An unchecked command needs an original or expanded page, applicable implementati
 
 Done in the stage 4 batch 1 schema change, with Go, CLI, detection, and web tests:
 
-- Implementations come from one registry (`catalog.Implementations`): gnu, apple, busybox, mawk, bash, zsh, and upstream. The `mawk` row exists because the default awk on Debian-based Linux is mawk, not GNU awk; gawk is covered by `gnu` and macOS awk by `apple`. Git, curl, jq, and similar tools use `upstream` instead of a mislabeled GNU/BusyBox variant.
+- Implementations come from one registry (`catalog.Implementations`): gnu, apple, busybox, mawk, procps, bash, zsh, and upstream. The `procps` row exists because the process tools of most Linux systems (ps, pgrep, pkill, top, free) come from procps-ng, which is neither GNU coreutils nor BusyBox. The `mawk` row exists because the default awk on Debian-based Linux is mawk, not GNU awk; gawk is covered by `gnu` and macOS awk by `apple`. Git, curl, jq, and similar tools use `upstream` instead of a mislabeled GNU/BusyBox variant.
 - Symbolic lookup names such as `[` are aliases of a safe canonical ID (`test`), so filenames, web routes, and JSON IDs keep the lowercase-letter rule.
 - Shell-only entries and single-implementation `upstream` entries are selected without PATH probing.
 
@@ -166,6 +166,12 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `gzexe` | 2 common | system `/usr/bin/gzexe`, executed | GNU gzip scripts, executed in the Linux guest only (the probe does not run scripts, so the host cannot select them) | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `znew` | 2 common, reviewed only (needs `compress`) | system `/usr/bin/znew`, not executed | not executed | no BusyBox applet (checked with `busybox --list`) | n/a |
 | `uncompress` | 2 common, reviewed only (needs `compress`) | system `/usr/bin/uncompress`, not executed | not executed | no BusyBox applet (checked with `busybox --list`) | n/a |
+| `ps` | 4 common, 1 Apple, 1 procps | system `/bin/ps`, executed | procps-ng 4.0.6 in the Linux guest (`procps` view) | BusyBox 1.37.0, executed | n/a |
+| `pgrep` | 3 common, 1 Apple, 1 procps | system `/usr/bin/pgrep`, executed | procps-ng 4.0.6 in the guest | BusyBox 1.37.0, executed | n/a |
+| `pkill` | 3 common | system `/usr/bin/pkill`, executed | procps-ng 4.0.6 in the guest | BusyBox 1.37.0, executed | n/a |
+| `free` | 3 common | not shipped by macOS | procps-ng 4.0.6 in the guest | BusyBox 1.37.0, executed | n/a |
+| `top` | 1 Apple, 1 procps; the interactive example is reviewed only | system `/usr/bin/top`, executed in batch mode | procps-ng 4.0.6 in the guest | not run (reviewed only) | n/a |
+| `killall` | 4 common, reviewed only (a name such as `sleep` would signal every process of that name) | system `/usr/bin/killall`, not executed | not covered (psmisc is another program) | not executed | n/a |
 | `cd` | 5 common, 2 Bash | n/a | n/a | n/a | Bash 5.2.37, executed on macOS; zsh/dash not covered |
 
 Expected output is compared exactly, except directory-traversal order, which is compared as a set of lines, and column padding (`wc`, `uniq -c`, `cat -n`), which is compared with blanks collapsed. Examples that never end are marked reviewed only. Current-time examples (`date`) check only the shape of the output, and `stat` has no portable report format, so its per-implementation examples check the chosen fields. `cd` examples check success only, since the resulting directory is a temporary path. Checks: Go tests for the macOS/Homebrew rows and Bash (`just test`), `python3 -B scripts/linux-smoke.py` for the Linux rows, then `just check` and `just web-test`. Upstream manuals are listed in each page's references.
@@ -384,7 +390,7 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `docker`
 - [ ] `docker-compose`
 - [x] `fd` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
-- [ ] `free`
+- [x] `free` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [ ] `fzf`
 - [ ] `gh`
 - [x] `git` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
@@ -393,7 +399,7 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [x] `gzcat` (stage 4 batch 3k, 2026-11-10; an alias of the `zcat` page)
 - [x] `jq` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `just`
-- [ ] `killall`
+- [x] `killall` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [ ] `lefthook`
 - [ ] `limactl`
 - [ ] `lsof`
@@ -402,10 +408,10 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `node`
 - [ ] `npm`
 - [ ] `npx`
-- [ ] `pgrep`
-- [ ] `pkill`
+- [x] `pgrep` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
+- [x] `pkill` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [ ] `prettier`
-- [ ] `ps`
+- [x] `ps` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [ ] `pulumi`
 - [ ] `python3`
 - [x] `rg` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
@@ -421,7 +427,7 @@ Keep distinct commands such as `pkill`, `killall`, `zip`, `unzip`, `ssh-agent`, 
 - [ ] `ssh-copy-id`
 - [ ] `ssh-keygen`
 - [ ] `starship`
-- [ ] `top`
+- [x] `top` (stage 4 batch 3m, 2026-11-10; see completed-page evidence)
 - [x] `tree` (stage 4 batch 3l, 2026-11-10; see the upstream tools table in the completed-page evidence)
 - [ ] `unzip`
 - [ ] `uv`

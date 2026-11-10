@@ -47,7 +47,7 @@ func check() error {
 	if err != nil {
 		return err
 	}
-	for _, impl := range []string{"busybox", "gnu", "mawk"} {
+	for _, impl := range []string{"busybox", "gnu", "mawk", "procps"} {
 		tools, err := os.MkdirTemp("", "tools-")
 		if err != nil {
 			return err
@@ -91,6 +91,11 @@ func check() error {
 				continue
 			}
 			data, err := run("/explain", []string{name, "--format=json"}, "/", tools)
+			if err != nil && impl == "gnu" && strings.Contains(string(data), "has no procps documentation") {
+				// Alpine's procps-ng package provides this command, not GNU coreutils.
+				fmt.Printf("Linux gnu: %s in the guest is procps-ng, skipped\n", name)
+				continue
+			}
 			if err != nil {
 				return fmt.Errorf("%s/%s CLI: %w %s", impl, name, err, data)
 			}
