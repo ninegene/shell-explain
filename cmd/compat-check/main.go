@@ -26,10 +26,20 @@ func main() {
 	}
 	fmt.Println("LINUX_SMOKE_PASS")
 }
+
 // unidentifiable lists GNU commands that the probe cannot identify, with the reason.
 var unidentifiable = map[string]string{
-	"test": "GNU test prints no version banner, because a lone argument is a string test",
-	"zcat": "GNU zcat is a shell script, and scripts are never executed by the probe",
+	"test":       "GNU test prints no version banner, because a lone argument is a string test",
+	"zcat":       "GNU zcat is a shell script, and scripts are never executed by the probe",
+	"zgrep":      "GNU zgrep is a shell script, and scripts are never executed by the probe",
+	"zless":      "GNU zless is a shell script, and scripts are never executed by the probe",
+	"zmore":      "GNU zmore is a shell script, and scripts are never executed by the probe",
+	"zcmp":       "GNU zcmp is a shell script, and scripts are never executed by the probe",
+	"zdiff":      "GNU zdiff is a shell script, and scripts are never executed by the probe",
+	"zforce":     "GNU zforce is a shell script, and scripts are never executed by the probe",
+	"znew":       "GNU znew is a shell script, and scripts are never executed by the probe",
+	"uncompress": "GNU uncompress is a shell script, and scripts are never executed by the probe",
+	"gzexe":      "GNU gzexe is a shell script, and scripts are never executed by the probe",
 }
 
 func check() error {
