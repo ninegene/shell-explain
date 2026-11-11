@@ -6,16 +6,16 @@ summary: Install your public key on a server so you can log in with the key.
 aliases: [sshcopyid]
 tags: [ssh, keys, remote]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-11
 references:
-  - https://man.openbsd.org/ssh-copy-id
+  - https://github.com/openssh/openssh-portable/blob/master/contrib/ssh-copy-id.1
 ---
 ## Common
 ### Overview
 `ssh-copy-id` adds your public key to the file `~/.ssh/authorized_keys` of an account on another computer. After that, `ssh` can log in to that account with the key and no password. It logs in once with the password to do this, so the server must accept passwords for the first time. It is a script around `ssh`. This page also answers for `sshcopyid`, a common misspelling; the real command has hyphens.
 
 ### Background
-`ssh-copy-id` is a script that comes with OpenSSH on most systems, and its manual is on man.openbsd.org. The tool tested here is the one that macOS ships. Its use connects to a host, so only its help text could be run in the checks.
+`ssh-copy-id` is a script that comes with OpenSSH on most systems, and its manual is included in the portable OpenSSH source. The tool tested here is the one that macOS ships. Its use connects to a host, so only its help text could be run in the checks.
 
 ### Examples
 Print the usage text; the first word is `Usage:`:
