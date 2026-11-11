@@ -115,4 +115,4 @@ The `id` matches the filename. `series` is one of the registered series in `cata
 
 ## Content ownership
 
-Write original examples and explanations. Link upstream manuals for detailed authority. Borrowing project ideas does not permit copying their text. If reuse is approved, preserve provenance, attribution, licensing, and modification notices as required. Choose code and content licenses before importing a corpus or publishing reusable releases.
+Write original examples and explanations. Link upstream manuals for detailed authority. Borrowing project ideas does not permit copying their text. If reuse is approved, preserve provenance, attribution, licensing, and modification notices as required. The project licenses original prose under CC BY 4.0 and shell examples under MIT; check compatibility and attribution before importing material or publishing releases.

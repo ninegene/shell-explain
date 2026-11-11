@@ -14,7 +14,7 @@
 | Platform support | Initial macOS/Linux ARM64/AMD64 target matrix proposed |
 | Detection | Per-command implementation/version evidence plus explicit overrides |
 | Distribution | Release binaries, curl installer, Homebrew tap, mise GitHub backend |
-| Licensing | Choose and add code/content licenses in stage 5, before public release |
+| Licensing | MIT for software and shell examples; CC BY 4.0 for original explanatory content |
 | Current status | Stages 1–4 implemented (194 command pages, checklist and exit review complete); all planned beginner guides are written; no public release/deployment |
 
 ## Implementation evidence
@@ -25,7 +25,7 @@ Run the commands in [development and verification](development.md) to reproduce 
 
 ## Stage 1: validate the shared format
 
-Implemented the minimal Markdown schema using original content. Provenance and reuse constraints remain documented, and final code/content license selection stays in stage 5. The initial entries for grep, sed, find, and cd expose implementation differences and parent-shell resolution limitations.
+Implemented the minimal Markdown schema using original content. Provenance and reuse constraints remain documented. The initial entries for grep, sed, find, and cd expose implementation differences and parent-shell resolution limitations.
 
 The normalized Go export supplies both CLI JSON and Astro pages. Parity tests verify selected sections, code fidelity, HTML, references, revision, and variant URLs before corpus expansion. See the content-format and development documents for the implemented contract.
 
@@ -53,13 +53,13 @@ Stage 4 is complete when every required command in the checklist has reviewed co
 
 ### Proposed addition to stage 4: learning guides
 
-The command pages assume readers already know what a terminal, shell, process or pipe is, and why one command has several versions. [Learning guides](learning-guides.md) propose a beginner series (operating systems, the terminal and shell, input and output, and the history behind GNU, BSD, macOS, Linux and BusyBox) with diagrams, tables and runnable examples, shown on the home page and through `explain learn` in the CLI. It is a design awaiting review; nothing is implemented, and it must be settled before the stage 5 public release.
+The command pages assume readers already know what a terminal, shell, process or pipe is, and why one command has several versions. [Learning guides](learning-guides.md) propose a beginner series (operating systems, the terminal and shell, input and output, and the history behind GNU, BSD, macOS, Linux and BusyBox) with diagrams, tables and runnable examples, shown on the home page and through `explain learn` in the CLI. The planned guides are now implemented.
 
 ## Stage 5: license, open contributions, distribute, and publish
 
 Begin only after stage 4's command collection and exit review are complete. Keep public launch as a deliberate release step:
 
-1. Select an open-source code license and an appropriate content/documentation license. Document which paths each covers, add license texts and attribution notices, and confirm imported material is compatible. Do not assume code and explanation text need the same license.
+1. License software and shell examples under MIT and original explanatory content under CC BY 4.0. Confirm third-party material and dependencies are compatible and include their required notices in releases.
 2. Finalize CONTRIBUTING.md with working setup/validation commands, new-command and new-example instructions, implementation/version coverage requirements, and the accepted contribution licensing terms. Prepare issue/PR templates, maintainer review expectations, and a small set of suitable starter issues. Verify a new contributor can follow the process.
 3. Review the complete repository history, release artifacts, links, and configuration for secrets, personal information, private dependencies, and material that cannot be redistributed. Resolve findings before opening access.
 4. Change the existing GitHub repository from private to public after the publication review and owner authorization. Enable the intended issue/PR contribution channels and update the README to accurately describe public status and licensing.
