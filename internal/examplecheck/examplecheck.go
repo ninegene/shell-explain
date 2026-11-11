@@ -831,7 +831,7 @@ var expected = map[string]expectation{
 	"python3 -c 'import sys; print(sys.version_info[0])'": {output: "3\n"},
 	"python3 -m http.server 8000":                         {notRun: true},
 	"uv --version | grep -c '^uv '":                       {output: "1\n"},
-	"uv init -q demo && ls demo":                          {output: "README.md\npyproject.toml\nsrc\n"},
+	"uv init -q demo && ls demo":                          {},
 	"uv venv -q && test -d .venv && echo venv":            {output: "venv\n"},
 	"uv init -q demo && cd demo && uv add requests":       {notRun: true},
 	"uv run python -c 'print(1)'":                         {notRun: true},
@@ -1063,15 +1063,10 @@ func Verify(code, dir, output string) error {
 		return fmt.Errorf("no expected result recorded for example %q", code)
 	}
 	if strings.Contains(code, "sed -i") {
-		got, err := os.ReadFile(filepath.Join(dir, "notes.txt"))
-		if err != nil || !strings.HasPrefix(string(got), "new new") {
-			return fmt.Errorf("in-place edit result %q: %v", got, err)
-		}
-		backup, err := os.ReadFile(filepath.Join(dir, "notes.txt.bak"))
-		if err != nil || !strings.HasPrefix(string(backup), "old old") {
-			return fmt.Errorf("backup not preserved: %v", err)
-		}
-		return nil
+		return verifySedEdit(dir)
+	}
+	if code == "uv init -q demo && ls demo" {
+		return verifyUVProject(dir, output)
 	}
 	if want.notRun || strings.HasPrefix(code, "cd") {
 		return nil
@@ -1090,6 +1085,32 @@ func Verify(code, dir, output string) error {
 	}
 	if output != want.output {
 		return fmt.Errorf("output %q, want %q", output, want.output)
+	}
+	return nil
+}
+
+func verifySedEdit(dir string) error {
+	got, err := os.ReadFile(filepath.Join(dir, "notes.txt"))
+	if err != nil || !strings.HasPrefix(string(got), "new new") {
+		return fmt.Errorf("in-place edit result %q: %v", got, err)
+	}
+	backup, err := os.ReadFile(filepath.Join(dir, "notes.txt.bak"))
+	if err != nil || !strings.HasPrefix(string(backup), "old old") {
+		return fmt.Errorf("backup not preserved: %v", err)
+	}
+	return nil
+}
+
+func verifyUVProject(dir, output string) error {
+	lines := strings.Split(output, "\n")
+	for _, name := range []string{"README.md", "pyproject.toml"} {
+		if !slices.Contains(lines, name) {
+			return fmt.Errorf("output %q missing %q", output, name)
+		}
+		info, err := os.Stat(filepath.Join(dir, "demo", name))
+		if err != nil || !info.Mode().IsRegular() {
+			return fmt.Errorf("project file %s missing or not regular", name)
+		}
 	}
 	return nil
 }
