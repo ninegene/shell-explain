@@ -93,4 +93,4 @@ Research date: **2026-10-23**, America/Los_Angeles. Related-project descriptions
 
 The original software, including scripts, tests, and shell examples in documentation, is licensed under the [MIT License](LICENSE). Original documentation and explanatory content, including command pages, guides, and glossary prose, is licensed under [CC BY 4.0](LICENSE-CC-BY-4.0). Shell examples within that content are MIT-licensed. Attribute content to “Shell Explain contributors” and link to the source and license, and indicate changes when sharing it. These licenses apply to rights held by the contributors; third-party materials retain their own licenses and notices.
 
-The CLI embeds the content, so binary distributions must include the applicable MIT and CC BY notices. Before public release, finalize and verify the contribution process and review third-party dependencies and attribution.
+The CLI embeds the content, so binary distributions must include the applicable MIT and CC BY notices. See [third-party notices](docs/third-party-notices.md) for the dependency inventory and remaining release-artifact checks.

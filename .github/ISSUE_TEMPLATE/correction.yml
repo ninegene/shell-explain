@@ -1,0 +1,15 @@
+name: Accuracy or portability correction
+description: Report an incorrect or unclear explanation.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Page and problem
+      description: Link the page and describe what is incorrect or unclear.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Include implementation, version, reproduction, and upstream references where available.

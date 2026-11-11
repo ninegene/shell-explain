@@ -1,0 +1,14 @@
+name: Command or example request
+description: Suggest a command, implementation, or example.
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: What should the reader be able to do?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Implementation, version, references, and example
+      description: Include upstream documentation and the platforms you can test, if known.

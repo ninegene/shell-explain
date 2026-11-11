@@ -59,8 +59,8 @@ The command pages assume readers already know what a terminal, shell, process or
 
 Begin only after stage 4's command collection and exit review are complete. Keep public launch as a deliberate release step:
 
-1. License software and shell examples under MIT and original explanatory content under CC BY 4.0. Confirm third-party material and dependencies are compatible and include their required notices in releases.
-2. Finalize CONTRIBUTING.md with working setup/validation commands, new-command and new-example instructions, implementation/version coverage requirements, and the accepted contribution licensing terms. Prepare issue/PR templates, maintainer review expectations, and a small set of suitable starter issues. Verify a new contributor can follow the process.
+1. License software and shell examples under MIT and original explanatory content under CC BY 4.0. Review third-party material and dependency notices, and include applicable notices in releases; see [third-party notices](third-party-notices.md) for the inventory and remaining artifact checks.
+2. Prepare contribution guidance, issue/PR templates, review expectations, and candidate starter issues. Setup and checks passed in the existing development environment; verify them in a fresh contributor environment before opening contributions; see [contributing](../CONTRIBUTING.md).
 3. Review the complete repository history, release artifacts, links, and configuration for secrets, personal information, private dependencies, and material that cannot be redistributed. Resolve findings before opening access.
 4. Change the existing GitHub repository from private to public after the publication review and owner authorization. Enable the intended issue/PR contribution channels and update the README to accurately describe public status and licensing.
 5. Publish tested immutable binaries/checksums and clear release notes. Validate curl/manual installation, a Homebrew tap, and mise in clean environments. Resolve command-name collisions without silently replacing other programs or shell functions.

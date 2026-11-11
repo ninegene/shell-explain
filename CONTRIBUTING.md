@@ -1,18 +1,29 @@
 # Contributing
 
-The project has a local shared-content, CLI, and Astro implementation and remains private through stage 4. External contributions will open in stage 5, after the contribution process is finalized. This document is draft guidance for that process; it does not imply a public contribution channel exists today.
+The project has a local shared-content, CLI, and Astro implementation and remains private through stage 4. External contributions are planned for stage 5. This guide does not imply a public contribution channel exists today.
 
-## Planned process for new commands and examples
+## Setup and checks
 
-Before opening contributions, maintainers will replace this draft process with verified setup and validation commands and verify the contribution process. The intended workflow is:
+Install `just`, Go 1.24 or newer, Node.js 22.23.4 or newer, and npm. From the repository root, install the locked web dependencies and the browser used by the web tests:
 
-1. Search existing commands and issues to avoid duplicates. Open an issue for a new command, implementation variant, or larger change; small example corrections can go directly to a pull request once public contributions open.
-2. Fork the public repository and create a branch. Add or update the canonical Markdown entry using the shared schema; do not maintain separate web and CLI explanations.
-3. Provide original examples, explain their use cases and important options, and state the tested operating system, implementation, and version. Include upstream references and required attribution for any approved reused material.
-4. Run the documented content validation and relevant CLI/web checks. Include an explanation of changes and testing evidence in the pull request, with screenshots or terminal output when useful.
-5. Address maintainer feedback on accuracy, portability, accessibility, licensing, and shared rendering. Maintainers review and merge accepted contributions; publishing follows the release process.
+```sh
+npm ci --prefix web
+cd web && npx playwright install chromium && cd ..
+```
 
-The public launch should include issue/PR templates and starter issues for adding examples, commands, or portability corrections. No contributor should need access to private infrastructure or credentials to validate reference content locally.
+Run `just` to list commands. Run `just test` for Go and available host-tool example checks, `just check` for Go vet, formatting and Astro diagnostics, and `just web-test` for the development-server and browser checks. `just web-build` builds the static site locally; `just build` builds `bin/explain`. See [development and verification](docs/development.md) for prerequisites, skips, fixture isolation and platform limitations. Record skipped checks and untested implementations in the PR.
+
+## Contribution process
+
+Once public contributions open:
+
+1. Search existing pages and issues. Open an issue for a new command, implementation, or larger change; small corrections can go directly to a pull request.
+2. Fork the repository, clone your fork and create a branch. Make changes to the canonical Markdown in `content/en/`, not generated JSON or separate CLI/web copies. Read the [content format](docs/content-format.md) and use an existing page as a schema example.
+3. Explain the use case and options, cite upstream references, set the page's `updated` date when changing claims or examples, and record the operating system, implementation and version tested. Add a safe fixture and expected result when applicable. Follow the format's rules for examples that cannot be run automatically.
+4. Run the checks above relevant to the change. Describe the change, evidence, checks, and any skips in the pull request. Use screenshots or terminal output where helpful.
+5. Maintainers assess accuracy, portability, accessibility, license provenance, and shared CLI/web rendering. Address review feedback; maintainers merge accepted changes. Do not imply untested versions are supported.
+
+See [candidate starter issues](docs/starter-issues.md) for small contributions. Issue and PR templates are prepared for the public launch; the repository remains private until separately authorized.
 
 ## Command documentation
 
@@ -30,4 +41,4 @@ Link to upstream manuals and useful related projects. Do not copy cheat sheets o
 
 Check relative Markdown links, front matter, consistent command spelling, and GNU/Apple/BSD distinctions. Content validation includes CLI/web rendering parity, implementation-specific example checks, and accessible output. Do not execute destructive examples against a contributor's normal filesystem.
 
-Follow [development and verification](docs/development.md): run `just test`, `just check`, and `just web-test` after installing web/test-browser dependencies. The latter builds the site and checks its selected sections against CLI output. Add a temporary fixture and expected result when adding an executable example. Contribution CI and verification of the public contribution process remain stage-5 work.
+Follow [development and verification](docs/development.md): run `just test`, `just check`, and `just web-test` after installing web/test-browser dependencies. The latter builds the site and checks its selected sections against CLI output. Add a temporary fixture and expected result when adding an executable example. Contribution CI and a fresh-machine or external-contributor trial remain stage-5 work.
