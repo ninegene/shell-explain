@@ -91,4 +91,6 @@ Use `just test` for Go checks and reviewed examples, `just check` for Go vet and
 
 Research date: **2026-10-23**, America/Los_Angeles. Related-project descriptions come from published documentation, not independent trials. See [references](docs/references.md).
 
-Code and content license selection is pending and belongs to stage 5, after the stage 4 command collection. Before opening the repository and publishing the website, select and add the applicable licenses and finalize the contribution process for new commands and examples. Public visibility alone does not grant reuse permission; do not import third-party content before checking its license and attribution requirements.
+The original software, including scripts, tests, and shell examples in documentation, is licensed under the [MIT License](LICENSE). Original documentation and explanatory content, including command pages, guides, and glossary prose, is licensed under [CC BY 4.0](LICENSE-CC-BY-4.0). Shell examples within that content are MIT-licensed. Attribute content to “Shell Explain contributors” and link to the source and license, and indicate changes when sharing it. These licenses apply to rights held by the contributors; third-party materials retain their own licenses and notices.
+
+The CLI embeds the content, so binary distributions must include the applicable MIT and CC BY notices. Before public release, finalize and verify the contribution process and review third-party dependencies and attribution.

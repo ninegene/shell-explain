@@ -1,10 +1,10 @@
 # Contributing
 
-The project has a local shared-content, CLI, and Astro implementation and remains private through stage 4. External contributions will open in stage 5, after code/content licenses and the contribution process are finalized. This document is draft guidance for that process; it does not imply a public contribution channel exists today.
+The project has a local shared-content, CLI, and Astro implementation and remains private through stage 4. External contributions will open in stage 5, after the contribution process is finalized. This document is draft guidance for that process; it does not imply a public contribution channel exists today.
 
 ## Planned process for new commands and examples
 
-Before opening contributions, maintainers will replace this draft process with verified setup and validation commands and define accepted contribution licensing terms. The intended workflow is:
+Before opening contributions, maintainers will replace this draft process with verified setup and validation commands and verify the contribution process. The intended workflow is:
 
 1. Search existing commands and issues to avoid duplicates. Open an issue for a new command, implementation variant, or larger change; small example corrections can go directly to a pull request once public contributions open.
 2. Fork the public repository and create a branch. Add or update the canonical Markdown entry using the shared schema; do not maintain separate web and CLI explanations.
@@ -24,10 +24,10 @@ Describe shell behavior separately from tool options. Prefer quoted filenames/pa
 
 ## References and reuse
 
-Link to upstream manuals and useful related projects. Do not copy cheat sheets or manual passages merely because a repository is public. Record source, license, attribution, and changes for any approved imported material. The repository's own code/content licenses must be selected before accepting substantial external content contributions or publishing reusable releases.
+Link to upstream manuals and useful related projects. Do not copy cheat sheets or manual passages merely because a repository is public. Record source, license, attribution, and changes for any approved imported material. Contributions of original software and shell examples are accepted under the [MIT License](LICENSE); original explanatory content and documentation are accepted under [CC BY 4.0](LICENSE-CC-BY-4.0). Submit only material you have the right to contribute under those terms. Third-party material requires compatible permission and its own required notices.
 
 ## Review
 
 Check relative Markdown links, front matter, consistent command spelling, and GNU/Apple/BSD distinctions. Content validation includes CLI/web rendering parity, implementation-specific example checks, and accessible output. Do not execute destructive examples against a contributor's normal filesystem.
 
-Follow [development and verification](docs/development.md): run `just test`, `just check`, and `just web-test` after installing web/test-browser dependencies. The latter builds the site and checks its selected sections against CLI output. Add a temporary fixture and expected result when adding an executable example. Contribution CI and public contribution terms remain stage-5 work.
+Follow [development and verification](docs/development.md): run `just test`, `just check`, and `just web-test` after installing web/test-browser dependencies. The latter builds the site and checks its selected sections against CLI output. Add a temporary fixture and expected result when adding an executable example. Contribution CI and verification of the public contribution process remain stage-5 work.

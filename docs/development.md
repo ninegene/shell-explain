@@ -95,7 +95,7 @@ The web test command first runs a development-server regression in a temporary r
 - Version banners are evidence for implementation selection, not proof of every documented option's availability. Every page states this limitation.
 - The static site cannot inspect a visitor's installed commands. Its shareable implementation URLs make that choice explicit.
 - The binary cannot inspect aliases/functions in the parent shell. Unknown wrappers remain ambiguous; optional shell integration is deferred.
-- Code/content licenses and public contribution terms remain a stage-5 decision. All authored reference entries here are original; no third-party explanation corpus was imported.
+- The public contribution process remains to be verified in stage 5. All authored reference entries here are original; no third-party explanation corpus was imported.
 
 ## Optional real Linux smoke check
 

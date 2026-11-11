@@ -48,10 +48,10 @@ Follow [docs/content-format.md](docs/content-format.md) when adding or updating 
 
 ## Publication and repository rules
 
-- Keep the repository private through stage 4. Stage 5 includes choosing code/content licenses, finalizing contribution guidance, changing visibility to public, and publishing the static site. Do not change visibility or deploy merely because these actions appear in the roadmap.
+- Keep the repository private through stage 4. Stage 5 includes finalizing contribution guidance, changing visibility to public, and publishing the static site. Do not change visibility or deploy merely because these actions appear in the roadmap.
 - Never add secrets, personal data, cloud identifiers, machine names, or private project names/details.
 - Keep sample paths and values generic; use example.org and synthetic fixtures.
-- Check licenses and attribution before copying content/code. License choices remain pending.
+- Check licenses and attribution before copying content/code. Original software and shell examples use MIT; original explanatory content uses CC BY 4.0. See README.md.
 - Do not alter bootstrap/reference repositories as a side effect.
 - Never commit without an explicit user request. When authorized, use Conventional Commits.
 - Follow workspace confirmation requirements for destructive changes, cloud writes, and SSH. Documentation and repository creation do not authorize hosting or DNS changes.

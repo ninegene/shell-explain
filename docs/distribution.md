@@ -2,7 +2,7 @@
 
 The CLI can be built locally with just build and the Astro site can be previewed locally. No public binaries, installers, package definitions, releases, or hosting exist yet. Distribution commands in this document are proposed future interfaces.
 
-The repository stays private through stages 1–4. Stage 5 includes selecting code/content licenses, preparing external contribution guidance, reviewing publication safety, making the repository public, and publishing the site and release artifacts. Private development builds do not constitute a public release. See the [roadmap](roadmap.md) for the sequence and authorization boundaries.
+The repository stays private through stages 1–4. Stage 5 includes preparing external contribution guidance, reviewing publication safety, making the repository public, and publishing the site and release artifacts. Private development builds do not constitute a public release. Binary distributions must include the MIT and CC BY 4.0 license texts and applicable attribution for embedded content and third-party dependencies. See the [roadmap](roadmap.md) for the sequence and authorization boundaries.
 
 ## Release artifacts
 
