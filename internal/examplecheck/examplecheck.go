@@ -781,12 +781,12 @@ var expected = map[string]expectation{
 	"ps -e -o pid= | grep -c \"^ *$$\\$\"":                            {output: "1\n"},
 	"sleep 7$$ & p=$!; ps -e -o pid= | grep -c \"^ *$p\\$\"; kill $p": {output: "1\n"},
 	"ps -p $$ -o comm= | grep -c .":                                   {output: "1\n"},
-	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -f \"sleep 7$$\" | grep -c \"^$p\\$\"\n\tstatus=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$status\"\n)": {output: "1\n"},
+	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -f \"sleep 7$$\" | grep -c \"^$p\\$\"\n\tlookup_status=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$lookup_status\"\n)": {output: "1\n"},
 	"pgrep -f \"no-such-process-$$\" || echo none": {output: "none\n"},
-	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -f \"sleep 7$$\" | grep -c .\n\tstatus=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$status\"\n)":        {output: "1\n"},
-	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -l -f \"sleep 7$$\" | cut -d' ' -f2\n\tstatus=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$status\"\n)": {output: "sleep\n"},
-	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -c -f \"sleep 7$$\"\n\tstatus=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$status\"\n)":                 {output: "1\n"},
-	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpkill -f \"sleep 7$$\" || exit 1\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\techo 'done'\n) 2>/dev/null":                                                {output: "done\n"},
+	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -f \"sleep 7$$\" | grep -c .\n\tlookup_status=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$lookup_status\"\n)":        {output: "1\n"},
+	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -l -f \"sleep 7$$\" | cut -d' ' -f2\n\tlookup_status=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$lookup_status\"\n)": {output: "sleep\n"},
+	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -c -f \"sleep 7$$\"\n\tlookup_status=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$lookup_status\"\n)":                 {output: "1\n"},
+	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpkill -f \"sleep 7$$\" || exit 1\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\techo 'done'\n) 2>/dev/null":                                                              {output: "done\n"},
 	"pkill -f \"no-such-process-$$\" || echo none": {output: "none\n"},
 	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpkill -f \"sleep 7$$\" || exit 1\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\tpgrep -f \"sleep 7$$\" || echo gone\n) 2>/dev/null": {output: "gone\n"},
 	"killall sleep":                                 {notRun: true},
@@ -1075,6 +1075,10 @@ func Verify(code, dir, output string) error {
 	if want.notRun || strings.HasPrefix(code, "cd") {
 		return nil
 	}
+	return verifyExpectedOutput(want, output)
+}
+
+func verifyExpectedOutput(want expectation, output string) error {
 	if want.spaces {
 		if collapse(output) != collapse(want.output) {
 			return fmt.Errorf("output %q, want %q after collapsing blanks", output, want.output)

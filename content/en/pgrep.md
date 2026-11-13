@@ -34,11 +34,11 @@ Find a background process by a word in its command line with `-f`; the number ma
 		sleep 1
 	done
 	pgrep -f "sleep 7$$" | grep -c "^$p\$"
-	status=$?
+	lookup_status=$?
 	kill "$p" 2>/dev/null || :
 	wait "$p" 2>/dev/null || :
 	trap - 0
-	exit "$status"
+	exit "$lookup_status"
 )
 ```
 
@@ -62,11 +62,11 @@ Count the matches by counting the lines of output:
 		sleep 1
 	done
 	pgrep -f "sleep 7$$" | grep -c .
-	status=$?
+	lookup_status=$?
 	kill "$p" 2>/dev/null || :
 	wait "$p" 2>/dev/null || :
 	trap - 0
-	exit "$status"
+	exit "$lookup_status"
 )
 ```
 
@@ -104,11 +104,11 @@ Print the name next to the number with `-l`:
 		sleep 1
 	done
 	pgrep -l -f "sleep 7$$" | cut -d' ' -f2
-	status=$?
+	lookup_status=$?
 	kill "$p" 2>/dev/null || :
 	wait "$p" 2>/dev/null || :
 	trap - 0
-	exit "$status"
+	exit "$lookup_status"
 )
 ```
 
@@ -141,11 +141,11 @@ Print only how many processes match, with `-c`:
 		sleep 1
 	done
 	pgrep -c -f "sleep 7$$"
-	status=$?
+	lookup_status=$?
 	kill "$p" 2>/dev/null || :
 	wait "$p" 2>/dev/null || :
 	trap - 0
-	exit "$status"
+	exit "$lookup_status"
 )
 ```
 
