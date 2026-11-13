@@ -6,7 +6,7 @@ summary: Send a signal to processes found by name or by their command line.
 aliases: []
 tags: [process, system]
 implementations: [apple, procps, busybox]
-updated: 2026-11-10
+updated: 2026-11-12
 references:
   - https://gitlab.com/procps-ng/procps
   - https://man.freebsd.org/cgi/man.cgi?query=pkill&sektion=1
@@ -20,10 +20,24 @@ references:
 Today the name covers pkill from procps-ng, the pkill that macOS ships and the pkill applet in BusyBox. They agree on the pattern, on `-f` and on `-s` or a signal name. The exit status is 0 when at least one process matched and 1 when none did.
 
 ### Examples
-Stop a background process by a word in its command line; the shell's own message about the stopped job is hidden:
+Stop a background process by a word in its command line. Wait up to five seconds for it to start; the trap cleans it up if the search or signal fails:
 
 ```sh
-{ sleep 7$$ & pkill -f "sleep 7$$"; wait; } 2> /dev/null; echo done
+(
+	sleep 7$$ &
+	p=$!
+	trap 'kill "$p" 2>/dev/null || :' 0
+	n=0
+	until pgrep -f "sleep 7$$" >/dev/null; do
+		n=$((n + 1))
+		[ "$n" -lt 5 ] || exit 1
+		sleep 1
+	done
+	pkill -f "sleep 7$$" || exit 1
+	wait "$p" 2>/dev/null || :
+	trap - 0
+	echo 'done'
+) 2>/dev/null
 ```
 
 Use the exit status: 1 means that no process matched:
@@ -32,10 +46,24 @@ Use the exit status: 1 means that no process matched:
 pkill -f "no-such-process-$$" || echo none
 ```
 
-Check that the process is gone afterwards:
+Start another process, stop it, and check that it is gone afterwards:
 
 ```sh
-{ sleep 7$$ & pkill -f "sleep 7$$"; wait; pgrep -f "sleep 7$$" || echo gone; } 2> /dev/null
+(
+	sleep 7$$ &
+	p=$!
+	trap 'kill "$p" 2>/dev/null || :' 0
+	n=0
+	until pgrep -f "sleep 7$$" >/dev/null; do
+		n=$((n + 1))
+		[ "$n" -lt 5 ] || exit 1
+		sleep 1
+	done
+	pkill -f "sleep 7$$" || exit 1
+	wait "$p" 2>/dev/null || :
+	trap - 0
+	pgrep -f "sleep 7$$" || echo gone
+) 2>/dev/null
 ```
 
 ### Option: -f

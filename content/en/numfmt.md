@@ -6,19 +6,19 @@ summary: Convert numbers to and from human-readable sizes such as 1.5K or 2M.
 aliases: [gnumfmt]
 tags: [numbers, text, formatting]
 implementations: [gnu]
-updated: 2026-11-10
+updated: 2026-11-12
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/numfmt-invocation.html
 ---
 ## Common
 ### Overview
-`numfmt` rewrites numbers. It turns a plain number into a readable one with a unit (1500 into 1.5k) with `--to`, or reads such a number and prints the plain value with `--from`. It reads numbers from its arguments or, one per line, from standard input, and with `--field` it changes one column of a line and leaves the rest alone.
+`numfmt` rewrites numbers. It turns a plain number into a readable one with a unit (1500 into 1.5k or 1.5K) with `--to`, or reads such a number and prints the plain value with `--from`. It reads numbers from its arguments or, one per line, from standard input, and with `--field` it changes one column of a line and leaves the rest alone.
 
 ### Background
 `numfmt` is part of GNU coreutils; the GNU manual documents it as the tool for converting numbers to and from human-readable strings. macOS does not ship it, and the BusyBox 1.37.0 build used for this page has no such applet, so this page has only a GNU view.
 
 ### Examples
-Print a number with an SI suffix, where a thousand is a `k`:
+Print a number with an SI suffix, where a thousand is shown with a `k` or `K` suffix:
 
 ```sh
 numfmt --to=si 1500
@@ -76,7 +76,7 @@ Add this text after the converted number.
 Print with a printf-style format such as `%.2f`.
 
 ### Common mistakes
-`si` and `iec` mean different things: 1K is 1000 in `si` and 1024 in `iec`, so a number can differ by a few percent. The suffix letters are lower case `k` in the output of the version tested, while the input accepts `K`; do not compare the text with another tool without checking. Output is rounded, and `--round` chooses the direction; the default rounds away from zero, so `3.14159` with two decimals prints `3.15`. A column that is not a number is an error unless you use `--invalid=ignore`.
+`si` and `iec` mean different things: 1K is 1000 in `si` and 1024 in `iec`, so a number can differ by a few percent. The suffix can be lower case `k` or upper case `K` depending on the version; do not compare the text with another tool without checking. Output is rounded, and `--round` chooses the direction; the default rounds away from zero, so `3.14159` with two decimals prints `3.15`. A column that is not a number is an error unless you use `--invalid=ignore`.
 
 ### Portability
 This page covers GNU only. On macOS and BusyBox, `awk` or `printf` can do simple conversions. The Common examples were executed on GNU coreutils 9.11 (see the development guide for the exact check).

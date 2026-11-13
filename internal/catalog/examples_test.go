@@ -7,7 +7,9 @@ import (
 	"path/filepath"
 	"runtime"
 	"slices"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/ninegene/shell-explain/content"
 	"github.com/ninegene/shell-explain/internal/detect"
@@ -55,9 +57,33 @@ func TestAuthoredExamples(t *testing.T) {
 							if examplecheck.NotRun(code) {
 								t.Skip("reviewed only: the example never ends")
 							}
+							if entry.ID == "factor" && impl == "gnu" && strings.TrimSpace(code) == "factor -h 12" {
+								ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+								help, err := exec.CommandContext(ctx, executable, "--help").Output()
+								cancel()
+								if err != nil {
+									t.Fatalf("factor --help: %v", err)
+								}
+								if !strings.Contains(string(help), "--exponents") {
+									t.Skip("installed GNU factor does not support --exponents")
+								}
+							}
 							dir := t.TempDir()
 							if err := examplecheck.Setup(dir, entry.ID); err != nil {
 								t.Fatal(err)
+							}
+							if entry.ID == "go" {
+								config := filepath.Join(dir, ".config")
+								if runtime.GOOS == "darwin" {
+									config = filepath.Join(dir, "Library", "Application Support")
+								}
+								telemetry := filepath.Join(config, "go", "telemetry")
+								if err := os.MkdirAll(telemetry, 0o700); err != nil {
+									t.Fatal(err)
+								}
+								if err := os.WriteFile(filepath.Join(telemetry, "mode"), []byte("off\n"), 0o600); err != nil {
+									t.Fatal(err)
+								}
 							}
 							toolPath := "/usr/bin:/bin"
 							toolDir := ""

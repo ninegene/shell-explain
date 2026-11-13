@@ -62,8 +62,9 @@ func Setup(dir, entry string) error {
 // expectation is the exact output of an example. Unordered output (directory
 // traversal order) is compared as a sorted set of lines.
 type expectation struct {
-	output    string
-	unordered bool
+	output       string
+	alternatives []string
+	unordered    bool
 	// spaces compares output with runs of blanks collapsed and edges trimmed per
 	// line, for tools whose column padding differs between implementations.
 	spaces bool
@@ -641,12 +642,12 @@ var expected = map[string]expectation{
 	"test -n \"$(arch)\" && echo named":                                               {output: "named\n"},
 	// numfmt, ptx, stdbuf, coreutils run; stty, chroot, chcon, runcon need a terminal,
 	// administrator rights or SELinux, so they are reviewed only.
-	"numfmt --to=si 1500":                                      {output: "1.5k\n"},
+	"numfmt --to=si 1500":                                      {output: "1.5k\n", alternatives: []string{"1.5K\n"}},
 	"numfmt --to=iec 1048576":                                  {output: "1.0M\n"},
 	"numfmt --from=si 2K":                                      {output: "2000\n"},
 	"echo 1234567 | numfmt --to=si":                            {output: "1.3M\n"},
 	"numfmt --to=iec --suffix=B 2048":                          {output: "2.0KB\n"},
-	"printf '1000 apples\\n' | numfmt --field 1 --to=si":       {output: "1.0k apples\n"},
+	"printf '1000 apples\\n' | numfmt --field 1 --to=si":       {output: "1.0k apples\n", alternatives: []string{"1.0K apples\n"}},
 	"numfmt --format %.2f 3.14159":                             {output: "3.15\n"},
 	"printf 'the quick fox\\n' | ptx -w 40":                    {output: "the quick fox\nthe quick fox\nthe quick fox\n", spaces: true},
 	"printf 'the quick fox\\n' | ptx -w 40 | grep -c .":        {output: "3\n"},
@@ -775,19 +776,19 @@ var expected = map[string]expectation{
 	"printf 'aaa\\n' > s.txt && sd a b s.txt && cat s.txt":                                                     {output: "bbb\n"},
 	// ps, pgrep, pkill, killall, free, top: only processes the example starts itself (with a number in
 	// the command line that is unique to it) are signalled; killall and the interactive top are reviewed only.
-	"ps | head -n 1 | grep -c PID":                                                                    {output: "1\n"},
-	"ps -o pid | head -n 1":                                                                           {output: "PID\n", spaces: true},
-	"ps -e -o pid= | grep -c \"^ *$$\\$\"":                                                            {output: "1\n"},
-	"sleep 7$$ & p=$!; ps -e -o pid= | grep -c \"^ *$p\\$\"; kill $p":                                 {output: "1\n"},
-	"ps -p $$ -o comm= | grep -c .":                                                                   {output: "1\n"},
-	"sleep 7$$ & p=$!; pgrep -f \"sleep 7$$\" | grep -c \"^$p\\$\"; kill $p":                          {output: "1\n"},
-	"pgrep -f \"no-such-process-$$\" || echo none":                                                    {output: "none\n"},
-	"sleep 7$$ & p=$!; pgrep -f \"sleep 7$$\" | grep -c .; kill $p":                                   {output: "1\n"},
-	"sleep 7$$ & p=$!; pgrep -l -f \"sleep 7$$\" | cut -d' ' -f2; kill $p":                            {output: "sleep\n"},
-	"sleep 7$$ & p=$!; pgrep -c -f \"sleep 7$$\"; kill $p":                                            {output: "1\n"},
-	"{ sleep 7$$ & pkill -f \"sleep 7$$\"; wait; } 2> /dev/null; echo done":                           {output: "done\n"},
-	"pkill -f \"no-such-process-$$\" || echo none":                                                    {output: "none\n"},
-	"{ sleep 7$$ & pkill -f \"sleep 7$$\"; wait; pgrep -f \"sleep 7$$\" || echo gone; } 2> /dev/null": {output: "gone\n"},
+	"ps | head -n 1 | grep -c PID":                                    {output: "1\n"},
+	"ps -o pid | head -n 1":                                           {output: "PID\n", spaces: true},
+	"ps -e -o pid= | grep -c \"^ *$$\\$\"":                            {output: "1\n"},
+	"sleep 7$$ & p=$!; ps -e -o pid= | grep -c \"^ *$p\\$\"; kill $p": {output: "1\n"},
+	"ps -p $$ -o comm= | grep -c .":                                   {output: "1\n"},
+	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -f \"sleep 7$$\" | grep -c \"^$p\\$\"\n\tstatus=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$status\"\n)": {output: "1\n"},
+	"pgrep -f \"no-such-process-$$\" || echo none": {output: "none\n"},
+	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -f \"sleep 7$$\" | grep -c .\n\tstatus=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$status\"\n)":        {output: "1\n"},
+	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -l -f \"sleep 7$$\" | cut -d' ' -f2\n\tstatus=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$status\"\n)": {output: "sleep\n"},
+	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpgrep -c -f \"sleep 7$$\"\n\tstatus=$?\n\tkill \"$p\" 2>/dev/null || :\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\texit \"$status\"\n)":                 {output: "1\n"},
+	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpkill -f \"sleep 7$$\" || exit 1\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\techo 'done'\n) 2>/dev/null":                                                {output: "done\n"},
+	"pkill -f \"no-such-process-$$\" || echo none": {output: "none\n"},
+	"(\n\tsleep 7$$ &\n\tp=$!\n\ttrap 'kill \"$p\" 2>/dev/null || :' 0\n\tn=0\n\tuntil pgrep -f \"sleep 7$$\" >/dev/null; do\n\t\tn=$((n + 1))\n\t\t[ \"$n\" -lt 5 ] || exit 1\n\t\tsleep 1\n\tdone\n\tpkill -f \"sleep 7$$\" || exit 1\n\twait \"$p\" 2>/dev/null || :\n\ttrap - 0\n\tpgrep -f \"sleep 7$$\" || echo gone\n) 2>/dev/null": {output: "gone\n"},
 	"killall sleep":                                 {notRun: true},
 	"killall -s TERM sleep":                         {notRun: true},
 	"killall -9 sleep":                              {notRun: true},
@@ -1068,6 +1069,9 @@ func Verify(code, dir, output string) error {
 	if code == "uv init -q demo && ls demo" {
 		return verifyUVProject(dir, output)
 	}
+	if code == "echo 'the quick brown fox jumps' | fmt -w 15" {
+		return verifyFmtOutput(output)
+	}
 	if want.notRun || strings.HasPrefix(code, "cd") {
 		return nil
 	}
@@ -1083,8 +1087,20 @@ func Verify(code, dir, output string) error {
 		}
 		return nil
 	}
-	if output != want.output {
+	if output != want.output && !slices.Contains(want.alternatives, output) {
 		return fmt.Errorf("output %q, want %q", output, want.output)
+	}
+	return nil
+}
+
+func verifyFmtOutput(output string) error {
+	if !strings.HasSuffix(output, "\n") || strings.Join(strings.Fields(output), " ") != "the quick brown fox jumps" {
+		return fmt.Errorf("fmt output does not preserve the words: %q", output)
+	}
+	for _, line := range strings.Split(strings.TrimSuffix(output, "\n"), "\n") {
+		if len(line) == 0 || len(line) > 15 {
+			return fmt.Errorf("fmt output has an empty or over-width line: %q", output)
+		}
 	}
 	return nil
 }

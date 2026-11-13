@@ -11,3 +11,5 @@ See [contributing](../CONTRIBUTING.md) for scope, validation, and contribution t
 ## Preparation check (2026-11-11)
 
 In the existing macOS development environment, `npm ci --prefix web`, Playwright Chromium setup, `just test`, `just check`, and `just web-test` passed; the browser suite passed 645 tests. The uv project example accepts different generated layouts while checking the common project files. Host-tool checks may skip unavailable implementations. This was not a fresh-machine or external-contributor trial.
+
+On 2026-11-12, a fresh Debian Linux ARM64 container with Go 1.27.3, Node 24.22.1 and just 1.59.0 installed the locked dependencies and Chromium. `just test` and `just check` passed; a second fresh container passed the development-server test and all 645 browser tests with `CHOKIDAR_USEPOLLING=true` for the Colima shared mount. Host-tool checks skipped unavailable implementations and GNU `factor -h`, which coreutils 9.1 does not support. This was not an independent human contributor or a public fork/PR trial.
