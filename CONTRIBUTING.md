@@ -11,7 +11,9 @@ npm ci --prefix web
 cd web && npx playwright install chromium && cd ..
 ```
 
-Run `just` to list commands. Run `just test` for Go and available host-tool example checks, `just check` for Go vet, formatting and Astro diagnostics, and `just web-test` for the development-server and browser checks. `just web-build` builds the static site locally; `just build` builds `bin/explain`. See [development and verification](docs/development.md) for prerequisites, skips, fixture isolation and platform limitations. Record skipped checks and untested implementations in the PR.
+On Linux, the browser may also need system libraries. For supported distributions, run `cd web && npx playwright install --with-deps chromium && cd ..` instead; installing system packages requires administrator privileges. See [Playwright browser setup](https://playwright.dev/docs/browsers#install-system-dependencies).
+
+Run `just` to list commands. Run `just test` for Go and available host-tool example checks, `just check` for Go vet, formatting and Astro diagnostics, and `just web-test` for the development-server and browser checks. `just web-build` builds the static site locally; `just build` builds `bin/explain`. See [development and verification](docs/development.md) for prerequisites, skips, fixture isolation and platform limitations. Record skipped checks and untested implementations in the PR. If a container or VM shared mount misses file-change events, run `CHOKIDAR_USEPOLLING=true just web-test`; polling uses more resources.
 
 ## Contribution process
 
@@ -41,4 +43,4 @@ Link to upstream manuals and useful related projects. Do not copy cheat sheets o
 
 Check relative Markdown links, front matter, consistent command spelling, and GNU/Apple/BSD distinctions. Content validation includes CLI/web rendering parity, implementation-specific example checks, and accessible output. Do not execute destructive examples against a contributor's normal filesystem.
 
-Follow [development and verification](docs/development.md): run `just test`, `just check`, and `just web-test` after installing web/test-browser dependencies. The latter builds the site and checks its selected sections against CLI output. Add a temporary fixture and expected result when adding an executable example. Contribution CI and a fresh-machine or external-contributor trial remain stage-5 work.
+Follow [development and verification](docs/development.md): run `just test`, `just check`, and `just web-test` after installing web/test-browser dependencies. The latter builds the site and checks its selected sections against CLI output. Add a temporary fixture and expected result when adding an executable example. Contribution CI and a trial by an independent contributor remain stage-5 work.

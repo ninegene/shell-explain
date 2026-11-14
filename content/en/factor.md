@@ -6,7 +6,7 @@ summary: Print the prime factors of numbers.
 aliases: [gfactor]
 tags: [numbers, math]
 implementations: [gnu, busybox]
-updated: 2026-11-10
+updated: 2026-11-12
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/factor-invocation.html
   - https://busybox.net/downloads/BusyBox.html
@@ -51,7 +51,7 @@ This page has no Apple view: macOS has no `factor`. The Common examples were exe
 
 ## GNU
 ### About GNU factor
-GNU factor is part of GNU coreutils, and this page's checks ran coreutils 9.11. It supports numbers larger than 64 bits when built with a big-number library, and has `-h` for exponents.
+GNU factor is part of GNU coreutils, and this page's checks ran coreutils 9.11. It supports numbers larger than 64 bits when built with a big-number library, and coreutils 9.11 has `-h` for exponents; older versions may not support it.
 
 ### GNU examples
 Print repeated factors as powers with `-h`:

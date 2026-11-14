@@ -7,7 +7,9 @@ import (
 	"path/filepath"
 	"runtime"
 	"slices"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/ninegene/shell-explain/content"
 	"github.com/ninegene/shell-explain/internal/detect"
@@ -55,42 +57,13 @@ func TestAuthoredExamples(t *testing.T) {
 							if examplecheck.NotRun(code) {
 								t.Skip("reviewed only: the example never ends")
 							}
+							checkFactorExample(t, entry.ID, impl, code, executable)
 							dir := t.TempDir()
 							if err := examplecheck.Setup(dir, entry.ID); err != nil {
 								t.Fatal(err)
 							}
-							toolPath := "/usr/bin:/bin"
-							toolDir := ""
-							if executable != "" {
-								tools := t.TempDir()
-								toolDir = tools
-								if err := os.Symlink(executable, filepath.Join(tools, entry.ID)); err != nil {
-									t.Fatal(err)
-								}
-								for _, companion := range examplecheck.Companions[entry.ID] {
-									var path string
-									if impl == "upstream" {
-										path, _ = exec.LookPath(companion)
-									} else {
-										path = exampleTool(detect.Detector{OS: runtime.GOOS, Path: os.Getenv("PATH")}, companion, impl)
-									}
-									if path == "" {
-										t.Skipf("%s %s is unavailable or unidentified", impl, companion)
-									}
-									if err := os.Symlink(path, filepath.Join(tools, companion)); err != nil {
-										t.Fatal(err)
-									}
-								}
-								toolPath = tools + ":" + toolPath
-								if impl == "upstream" {
-									// Wrappers such as npm need their sibling programs (node).
-									toolPath = filepath.Dir(executable) + ":" + toolPath
-									if node, err := exec.LookPath("node"); err == nil {
-										// Tools written in JavaScript (prettier) start through `env node`.
-										toolPath = filepath.Dir(node) + ":" + toolPath
-									}
-								}
-							}
+							prepareExampleTelemetry(t, dir, entry.ID)
+							toolPath, toolDir := prepareExampleTools(t, entry.ID, impl, executable)
 							script := "cd .\n" + code
 							if executable != "" && slices.Contains(entry.Implementations, "bash") {
 								// The shell would run its own builtin; a function makes the
@@ -113,6 +86,75 @@ func TestAuthoredExamples(t *testing.T) {
 			})
 		}
 	}
+}
+
+func checkFactorExample(t *testing.T, id, impl, code, executable string) {
+	t.Helper()
+	if id == "factor" && impl == "gnu" && strings.TrimSpace(code) == "factor -h 12" {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		help, err := exec.CommandContext(ctx, executable, "--help").Output()
+		cancel()
+		if err != nil {
+			t.Fatalf("factor --help: %v", err)
+		}
+		if !strings.Contains(string(help), "--exponents") {
+			t.Skip("installed GNU factor does not support --exponents")
+		}
+	}
+}
+
+func prepareExampleTelemetry(t *testing.T, dir, id string) {
+	t.Helper()
+	if id == "go" {
+		config := filepath.Join(dir, ".config")
+		if runtime.GOOS == "darwin" {
+			config = filepath.Join(dir, "Library", "Application Support")
+		}
+		telemetry := filepath.Join(config, "go", "telemetry")
+		if err := os.MkdirAll(telemetry, 0o700); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(telemetry, "mode"), []byte("off\n"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
+func prepareExampleTools(t *testing.T, id, impl, executable string) (string, string) {
+	t.Helper()
+	toolPath := "/usr/bin:/bin"
+	toolDir := ""
+	if executable != "" {
+		tools := t.TempDir()
+		toolDir = tools
+		if err := os.Symlink(executable, filepath.Join(tools, id)); err != nil {
+			t.Fatal(err)
+		}
+		for _, companion := range examplecheck.Companions[id] {
+			var path string
+			if impl == "upstream" {
+				path, _ = exec.LookPath(companion)
+			} else {
+				path = exampleTool(detect.Detector{OS: runtime.GOOS, Path: os.Getenv("PATH")}, companion, impl)
+			}
+			if path == "" {
+				t.Skipf("%s %s is unavailable or unidentified", impl, companion)
+			}
+			if err := os.Symlink(path, filepath.Join(tools, companion)); err != nil {
+				t.Fatal(err)
+			}
+		}
+		toolPath = tools + ":" + toolPath
+		if impl == "upstream" {
+			// Wrappers such as npm need their sibling programs (node).
+			toolPath = filepath.Dir(executable) + ":" + toolPath
+			if node, err := exec.LookPath("node"); err == nil {
+				// Tools written in JavaScript (prettier) start through `env node`.
+				toolPath = filepath.Dir(node) + ":" + toolPath
+			}
+		}
+	}
+	return toolPath, toolDir
 }
 
 // Identify each command independently; a prefix or the host OS is not proof of GNU.

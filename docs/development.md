@@ -79,11 +79,15 @@ cd ..
 just web-test
 ```
 
+On supported Linux distributions, use `npx playwright install --with-deps chromium` from `web/` if browser system libraries are not installed. This installs operating-system packages and requires administrator privileges; see [Playwright browser setup](https://playwright.dev/docs/browsers#install-system-dependencies).
+
 Go tests cover schema errors, unsupported/unsafe Markdown, deterministic revision, aliases/search, structured option selection, code preservation, CLI JSON parity/errors, text wrapping, and detection boundaries. Integration checks exercise macOS system tools and prefixed/unprefixed Homebrew GNU tools when available. A script wrapper test confirms it is not executed during identification. Native descendant fixtures verify process-group cleanup after timeout and parent exit, plus bounded output waiting when a child escapes into a new session.
 
 Authored code examples run only inside isolated temporary fixture directories as an explicit test operation. This is not a CLI execution feature. The tests verify concrete output for log matching/range printing and verify that sed in-place examples preserve backup content.
 
 Browser tests also cover the guides: every guide and the glossary are compared with `explain learn GUIDE --format json` and `explain glossary --format json` (section IDs, headings, exact code, and HTML), diagrams are labelled pictures without copy buttons, tables and diagrams scroll inside their block on a phone without making the page scroll sideways, the home page, `/learn/`, guide and glossary pages pass the accessibility scan at desktop and phone widths, and a guide reads without JavaScript. The page script (`web/src/scripts/copy-buttons.ts`) adds copy buttons, labels diagrams, and makes scrolling blocks keyboard-focusable; the parity tests ignore those additions.
+
+On container or VM shared mounts that miss file-change events, run `CHOKIDAR_USEPOLLING=true just web-test` to use polling for the development watcher; polling uses more resources.
 
 The web test command first runs a development-server regression in a temporary repository copy, verifying live Markdown edits, added/deleted entries, and recovery after invalid content. Run it alone with `npm --prefix web run test:dev`. It does not alter the authored collection. Browser tests then build a fresh CLI and production site, compare every command/implementation page with the CLI's selected model and exact code text, exercise search/filter/tag navigation and clipboard copying, check canonical URLs, test no-JavaScript content, run desktop/mobile axe checks, verify no horizontal page overflow, and check keyboard access. They save desktop/mobile screenshots under the system temporary directory for visual review. Automated accessibility checks do not replace broader user testing, now tracked in the roadmap’s future usability backlog. The source formatter is pinned; use npm --prefix web run format to apply it and just check to verify formatting and types.
 
@@ -95,7 +99,7 @@ The web test command first runs a development-server regression in a temporary r
 - Version banners are evidence for implementation selection, not proof of every documented option's availability. Every page states this limitation.
 - The static site cannot inspect a visitor's installed commands. Its shareable implementation URLs make that choice explicit.
 - The binary cannot inspect aliases/functions in the parent shell. Unknown wrappers remain ambiguous; optional shell integration is deferred.
-- The public contribution process is prepared; verification in a fresh contributor environment remains a stage-5 task. All authored reference entries here are original; no third-party explanation corpus was imported.
+- The contribution checks were verified in a fresh Linux container; an independent contributor trial remains stage-5 work. All authored reference entries here are original; no third-party explanation corpus was imported.
 
 ## Optional real Linux smoke check
 

@@ -8,7 +8,7 @@ tags: [files, checksum, security]
 implementations: [gnu, apple]
 updated: 2026-11-10
 references:
-  - https://www.gnu.org/software/coreutils/manual/html_node/sha384sum-invocation.html
+  - https://www.gnu.org/software/coreutils/manual/html_node/sha2-utilities.html
   - https://man.freebsd.org/cgi/man.cgi?query=sha384sum&sektion=1
 ---
 ## Common

@@ -6,7 +6,7 @@ summary: Find processes by name or by their command line and print their numbers
 aliases: []
 tags: [process, system]
 implementations: [apple, procps, busybox]
-updated: 2026-11-10
+updated: 2026-11-12
 references:
   - https://gitlab.com/procps-ng/procps
   - https://man.freebsd.org/cgi/man.cgi?query=pgrep&sektion=1
@@ -20,10 +20,26 @@ references:
 Today the name covers pgrep from procps-ng, the pgrep that macOS ships and the pgrep applet in BusyBox. They agree on printing process numbers, on `-f` and on the exit statuses. `pkill` is the same search followed by a signal.
 
 ### Examples
-Find a background process by a word in its command line with `-f`; the number matches `$!`:
+Find a background process by a word in its command line with `-f`; the number matches `$!`. The bounded wait lets it start, and the trap cleans it up on failure:
 
 ```sh
-sleep 7$$ & p=$!; pgrep -f "sleep 7$$" | grep -c "^$p\$"; kill $p
+(
+	sleep 7$$ &
+	p=$!
+	trap 'kill "$p" 2>/dev/null || :' 0
+	n=0
+	until pgrep -f "sleep 7$$" >/dev/null; do
+		n=$((n + 1))
+		[ "$n" -lt 5 ] || exit 1
+		sleep 1
+	done
+	pgrep -f "sleep 7$$" | grep -c "^$p\$"
+	lookup_status=$?
+	kill "$p" 2>/dev/null || :
+	wait "$p" 2>/dev/null || :
+	trap - 0
+	exit "$lookup_status"
+)
 ```
 
 Use the exit status: 1 means that nothing matched, and nothing is printed:
@@ -35,7 +51,23 @@ pgrep -f "no-such-process-$$" || echo none
 Count the matches by counting the lines of output:
 
 ```sh
-sleep 7$$ & p=$!; pgrep -f "sleep 7$$" | grep -c .; kill $p
+(
+	sleep 7$$ &
+	p=$!
+	trap 'kill "$p" 2>/dev/null || :' 0
+	n=0
+	until pgrep -f "sleep 7$$" >/dev/null; do
+		n=$((n + 1))
+		[ "$n" -lt 5 ] || exit 1
+		sleep 1
+	done
+	pgrep -f "sleep 7$$" | grep -c .
+	lookup_status=$?
+	kill "$p" 2>/dev/null || :
+	wait "$p" 2>/dev/null || :
+	trap - 0
+	exit "$lookup_status"
+)
 ```
 
 ### Option: -f
@@ -61,7 +93,23 @@ This is the pgrep in the system folders of macOS. It follows the BSD implementat
 Print the name next to the number with `-l`:
 
 ```sh
-sleep 7$$ & p=$!; pgrep -l -f "sleep 7$$" | cut -d' ' -f2; kill $p
+(
+	sleep 7$$ &
+	p=$!
+	trap 'kill "$p" 2>/dev/null || :' 0
+	n=0
+	until pgrep -f "sleep 7$$" >/dev/null; do
+		n=$((n + 1))
+		[ "$n" -lt 5 ] || exit 1
+		sleep 1
+	done
+	pgrep -l -f "sleep 7$$" | cut -d' ' -f2
+	lookup_status=$?
+	kill "$p" 2>/dev/null || :
+	wait "$p" 2>/dev/null || :
+	trap - 0
+	exit "$lookup_status"
+)
 ```
 
 ### Apple notes
@@ -82,7 +130,23 @@ This is pgrep from procps-ng, the package that supplies the process tools of mos
 Print only how many processes match, with `-c`:
 
 ```sh
-sleep 7$$ & p=$!; pgrep -c -f "sleep 7$$"; kill $p
+(
+	sleep 7$$ &
+	p=$!
+	trap 'kill "$p" 2>/dev/null || :' 0
+	n=0
+	until pgrep -f "sleep 7$$" >/dev/null; do
+		n=$((n + 1))
+		[ "$n" -lt 5 ] || exit 1
+		sleep 1
+	done
+	pgrep -c -f "sleep 7$$"
+	lookup_status=$?
+	kill "$p" 2>/dev/null || :
+	wait "$p" 2>/dev/null || :
+	trap - 0
+	exit "$lookup_status"
+)
 ```
 
 ### Option: -c, --count
