@@ -1,6 +1,6 @@
 # Release artifact and provenance review
 
-This is a preparation checklist, not release approval. No release archives or public artifacts exist yet. Repeat the inspection for each exact release candidate and keep its evidence with the release record. The [third-party inventory](third-party-notices.md) is a starting point, not an exhaustive certification.
+This is a preparation checklist, not release approval. Local candidate archives exist; no public release artifacts exist yet. Repeat the inspection for each exact release candidate and keep its evidence with the release record. The [third-party inventory](third-party-notices.md) is a starting point, not an exhaustive certification.
 
 ## Local candidate reviewed on 2026-11-15
 
@@ -16,6 +16,14 @@ For each binary target and published site build:
 2. Compare the exact Go module graph and toolchain licenses and notices against the files packaged with each archive. Include the project MIT and CC BY 4.0 texts, content attribution and source link, the applicable Go and dependency license/copyright texts, patent grant and any applicable NOTICE text. Review Apache-licensed modifications and notices when relevant. Confirm these files are actually inside every archive, not just present in the source checkout.
 3. Inspect site output and build inputs for third-party materials and notices. Include the required copyright, license, attribution, modification, and source notices for material actually distributed. Ensure the deployed site links to the source, content license and attribution and describes its public status accurately. Recheck native dependency obligations separately if native build tools are redistributed.
 4. Test each artifact on its claimed platform, verify the checksums against the exact files to be released, and document skipped targets and remaining compatibility questions. Review the publishing and integrity process before release; checksums from the same source are not independent proof of authenticity.
+
+## Manual native Linux AMD64 verification
+
+The candidate at source revision `e63fcc22e4c989ffb5c0f6591e641d365368cce2` passed the Rosetta test matrix with normal GC; native Linux AMD64 is still unverified. The manual `Verify existing Linux AMD64 candidate` workflow runs on GitHub's `ubuntu-26.04` x64 runner and never rebuilds or publishes the binary. It checks the candidate archive and embedded executable against the fixed SHA-256 values before execution, clears `GOGC`, `GOMAXPROCS` and `GODEBUG` for every command, runs the nine-case matrix, and uploads stdout, stderr, exit codes, environment information and comparisons with the saved Rosetta output hashes. A comparison difference requires inspection and does not automatically indicate a failure.
+
+The exact local archive is `shell-explain-candidate-e63fcc22e4c9-linux-amd64.tar.gz`, with SHA-256 `bc587eaab6eaebe6581db3a0e5bec5b0b56095e7c24f14795e0dd5dd44d81430`. Its executable SHA-256 is `f3f2e1f62f64483176e760425a522ae0afb42fe2fa57da1d8f37436a33bb296a`. The expected content revision is `8ee4e9006c7b9e79fe2cf87a2fb2e6b66da1279b7aeb0dbf45b234cb61718fe9`.
+
+Before dispatching, an authorized maintainer must privately stage the unchanged archive as a GitHub release asset accessible to this repository's read-only workflow token and obtain its numeric asset ID. A draft release can serve as private staging while the repository remains private; creating a draft and uploading the asset are separate actions and do not authorize publishing. The workflow is available for manual dispatch once its workflow file is on the default branch; supply the asset ID and inspect the uploaded evidence, including any output differences. Confirm that the token can read the chosen draft asset; this has not yet been tested. Do not place the binary in Git or use a public upload. Keep the native test open until the actual GitHub-hosted run completes successfully and its evidence is reviewed.
 
 ## Provenance and AI-assisted material
 
