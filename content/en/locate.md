@@ -8,7 +8,7 @@ tags: [files, search, index]
 implementations: [gnu, apple]
 updated: 2026-11-10
 references:
-  - https://www.gnu.org/software/findutils/manual/html_mono/find.html#locate
+  - https://www.gnu.org/software/findutils/manual/html_node/Invoking-locate.html
   - https://man.freebsd.org/cgi/man.cgi?query=locate&sektion=1
 ---
 ## Common
