@@ -8,7 +8,7 @@ tags: [files, search, index]
 implementations: [gnu]
 updated: 2026-11-10
 references:
-  - https://www.gnu.org/software/findutils/manual/html_mono/find.html#updatedb
+  - https://www.gnu.org/software/findutils/manual/html_node/Invoking-updatedb.html
 ---
 ## Common
 ### Overview

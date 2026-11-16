@@ -8,7 +8,7 @@ tags: [package, files, search]
 implementations: [gnu]
 updated: 2026-11-10
 references:
-  - https://www.gnu.org/software/findutils/manual/html_mono/find.html
+  - https://www.gnu.org/software/findutils/manual/html_node/index.html
 ---
 ## Common
 ### Overview

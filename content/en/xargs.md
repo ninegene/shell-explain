@@ -8,7 +8,7 @@ tags: [text, files, pipelines]
 implementations: [gnu, apple, busybox]
 updated: 2026-11-08
 references:
-  - https://www.gnu.org/software/findutils/manual/html_node/find_html/xargs-options.html
+  - https://www.gnu.org/software/findutils/manual/html_node/xargs-options.html
   - https://man.freebsd.org/cgi/man.cgi?query=xargs&sektion=1
   - https://busybox.net/downloads/BusyBox.html
 ---
