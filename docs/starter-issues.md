@@ -6,7 +6,7 @@ These are proposed issues for maintainers to review and publish after contributi
 - **Add an example to an existing command:** propose a common use case with an upstream reference, implementation and tested version. Add a safe fixture and expected result where applicable; verify CLI and web rendering.
 - **Improve a portability note:** compare two documented implementations against their upstream manuals and available tools, then state the difference and evidence without claiming untested version coverage.
 
-See [contributing](../CONTRIBUTING.md) for scope, validation, and contribution terms. Maintainers should select concrete pages and confirm the work remains open before creating issues.
+See [contributing](../CONTRIBUTING.md) for scope, validation, and contribution terms, and the [independent contributor trial plan](contributor-trial.md) for the proposed trial. Maintainers should select concrete pages and confirm the work remains open before creating issues.
 
 ## Preparation check (2026-11-11)
 

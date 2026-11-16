@@ -16,8 +16,8 @@ Review performed 2026-11-11 against the local repository and GitHub metadata. Th
 
 ## Remaining before publication
 
-1. Arrange an independent contributor trial, including the public fork and PR process when available. Fresh-container and macOS test evidence is in [candidate starter issues](starter-issues.md).
-2. Inspect the exact binaries, archives, site output, dependencies and notices when release artifacts are prepared. Complete the provenance and redistribution review for any third-party or AI-assisted material; the checks above do not establish authorship of each passage or certify all dependency licenses.
+1. Arrange an [independent contributor trial](contributor-trial.md), including the public fork and PR process when available. Fresh-container and macOS test evidence is in [candidate starter issues](starter-issues.md).
+2. Follow the [release artifact and provenance review](release-review.md) for the exact binaries, archives, site output, dependencies and notices when release artifacts are prepared. Complete the provenance and redistribution review for third-party and AI-assisted material; the checks above do not establish authorship of each passage or certify all dependency licenses.
 3. Review repository visibility and public contribution settings with the owner. Public visibility, releases, website deployment and DNS changes require their own authorization.
 
 History and PR discussion checks cover the branches, PR heads and API collections available at the review time; recheck after further changes and before changing visibility. Do not rewrite history or remove discussions without a separate decision.
