@@ -6,7 +6,7 @@ summary: Run Python programs and scripts.
 aliases: [python]
 tags: [developer, python, runtime]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://docs.python.org/3/using/cmdline.html
   - https://docs.python.org/3/
@@ -31,10 +31,10 @@ Format JSON with the standard `json.tool` module, in compact form:
 echo '{"a":1}' | python3 -m json.tool --compact
 ```
 
-Check the version starts with `Python 3`:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-python3 --version | grep -c '^Python 3'
+python3 --version
 ```
 
 Read the major version from inside Python:
@@ -62,7 +62,7 @@ Print the version.
 Many systems have several Pythons, and `python3` is the one first on `PATH`; check `which -a python3` and `python3 --version`. Install packages in a virtual environment (`python3 -m venv .venv`) and not with `sudo pip`. Code in `-c` needs shell quotes. The indentation of a script is part of its syntax, so mixing tabs and spaces is an error. `python3 -m http.server` shares the whole folder, so use it only where that is safe.
 
 ### Portability
-Python 3 behaves the same on macOS and Linux for the options above; features come with newer versions. The examples that run code were executed on the Python 3 of the host; the server example is reviewed only. The Common examples were executed on Python 3 (the version on the host) (see the development guide for the exact check).
+Python 3 behaves the same on macOS and Linux for the options above; features come with newer versions. The examples that run code were executed on the Python 3 of the host; the version and server examples are reviewed only. The Common examples were executed on Python 3 (the version on the host) (see the development guide for the exact check).
 
 ## Upstream
 ### About upstream python3

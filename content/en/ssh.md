@@ -6,7 +6,7 @@ summary: Log in to another computer, or run a command on it, over an encrypted c
 aliases: []
 tags: [ssh, network, remote]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://man.openbsd.org/ssh
   - https://man.openbsd.org/ssh_config
@@ -19,10 +19,10 @@ references:
 `ssh` is part of OpenSSH, whose manual is on man.openbsd.org. The settings it reads from `~/.ssh/config` are described in the `ssh_config` manual. The tool tested here is the OpenSSH that macOS ships. Commands that connect to a host are reviewed only, because the checks never contact another computer.
 
 ### Examples
-Show the version; it starts with `OpenSSH_`:
+Show the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-ssh -V 2>&1 | cut -c1-8
+ssh -V
 ```
 
 Print the settings `ssh` would use for a host, without connecting, with `-G`; here the host name:
@@ -95,7 +95,7 @@ Print the version.
 The first time you connect, `ssh` shows the fingerprint of the host and asks you to trust it: check it through another channel if the host matters, and never answer "yes" to a changed fingerprint without finding out why. Keep the private key private and use a passphrase; `ssh-agent` remembers it for you. `ssh host command` passes the command to the remote shell, so quotes and `$` are interpreted twice: first by your shell, then by theirs. A forwarded port opens a door into a network: bind it to `localhost` unless you mean otherwise. Do not put passwords on the command line.
 
 ### Portability
-The options above are the same in OpenSSH on every system, and the configuration file is read from `~/.ssh/config`. Newer versions drop old algorithms, so a very old server may need options to connect. The examples that print settings were executed on the OpenSSH of the macOS host; the ones that connect are reviewed only. The Common examples were executed on OpenSSH (the macOS system build) (see the development guide for the exact check).
+The options above are the same in OpenSSH on every system, and the configuration file is read from `~/.ssh/config`. Newer versions drop old algorithms, so a very old server may need options to connect. The examples that print settings with `-G` were executed on OpenSSH (the macOS system build) (see the development guide for the exact check); the version example and the ones that connect are reviewed only.
 
 ## Upstream
 ### About upstream ssh

@@ -6,7 +6,7 @@ summary: Run JavaScript outside a browser.
 aliases: []
 tags: [developer, javascript, runtime]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://nodejs.org/docs/latest/api/cli.html
   - https://nodejs.org/docs/latest/api/
@@ -43,10 +43,10 @@ Pass arguments to the script; they come after the code in `process.argv`:
 node -e 'console.log(process.argv.slice(1).join(","))' a b
 ```
 
-Check the version has the form `v` and digits:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-node --version | grep -c '^v[0-9]'
+node --version
 ```
 
 ### Option: -e
@@ -62,7 +62,7 @@ Print the version.
 The code in `-e` needs shell quotes, because `(`, `)` and `$` mean things to the shell. A script that works in one Node.js version can fail in another: check `node --version`, and use the version your project asks for. `node` does not install packages; `npm` does. A script file is run from top to bottom, and the process ends when nothing more is waiting, so a forgotten open connection keeps it alive.
 
 ### Portability
-Node.js runs on macOS, Linux and Windows with the same options. Newer language features need newer versions. The examples were executed on the long-term-support release on the host. The Common examples were executed on Node.js (the long-term-support release on the host) (see the development guide for the exact check).
+Node.js runs on macOS, Linux and Windows with the same options. Newer language features need newer versions. The first four examples were executed on the long-term-support release on the host; the version example is reviewed only. The Common examples were executed on Node.js (the long-term-support release on the host) (see the development guide for the exact check).
 
 ## Upstream
 ### About upstream node

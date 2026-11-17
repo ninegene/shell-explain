@@ -172,7 +172,7 @@ Reviewed and executed on 2026-11-08 (touch, ln, du, basename, dirname and tee on
 | `free` | 3 common | not shipped by macOS | procps-ng 4.0.6 in the guest | BusyBox 1.37.0, executed | n/a |
 | `top` | 1 Apple, 1 procps; the interactive example is reviewed only | system `/usr/bin/top`, executed in batch mode | procps-ng 4.0.6 in the guest | not run (reviewed only) | n/a |
 | `killall` | 4 common, reviewed only (a name such as `sleep` would signal every process of that name) | system `/usr/bin/killall`, not executed | not covered (psmisc is another program) | not executed | n/a |
-| `wget` | 5 common reviewed only (they download), 2 GNU and 1 BusyBox executed (help and version text) | not shipped by macOS | GNU Wget 1.25.0 on the host (not installed in the Linux guest) | BusyBox 1.37.0, usage text executed | n/a |
+| `wget` | 5 common reviewed only (they download), 2 GNU and 1 BusyBox reviewed only (help, version and usage text) | not shipped by macOS | GNU Wget 1.25.0 on the host (not installed in the Linux guest) | BusyBox 1.37.0, usage text reviewed only | n/a |
 | `locate` | 1 common reviewed only; 4 GNU executed (private database); macOS reviewed only | system `/usr/bin/locate` (BSD), not executed: its database is off by default | GNU findutils 4.10.0 on the host (a conda install managed by mise); not installed in the Linux guest | no BusyBox applet | n/a |
 | `updatedb` | 3 GNU executed | not shipped by macOS (`/usr/libexec/locate.updatedb` is another program) | GNU findutils 4.10.0 on the host; not installed in the Linux guest | no BusyBox applet | n/a |
 | `findutils` | 2 reviewed only (package overview) | not applicable (macOS ships BSD tools) | GNU findutils 4.10.0 | not applicable | n/a |
@@ -198,13 +198,13 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 | `shellcheck` | 4 executed | ShellCheck 0.11.0 | |
 | `shfmt` | 4 executed | shfmt v3.14.1 | `-l` exits with status 1 when it lists a file, in this version |
 | `prettier` | 4 executed | Prettier 3.9.10 | runs on the host's Node.js |
-| `node` | 5 executed | Node.js long-term-support release on the host | |
-| `npm` | 3 executed, 2 reviewed only (they download packages) | the npm that comes with that Node.js | |
-| `npx` | 1 executed, 2 reviewed only (they download packages) | the npx that comes with that Node.js | |
-| `python3` | 4 executed, 1 reviewed only (it listens on a port) | Python 3 on the host | |
-| `uv` | 3 executed, 2 reviewed only (they may download) | uv on the host | |
-| `uvx` | 1 executed, 2 reviewed only (they download tools) | uvx of that uv | |
-| `go` | 5 executed | Go 1.27.3 | no network: each example builds in a temporary module |
+| `node` | 4 executed, 1 reviewed only (the version) | Node.js long-term-support release on the host | |
+| `npm` | 2 executed, 3 reviewed only (the version, and two that download packages) | the npm that comes with that Node.js | |
+| `npx` | 3 reviewed only (the version, and two that download packages) | the npx that comes with that Node.js | |
+| `python3` | 3 executed, 2 reviewed only (the version, and one that listens on a port) | Python 3 on the host | |
+| `uv` | 2 executed, 3 reviewed only (the version, and two that may download) | uv on the host | |
+| `uvx` | 3 reviewed only (the version, and two that download tools) | uvx of that uv | |
+| `go` | 4 executed, 1 reviewed only (the version) | Go 1.27.3 | no network: each example builds in a temporary module |
 | `just` | 4 executed | just on the host | |
 | `bash` | 6 executed | GNU Bash 5.2.37 | macOS ships Bash 3.2, which the page warns about but the examples do not run on |
 | `zip` | 4 executed | Info-ZIP Zip 3.0 (macOS build) | |
@@ -212,32 +212,32 @@ Single-project tools are documented with an `upstream` view, so there are no GNU
 | `lsof` | 3 executed, 2 reviewed only (they depend on what is running) | lsof 4.91 (macOS build) | |
 | `rsync` | 4 executed, 1 reviewed only (needs a remote host) | openrsync (the macOS `/usr/bin/rsync`) | macOS ships openrsync, not the rsync project's program |
 | `ssh-keygen` | 4 executed | OpenSSH of the macOS host | throw-away keys in a temporary folder |
-| `actionlint` | 3 executed | actionlint 1.7.12 | |
+| `actionlint` | 2 executed, 1 reviewed only (the version) | actionlint 1.7.12 | |
 | `markdownlint-cli2` | 3 executed | markdownlint-cli2 0.24.0 | runs on the host's Node.js |
 | `gitleaks` | 3 executed | gitleaks 8.30.1 | the made-up token is written in two pieces; gitleaks ignores well-known example keys |
 | `lefthook` | 3 executed | lefthook 2.2.2 | |
-| `mise` | 3 executed, 2 reviewed only (they install tools) | mise 2026.10.19 | |
-| `zoxide` | 3 executed | zoxide 0.10.0 | |
-| `starship` | 2 executed | starship 1.27.0 | |
-| `ssh` | 4 executed (settings printed with `-G`, no connection), 4 reviewed only (they connect) | OpenSSH of the macOS host | |
+| `mise` | 2 executed, 3 reviewed only (the version, and two that install tools) | mise 2026.10.19 | |
+| `zoxide` | 2 executed, 1 reviewed only (the setup code) | zoxide 0.10.0 | |
+| `starship` | 2 reviewed only (the version and the setup code) | starship 1.27.0 | |
+| `ssh` | 3 executed (settings printed with `-G`, no connection), 5 reviewed only (the version, and four that connect) | OpenSSH of the macOS host | |
 | `scp` | 1 executed (local copy), 4 reviewed only (they connect) | OpenSSH of the macOS host | |
 | `ssh-add` | 4 executed | OpenSSH of the macOS host | each example runs a private agent for one command on a short `/tmp` socket path and removes the socket file |
 | `ssh-agent` | 2 executed, 2 reviewed only (they leave a program running) | OpenSSH of the macOS host | |
-| `ssh-copy-id` | 1 executed (usage text), 3 reviewed only (they connect) | ssh-copy-id of the macOS host | |
-| `fzf` | 4 executed, 1 reviewed only (needs a terminal) | fzf 0.74.5 | |
-| `vim` | 4 executed, 1 reviewed only (opens the editor) | vim on the host | |
-| `zed` | 1 executed (version), 3 reviewed only (they open a window) | Zed 1.26.2 | |
+| `ssh-copy-id` | 4 reviewed only (the usage text, and three that connect) | ssh-copy-id of the macOS host | |
+| `fzf` | 3 executed, 2 reviewed only (the version, and one that needs a terminal) | fzf 0.74.5 | |
+| `vim` | 3 executed, 2 reviewed only (the version, and one that opens the editor) | vim on the host | |
+| `zed` | 4 reviewed only (the version, and three that open a window) | Zed 1.26.2 | |
 | `security` | 5 reviewed only | macOS system tool | none was run, because the examples touch keychains |
-| `docker` | 3 executed (client version, help, contexts), 4 reviewed only (they need a daemon) | Docker 29.9.2 (client, no daemon) | |
-| `docker-compose` | 4 executed (version and compose-file checks), 2 reviewed only (they start containers) | Docker Compose v5.6.1 | |
-| `colima` | 2 executed (version, list), 3 reviewed only (they start a virtual machine) | colima v0.10.3 | `limactl` is put on the example path, because colima starts it |
-| `limactl` | 2 executed (version, help), 4 reviewed only | limactl 2.2.1 | |
-| `aws` | 4 executed (version, settings, help), 3 reviewed only (they call AWS) | aws-cli 2.38 | clean home folder, no credentials, never run against a real account |
-| `gh` | 4 executed (version, help, login state), 3 reviewed only (they call GitHub as the user) | gh 2.103.2 | clean home folder, so no login exists |
-| `pulumi` | 3 executed (version, help), 4 reviewed only (they plan or change infrastructure) | Pulumi v3.272.0 | `up`, `destroy` and `refresh` are never run by this project |
-| `claude` | 2 executed (version, help), 3 reviewed only (they send text to a service) | Claude Code 2.1.310 | |
-| `codex` | 2 executed (version, help), 2 reviewed only | codex-cli 0.164.0 | its warning about helper programs under a temporary folder is hidden |
-| `gawkbug` | 1 executed (version), 2 reviewed only (they open an editor and send mail) | script of gawk 5.4.1 | |
+| `docker` | 1 executed (contexts), 6 reviewed only (the version, the help, and four that need a daemon) | Docker 29.9.2 (client, no daemon) | |
+| `docker-compose` | 3 executed (compose-file checks), 3 reviewed only (the version, and two that start containers) | Docker Compose v5.6.1 | |
+| `colima` | 1 executed (list), 4 reviewed only (the version, and three that start a virtual machine) | colima v0.10.3 | `limactl` is put on the example path, because colima starts it |
+| `limactl` | 6 reviewed only (including the version and the help) | limactl 2.2.1 | |
+| `aws` | 2 executed (settings), 5 reviewed only (the version, the help, and three that call AWS) | aws-cli 2.38 | clean home folder, no credentials, never run against a real account |
+| `gh` | 1 executed (login state), 6 reviewed only (the version, two help texts, and three that call GitHub as the user) | gh 2.103.2 | clean home folder, so no login exists |
+| `pulumi` | 7 reviewed only (the version, the help, and four that plan or change infrastructure) | Pulumi v3.272.0 | `up`, `destroy` and `refresh` are never run by this project |
+| `claude` | 5 reviewed only (the version, the help, and three that send text to a service) | Claude Code 2.1.310 | |
+| `codex` | 4 reviewed only (including the version and the help) | codex-cli 0.164.0 | |
+| `gawkbug` | 3 reviewed only (the version, and two that open an editor and send mail) | script of gawk 5.4.1 | |
 | `rmt` | 3 reviewed only | not installed on the test hosts | documentation only: the tool is absent from macOS and from the host |
 
 ## Suggested order

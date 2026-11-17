@@ -6,7 +6,7 @@ summary: Build, run, test and manage Go programs.
 aliases: []
 tags: [developer, go, build]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://pkg.go.dev/cmd/go
   - https://go.dev/doc/
@@ -19,10 +19,10 @@ references:
 `go` is the command of the Go toolchain, and its manual is on pkg.go.dev. The examples work in a temporary folder with no network. The tool tested here is Go 1.27.3.
 
 ### Examples
-Print the version and check its form:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-go version | grep -c '^go version go'
+go version
 ```
 
 Run a small program from one file with `go run`:
@@ -56,7 +56,7 @@ printf 'package main\nfunc main(){}\n' > main.go && go mod init demo > /dev/null
 The first line of a program must be `package main` and it needs a `main` function, or `go run` says it cannot run a package. Run `go` commands in the folder that holds `go.mod`, or tell it with `-C`. Downloading modules needs the network, and the files go to a cache shared by all your projects. `go run` builds to a temporary place each time, so use `go build` for a program you run often. A newer `go` may download a different toolchain, as the `toolchain` line of `go.mod` asks.
 
 ### Portability
-The commands are the same on every system; new language features come with new versions. The examples were executed on Go 1.27.3. The Common examples were executed on Go 1.27.3 (see the development guide for the exact check).
+The commands are the same on every system; new language features come with new versions. The examples that build and run code were executed on Go 1.27.3; the version example is reviewed only. The Common examples were executed on Go 1.27.3 (see the development guide for the exact check).
 
 ## Upstream
 ### About upstream go

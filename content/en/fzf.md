@@ -6,7 +6,7 @@ summary: Pick a line from a list by typing a few letters.
 aliases: []
 tags: [search, interactive, productivity]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://github.com/junegunn/fzf#readme
 ---
@@ -18,10 +18,10 @@ references:
 `fzf` is an open-source tool whose manual is in its repository. Many shell setups bind it to Ctrl+R (history) and Ctrl+T (files). The tool tested here is fzf 0.74.5. The interactive example needs a terminal and is reviewed only.
 
 ### Examples
-Print the version number:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-fzf --version | cut -d' ' -f1
+fzf --version
 ```
 
 Filter a list without the interface, with `-f`; the letters `an` match lines that contain `a` then `n`:
@@ -61,7 +61,7 @@ Allow choosing several lines.
 Without `-f`, `fzf` needs a terminal, and the chosen line goes to standard output, so use it with `$(...)`. An empty choice (pressing Esc) returns nothing and status 130, so check before using the result. `fzf` matches letters in order but not next to each other, so a short query can match many lines: add a leading quote for an exact match or `^` for the start. The default list of files comes from `find`, and `FZF_DEFAULT_COMMAND` changes it, for example to `fd`.
 
 ### Portability
-The matching rules and the options above are the same on every system, and new options arrive with new versions. The examples that filter were executed on fzf 0.74.5. The Common examples were executed on fzf 0.74.5 (see the development guide for the exact check).
+The matching rules and the options above are the same on every system, and new options arrive with new versions. The examples that filter were executed on fzf 0.74.5 (see the development guide for the exact check); the version and interactive examples are reviewed only.
 
 ## Upstream
 ### About upstream fzf

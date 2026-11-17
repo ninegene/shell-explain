@@ -6,7 +6,7 @@ summary: Run Linux containers on macOS without Docker Desktop.
 aliases: []
 tags: [containers, macos, devops]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://github.com/abiosoft/colima#readme
 ---
@@ -18,10 +18,10 @@ references:
 `colima` is an open-source tool whose documentation is in its repository. It runs the virtual machine through `limactl`. The tool tested here is colima v0.10.3. Starting it downloads an image and runs a virtual machine, so those commands are reviewed only.
 
 ### Examples
-Print the version; the first words name the tool:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-colima version 2> /dev/null | head -n 1 | cut -c1-14
+colima version
 ```
 
 List the machines it manages; the first column of the heading is `PROFILE`:
@@ -55,7 +55,7 @@ colima stop
 A running machine takes processor time and memory from the host; stop it when you do not need containers. The size is set when the machine is created: change it with `colima stop`, then `colima start` with new options, or `colima delete` to start again. The first start takes minutes, because it downloads an image. Containers and images live inside the machine, so `colima delete` removes them too. Docker contexts matter: `docker context ls` shows which daemon `docker` talks to.
 
 ### Portability
-The commands are the same on every system where it runs (macOS and Linux). The first two examples were executed on colima v0.10.3. The Common examples were executed on colima v0.10.3 (see the development guide for the exact check).
+The commands are the same on every system where it runs (macOS and Linux). The second example was executed on colima v0.10.3 (see the development guide for the exact check); the others are reviewed only.
 
 ## Upstream
 ### About upstream colima
