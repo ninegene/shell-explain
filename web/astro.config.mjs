@@ -6,5 +6,10 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'always',
   devToolbar: { enabled: false },
-  vite: { plugins: [contentWatch()] },
+  vite: {
+    plugins: [contentWatch()],
+    // Never inline scripts into pages: the site's Content-Security-Policy allows only
+    // script-src 'self' (infra/pulumi/index.ts).
+    build: { assetsInlineLimit: 0 },
+  },
 });

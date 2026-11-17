@@ -1,0 +1,43 @@
+name: Infra checks
+
+# Typechecks the Pulumi program and tests the CloudFront function. It never runs
+# `pulumi up`: infrastructure changes are applied by hand (see infra/README.md).
+on:
+  pull_request:
+    paths:
+      - infra/**
+      - .github/workflows/infra.yml
+  push:
+    branches: [main]
+    paths:
+      - infra/**
+      - .github/workflows/infra.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: infra-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  infra:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: infra/pulumi
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "26"
+          cache: npm
+          cache-dependency-path: infra/pulumi/package-lock.json
+      - run: npm ci
+      - name: Typecheck the Pulumi program
+        run: npm run typecheck
+      - name: Test the CloudFront function
+        run: npm test

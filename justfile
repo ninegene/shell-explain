@@ -6,7 +6,7 @@
     printf '\n%s\n' 'Prerequisites: just, Go 1.24+, Node.js 22.23.4+, and npm.'
     printf '%s\n' 'Web setup: npm ci --prefix web'
     printf '%s\n' 'Browser-test setup: cd web && npx playwright install chromium'
-    printf '\n%s\n\n' 'Details: docs/development.md. All commands are local; none publish or deploy.'
+    printf '\n%s\n\n' 'Details: docs/development.md. No command publishes or deploys; infra-preview only reads AWS.'
 
 # Build the offline explain CLI with embedded Markdown.
 @build:
@@ -40,7 +40,7 @@
 @web-build:
     printf '\n%s\n' 'Building the static Astro website from shared Markdown...'
     npm --prefix web run build
-    printf '\n%s\n%s\n' 'Built: web/dist/' 'Local output only; nothing was published to GitHub Pages.'
+    printf '\n%s\n%s\n' 'Built: web/dist/' 'Local output only; nothing was published.'
 
 # Start the local Astro development server in the foreground.
 @web-dev:
@@ -52,3 +52,16 @@
     printf '\n%s\n%s\n' 'Testing live Markdown updates and browser behavior against fresh builds...' 'Uses a free port, so a running just web-dev is not affected.'
     npm --prefix web test
     printf '\n%s\n' 'Browser tests passed; the test preview server has stopped.'
+
+# Install the Pulumi program's dependencies (infra/pulumi).
+@infra-setup:
+    npm ci --prefix infra/pulumi
+
+# Typecheck the Pulumi program and test the CloudFront function.
+@infra-check:
+    npm run typecheck --prefix infra/pulumi
+    npm test --prefix infra/pulumi
+
+# Preview infrastructure changes (read-only; needs AWS sign-in, see infra/README.md).
+@infra-preview:
+    cd infra/pulumi && pulumi preview --stack prod
