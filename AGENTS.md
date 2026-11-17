@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Command-reference project, private through development and iteration, with a public release planned in stage 5. Repository name: shell-explain. Executable name: explain. Planned static Astro website: shell-explain.ninegene.com. Read README.md and relevant docs before work.
+Command-reference project; the repository has been public since 2026-11-17 and release binaries are planned for stage 5. Repository name: shell-explain. Executable name: explain. Static Astro website: shell-explain.ninegene.com. Read README.md and relevant docs before work.
 
 ## Current state
 
@@ -48,7 +48,7 @@ Follow [docs/content-format.md](docs/content-format.md) when adding or updating 
 
 ## Publication and repository rules
 
-- Keep the repository private through stage 4. Stage 5 includes finalizing contribution guidance and changing visibility to public. Do not change visibility or deploy merely because these actions appear in the roadmap.
+- The repository is public, and `main` is protected by a ruleset: changes go through pull requests. Do not publish a release, deploy the website, or change DNS or repository visibility merely because these actions appear in the roadmap; each needs explicit authorization.
 - Never add secrets, personal data, cloud account IDs or keys, machine names, or private project names/details. Resource names that grant no access (the Pulumi state bucket, KMS alias, site bucket) and GitHub repository IDs may appear in `infra/`; the AWS account ID stays a GitHub environment secret.
 - Keep sample paths and values generic; use example.org and synthetic fixtures.
 - Check licenses and attribution before copying content/code. Original software and shell examples use MIT; original explanatory content uses CC BY 4.0. See README.md.

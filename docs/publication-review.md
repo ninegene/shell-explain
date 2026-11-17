@@ -22,3 +22,7 @@ Review performed 2026-11-11 against the local repository and GitHub metadata. Th
 3. Review repository visibility and public contribution settings with the owner. Public visibility, releases, website deployment and DNS changes require their own authorization.
 
 History and PR discussion checks cover the branches, PR heads and API collections available at the review time; recheck after further changes and before changing visibility. Do not rewrite history or remove discussions without a separate decision.
+
+## Outcome
+
+On 2026-11-17 the owner waived the independent contributor trial and authorized making the repository public. Immediately before the change, Gitleaks found no matches in the history of `main` (76 commits), the working tree, or the heads of all 69 pull requests (172 commits in total), and no other branches remained. The repository was made public and the repository ruleset (pull requests required, no deletion or force-push of `main`) was applied. The public fork and pull-request workflow, release artifacts and the pull-request text of PRs 55 to 69 were not reviewed.

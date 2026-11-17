@@ -2,7 +2,7 @@
 
 ## Confirmed direction
 
-Develop shell-explain in a private repository through stages 1–4, with a CLI executable named explain and a planned static Astro website at shell-explain.ninegene.com. Stage 5 opens the repository to the public, establishes external contribution guidance, and publishes the website. A shared collection of Markdown files supplies both outputs. The CLI must eventually be downloadable as a binary and installable using curl, Homebrew, and mise.
+Shell-explain was developed in a private repository through stages 1–4 and was made public on 2026-11-17. It has a CLI executable named explain and a static Astro website at shell-explain.ninegene.com. Stage 5 establishes external contribution guidance and publishes release binaries. A shared collection of Markdown files supplies both outputs. The CLI must eventually be downloadable as a binary and installable using curl, Homebrew, and mise.
 
 The initial experience is `explain grep`: what it does, common uses/options, examples, mistakes, and portability notes. It should work without network access after installation. Match documentation to the installed tool when feasible and expose manual selection.
 

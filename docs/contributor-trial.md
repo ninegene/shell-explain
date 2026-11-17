@@ -1,6 +1,6 @@
 # Independent contributor trial
 
-This is a facilitator plan, not evidence that a trial has happened. The repository is private. Invite an independent person only after they are given appropriate access; do not change visibility or create accounts, issues, forks, or pull requests just to run this plan without the necessary authorization.
+This is a facilitator plan, not evidence that a trial has happened. The repository became public on 2026-11-17 after the owner waived this trial as a gate, so no outside contributor has yet exercised the workflow. The plan remains available if a trial is wanted later. Do not create accounts, issues, forks, or pull requests just to run it without the necessary authorization.
 
 ## Before the session
 
