@@ -1,6 +1,6 @@
 # Distribution and release plan
 
-The CLI can be built locally with just build and the Astro site can be previewed locally. No public binaries, installers, package definitions, releases, or hosting exist yet. Distribution commands in this document are proposed future interfaces.
+The CLI can be built locally with just build and the Astro site can be previewed locally. The website is live (see below). No public binaries, installers, package definitions, or releases exist yet. Distribution commands in this document are proposed future interfaces.
 
 The repository was private through stages 1–4 and became public on 2026-11-17. Stage 5 continues with contribution guidance and publishing release artifacts. Development builds do not constitute a public release. Binary distributions must include the MIT and CC BY 4.0 license texts and applicable attribution for embedded content and third-party dependencies. See [third-party notices](third-party-notices.md) for the inventory and release checks, and the [roadmap](roadmap.md) for the sequence and authorization boundaries.
 

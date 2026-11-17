@@ -6,8 +6,8 @@
 | --- | --- |
 | Repository | Public ninegene/shell-explain (made public 2026-11-17) |
 | Executable | explain |
-| Website | Static Astro site intended for shell-explain.ninegene.com |
-| Website hosting | AWS (S3 + CloudFront, Pulumi in `infra/pulumi`) at shell-explain.ninegene.com, deployed by GitHub Actions; local previews until the first authorized deploy |
+| Website | Static Astro site, live at shell-explain.ninegene.com |
+| Website hosting | AWS (S3 + CloudFront, Pulumi in `infra/pulumi`) at shell-explain.ninegene.com, deployed by GitHub Actions |
 | Source text | Shared Markdown files used by web and CLI |
 | Language | Go implemented; pinned pure-Go Markdown/YAML dependencies |
 | Normal lookup | Offline, curated content; no command execution |
