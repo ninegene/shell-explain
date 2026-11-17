@@ -49,7 +49,7 @@ Follow [docs/content-format.md](docs/content-format.md) when adding or updating 
 ## Publication and repository rules
 
 - Keep the repository private through stage 4. Stage 5 includes finalizing contribution guidance and changing visibility to public. Do not change visibility or deploy merely because these actions appear in the roadmap.
-- Never add secrets, personal data, cloud identifiers, machine names, or private project names/details.
+- Never add secrets, personal data, cloud account IDs or keys, machine names, or private project names/details. Resource names that grant no access (the Pulumi state bucket, KMS alias, site bucket) and GitHub repository IDs may appear in `infra/`; the AWS account ID stays a GitHub environment secret.
 - Keep sample paths and values generic; use example.org and synthetic fixtures.
 - Check licenses and attribution before copying content/code. Original software and shell examples use MIT; original explanatory content uses CC BY 4.0. See README.md.
 - Do not alter bootstrap/reference repositories as a side effect.
