@@ -1,8 +1,8 @@
 # Distribution and release plan
 
-The CLI can be built locally with just build and the Astro site can be previewed locally. No public binaries, installers, package definitions, releases, or hosting exist yet. Distribution commands in this document are proposed future interfaces.
+The CLI can be built locally with just build and the Astro site can be previewed locally. The website is live (see below). No public binaries, installers, package definitions, or releases exist yet. Distribution commands in this document are proposed future interfaces.
 
-The repository stays private through stages 1–4. Stage 5 includes preparing external contribution guidance, reviewing publication safety, making the repository public, and publishing the site and release artifacts. Private development builds do not constitute a public release. Binary distributions must include the MIT and CC BY 4.0 license texts and applicable attribution for embedded content and third-party dependencies. See [third-party notices](third-party-notices.md) for the inventory and release checks, and the [roadmap](roadmap.md) for the sequence and authorization boundaries.
+The repository was private through stages 1–4 and became public on 2026-11-17. Stage 5 continues with contribution guidance and publishing release artifacts. Development builds do not constitute a public release. Binary distributions must include the MIT and CC BY 4.0 license texts and applicable attribution for embedded content and third-party dependencies. See [third-party notices](third-party-notices.md) for the inventory and release checks, and the [roadmap](roadmap.md) for the sequence and authorization boundaries.
 
 ## Release artifacts
 
@@ -36,7 +36,7 @@ A central registry entry is only a convenience shorthand and may require adoptio
 
 Host the static Astro site at **shell-explain.ninegene.com** on AWS: a private S3 bucket behind CloudFront with an ACM certificate, defined in Pulumi under `infra/pulumi` and deployed by GitHub Actions through an OIDC role (no stored keys). It reuses the account, Pulumi state backend and `ninegene.com` Route 53 zone of the personal site; see [infra/README.md](../infra/README.md). It costs a few cents a month. No application server or database is planned. This replaces the earlier GitHub Pages plan, which would have required making the repository public first.
 
-The hosting does not depend on repository visibility, so the site can be published while the repository is private. Publishing the site and making the repository public are separate decisions; each needs its own authorization.
+The hosting does not depend on repository visibility. Publishing the site and making the repository public were separate decisions, each with its own authorization.
 
 The publication checklist is to apply the Pulumi stack, configure the `production` GitHub environment, run the deploy workflow (minimal permissions, OIDC), and verify routes, search and assets on the live host. Astro's site URL is the custom domain; do not carry over a repository-name base path.
 

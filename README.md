@@ -2,11 +2,11 @@
 
 Practical command explanations for the terminal and the web, maintained in one shared Markdown collection.
 
-- Repository: [ninegene/shell-explain](https://github.com/ninegene/shell-explain), private during development and iteration; planned public release in stage 5.
+- Repository: [ninegene/shell-explain](https://github.com/ninegene/shell-explain), public since 2026-11-17. Software and shell examples are MIT-licensed ([LICENSE](LICENSE)); original explanatory content is CC BY 4.0 ([LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)). Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 - Executable: **`explain`**, for example `./bin/explain grep` after a local build.
-- Planned website: **shell-explain.ninegene.com**, built with Astro and hosted on AWS (S3 and CloudFront, defined in Pulumi under [infra](infra/README.md)).
+- Website: **shell-explain.ninegene.com**, built with Astro and hosted on AWS (S3 and CloudFront, defined in Pulumi under [infra](infra/README.md)).
 - CLI language: Go, with original Markdown embedded for offline use.
-- Status: **stages 1–4 implemented locally**. Current CLI and web usability are accepted as sufficient. The command collection (194 pages: GNU, macOS, BusyBox, procps, Bash builtins and single-project tools) is complete, and all planned beginner guides are written. No installer, public release, or deployment exists yet.
+- Status: **stages 1–4 implemented locally**. Current CLI and web usability are accepted as sufficient. The command collection (194 pages: GNU, macOS, BusyBox, procps, Bash builtins and single-project tools) is complete, and all planned beginner guides are written. The website is deployed. No installer or release binaries exist yet; those are planned for stage 5.
 
 ## Goal
 
@@ -81,7 +81,7 @@ Text output shows example usages for the selected implementation by default, wit
 
 ## Project boundaries
 
-This project is being developed as a reusable reference tool, with public availability planned for stage 5. It is not an interactive lab host. Other applications can eventually install a pinned binary or consume its documented JSON output. Lesson-specific hints, grading, accounts, and progress belong to those applications.
+This project is being developed as a reusable reference tool, now public; release binaries and installers are planned for stage 5. It is not an interactive lab host. Other applications can eventually install a pinned binary or consume its documented JSON output. Lesson-specific hints, grading, accounts, and progress belong to those applications.
 
 GNU/BSD behavior must be selected per command, not inferred solely from the operating system. The website cannot inspect the visitor's terminal; it must offer explicit implementation/platform selection.
 

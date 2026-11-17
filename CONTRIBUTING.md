@@ -1,6 +1,6 @@
 # Contributing
 
-The project has a local shared-content, CLI, and Astro implementation and remains private through stage 4. External contributions are planned for stage 5. This guide does not imply a public contribution channel exists today.
+The project has a local shared-content, CLI, and Astro implementation and the repository is public. Issues and pull requests are open. The owner waived the independent contributor trial before going public (2026-11-17), so no outside contributor has yet tested this guide; tell us where it is unclear. The `main` branch accepts changes only through pull requests.
 
 ## Setup and checks
 
@@ -17,7 +17,7 @@ Run `just` to list commands. Run `just test` for Go and available host-tool exam
 
 ## Contribution process
 
-Once public contributions open:
+To contribute:
 
 1. Search existing pages and issues. Open an issue for a new command, implementation, or larger change; small corrections can go directly to a pull request.
 2. Fork the repository, clone your fork and create a branch. Make changes to the canonical Markdown in `content/en/`, not generated JSON or separate CLI/web copies. Read the [content format](docs/content-format.md) and use an existing page as a schema example.
@@ -25,7 +25,7 @@ Once public contributions open:
 4. Run the checks above relevant to the change. Describe the change, evidence, checks, and any skips in the pull request. Use screenshots or terminal output where helpful.
 5. Maintainers assess accuracy, portability, accessibility, license provenance, and shared CLI/web rendering. Address review feedback; maintainers merge accepted changes. Do not imply untested versions are supported.
 
-See [candidate starter issues](docs/starter-issues.md) for small contributions. Issue and PR templates are prepared for the public launch; the repository remains private until separately authorized.
+See [candidate starter issues](docs/starter-issues.md) for small contributions. Issue and PR templates are in [.github](.github).
 
 ## Command documentation
 

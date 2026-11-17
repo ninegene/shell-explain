@@ -4,10 +4,10 @@
 
 | Topic | Decision/status |
 | --- | --- |
-| Repository | Private ninegene/shell-explain through stage 4; public in stage 5 |
+| Repository | Public ninegene/shell-explain (made public 2026-11-17) |
 | Executable | explain |
-| Website | Static Astro site intended for shell-explain.ninegene.com |
-| Website hosting | AWS (S3 + CloudFront, Pulumi in `infra/pulumi`) at shell-explain.ninegene.com, deployed by GitHub Actions; local previews until the first authorized deploy |
+| Website | Static Astro site, live at shell-explain.ninegene.com |
+| Website hosting | AWS (S3 + CloudFront, Pulumi in `infra/pulumi`) at shell-explain.ninegene.com, deployed by GitHub Actions |
 | Source text | Shared Markdown files used by web and CLI |
 | Language | Go implemented; pinned pure-Go Markdown/YAML dependencies |
 | Normal lookup | Offline, curated content; no command execution |
@@ -15,7 +15,7 @@
 | Detection | Per-command implementation/version evidence plus explicit overrides |
 | Distribution | Release binaries, curl installer, Homebrew tap, mise GitHub backend |
 | Licensing | MIT for software and shell examples; CC BY 4.0 for original explanatory content |
-| Current status | Stages 1–4 implemented (194 command pages, checklist and exit review complete); all planned beginner guides are written; no public release/deployment |
+| Current status | Stages 1–4 implemented (194 command pages, checklist and exit review complete); all planned beginner guides are written; website deployed; repository public; no binary release yet |
 
 ## Implementation evidence
 
@@ -60,9 +60,9 @@ The command pages assume readers already know what a terminal, shell, process or
 Begin only after stage 4's command collection and exit review are complete. Keep public launch as a deliberate release step:
 
 1. License software and shell examples under MIT and original explanatory content under CC BY 4.0. Review third-party material and dependency notices, and include applicable notices in releases; see [third-party notices](third-party-notices.md) for the inventory and remaining artifact checks.
-2. Prepare contribution guidance, issue/PR templates, review expectations, and candidate starter issues. Setup and checks passed in the existing environment and a fresh Linux container; an independent contributor trial remains to be done; see [contributing](../CONTRIBUTING.md).
-3. Review repository history, release artifacts, links, and configuration for secrets, personal information, private dependencies, and material that cannot be redistributed. See the [pre-publication review](publication-review.md) for completed checks and remaining release gates; resolve them before opening access.
-4. Change the existing GitHub repository from private to public after the publication review and owner authorization. Enable the intended issue/PR contribution channels and update the README to accurately describe public status and licensing.
+2. Prepare contribution guidance, issue/PR templates, review expectations, and candidate starter issues. Setup and checks passed in the existing environment and a fresh Linux container; the independent contributor trial was waived on 2026-11-17; see [contributing](../CONTRIBUTING.md).
+3. Review repository history, release artifacts, links, and configuration for secrets, personal information, private dependencies, and material that cannot be redistributed. See the [pre-publication review](publication-review.md) for completed checks and remaining release gates; they were resolved or waived before the repository was opened on 2026-11-17.
+4. Done 2026-11-17: the existing GitHub repository was changed from private to public with owner authorization, after a clean history scan; the owner waived the independent contributor trial. Issues and pull requests are enabled, and the README describes the public status and licensing.
 5. Publish tested immutable binaries/checksums and clear release notes. Validate curl/manual installation, a Homebrew tap, and mise in clean environments. Resolve command-name collisions without silently replacing other programs or shell functions.
 6. Publish the static Astro site to its AWS hosting (S3 and CloudFront, see [infra/README.md](../infra/README.md)) with the GitHub Actions deploy workflow. Publishing does not depend on the repository being public. Apply the stack, then check shell-explain.ninegene.com, HTTPS, routes, search and assets. Include matching content revision, installation guidance, license/attribution information, and links to report problems or contribute commands/examples. Applying the stack, deploying and DNS changes need separate authorization.
 
