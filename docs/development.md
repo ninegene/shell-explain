@@ -91,6 +91,10 @@ On container or VM shared mounts that miss file-change events, run `CHOKIDAR_USE
 
 The web test command first runs a development-server regression in a temporary repository copy, verifying live Markdown edits, added/deleted entries, and recovery after invalid content. Run it alone with `npm --prefix web run test:dev`. It does not alter the authored collection. Browser tests then build a fresh CLI and production site, compare every command/implementation page with the CLI's selected model and exact code text, exercise search/filter/tag navigation and clipboard copying, check canonical URLs, test no-JavaScript content, run desktop/mobile axe checks, verify no horizontal page overflow, and check keyboard access. They save desktop/mobile screenshots under the system temporary directory for visual review. Automated accessibility checks do not replace broader user testing, now tracked in the roadmap’s future usability backlog. The source formatter is pinned; use npm --prefix web run format to apply it and just check to verify formatting and types.
 
+## Continuous integration
+
+The `Native Linux AMD64` workflow (`.github/workflows/native-amd64.yml`) runs on GitHub's `ubuntu-26.04` x64 runner for every pull request and push to `main`. It builds `explain`, runs the CLI smoke matrix in `scripts/cli-smoke.sh`, and runs the same commands as `just test`, `just check` and `just web-test`. Host-tool checks there use the runner's Ubuntu GNU tools, not BusyBox or the macOS tools. The QEMU smoke check below is not run in CI. To run the CLI smoke matrix locally, build first and pass the binary and a new output folder: `bash scripts/cli-smoke.sh bin/explain "$(mktemp -d)/cli-smoke"`.
+
 ## Known limits
 
 - The current corpus has 194 original command and topic pages (see the [checklist](command-collection.md) for the list and the evidence for each). Unknown commands/options return an explicit error rather than generated help.
