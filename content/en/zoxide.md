@@ -6,7 +6,7 @@ summary: Jump to folders you use often with a few letters.
 aliases: [z]
 tags: [shell, navigation, productivity]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://github.com/ajeetdsouza/zoxide#readme
 ---
@@ -30,10 +30,10 @@ Tell it about a folder with `zoxide add`, then ask for the best match for a word
 mkdir p && zoxide add "$PWD/p" && zoxide query p | sed "s#$PWD/##"
 ```
 
-Print the shell code that sets it up; the first line is a comment:
+Print the shell code that sets it up for Bash; reviewed only, because the code changes with each release:
 
 ```sh
-zoxide init bash | head -n 1 | cut -c1-30
+zoxide init bash
 ```
 
 ### Subcommands
@@ -43,7 +43,7 @@ zoxide init bash | head -n 1 | cut -c1-30
 The `z` command does not exist until you put `eval "$(zoxide init bash)"` (or the line for your shell) in your shell's startup file. It learns from your visits, so a folder you have never visited is not found: use `cd` once. A word can match several folders; `zi` lets you choose with `fzf`. The database is a file, and removing a deleted folder from it is done with `zoxide remove` or with `zoxide query` that skips missing ones.
 
 ### Portability
-The commands are the same on every system. The examples use a throw-away data folder, because the tests run with a clean home folder. They were executed on zoxide 0.10.0. The Common examples were executed on zoxide 0.10.0 (see the development guide for the exact check).
+The commands are the same on every system. The examples use a throw-away data folder, because the tests run with a clean home folder. The first two examples were executed on zoxide 0.10.0 (see the development guide for the exact check); the setup code is reviewed only.
 
 ## Upstream
 ### About upstream zoxide

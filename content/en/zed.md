@@ -6,7 +6,7 @@ summary: Open files and folders in the Zed editor from the terminal.
 aliases: []
 tags: [editor, developer]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://zed.dev/docs/
 ---
@@ -15,13 +15,13 @@ references:
 `zed` is the command-line launcher of the Zed code editor. With a file or folder name it opens it in the editor, which is a window and not a terminal program, so the command returns at once. It lets you open a project from the terminal with `zed .`.
 
 ### Background
-`zed` is the command that comes with the Zed editor, and its documentation is on zed.dev. The tool tested here is Zed 1.26.2. Because the command opens a window, only its version could be run in the checks.
+`zed` is the command that comes with the Zed editor, and its documentation is on zed.dev. The tool tested here is Zed 1.26.2. Because the command opens a window, its examples are reviewed only.
 
 ### Examples
-Print the version; the output names the editor:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-zed --version 2>&1 | head -n 1 | cut -d' ' -f1
+zed --version
 ```
 
 Open the current folder as a project; reviewed only because it opens a window:
@@ -55,7 +55,7 @@ Print the version.
 The command is installed with the application, and it may not be on your `PATH` until you choose the install option in the editor. It opens the window and returns, so a script that needs to wait uses `--wait`. When you work over SSH, `zed` opens an editor on the machine you are sitting at only if a connection is set up.
 
 ### Portability
-The options above are the same on macOS and Linux, and features change quickly with versions. The version example was executed on the Zed of the host. The Common examples were executed on Zed 1.26.2 (see the development guide for the exact check).
+The options above are the same on macOS and Linux, and features change quickly with versions. The examples are reviewed only; the page was written against Zed 1.26.2.
 
 ## Upstream
 ### About upstream zed

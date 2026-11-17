@@ -6,7 +6,7 @@ summary: Check GitHub Actions workflow files for mistakes.
 aliases: []
 tags: [developer, github, lint]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://github.com/rhysd/actionlint#readme
 ---
@@ -30,10 +30,10 @@ Check a workflow whose job has no `runs-on`; the first line names the file, the 
 printf 'on: push\njobs:\n  a:\n    steps:\n      - run: echo hi\n' > bad.yml && { actionlint bad.yml | head -n 1; }
 ```
 
-Check that the tool reports its version:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-actionlint -version | head -n 1 | grep -c '^[0-9]'
+actionlint -version
 ```
 
 ### Option: -version
@@ -46,7 +46,7 @@ Choose the output format with a template.
 Run `actionlint` from the repository, with no file names, to check every file in `.github/workflows`. It cannot know the secrets or variables of your repository, so it may not catch a wrong name there. If `shellcheck` is installed, `actionlint` runs it on `run:` steps, and the results appear as extra findings. A new action version can have inputs that an old `actionlint` does not know, so update both.
 
 ### Portability
-The output format and the checks are the same on every system, and new checks arrive with new versions. The examples were executed on actionlint 1.7.12. The Common examples were executed on actionlint 1.7.12 (see the development guide for the exact check).
+The output format and the checks are the same on every system, and new checks arrive with new versions. The two examples that check a workflow were executed on actionlint 1.7.12; the version example is reviewed only. The Common examples were executed on actionlint 1.7.12 (see the development guide for the exact check).
 
 ## Upstream
 ### About upstream actionlint

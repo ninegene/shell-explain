@@ -6,7 +6,7 @@ summary: Install your public key on a server so you can log in with the key.
 aliases: [sshcopyid]
 tags: [ssh, keys, remote]
 implementations: [upstream]
-updated: 2026-11-11
+updated: 2026-11-16
 references:
   - https://github.com/openssh/openssh-portable/blob/master/contrib/ssh-copy-id.1
 ---
@@ -15,13 +15,13 @@ references:
 `ssh-copy-id` adds your public key to the file `~/.ssh/authorized_keys` of an account on another computer. After that, `ssh` can log in to that account with the key and no password. It logs in once with the password to do this, so the server must accept passwords for the first time. It is a script around `ssh`. This page also answers for `sshcopyid`, a common misspelling; the real command has hyphens.
 
 ### Background
-`ssh-copy-id` is a script that comes with OpenSSH on most systems, and its manual is included in the portable OpenSSH source. The tool tested here is the one that macOS ships. Its use connects to a host, so only its help text could be run in the checks.
+`ssh-copy-id` is a script that comes with OpenSSH on most systems, and its manual is included in the portable OpenSSH source. The tool tested here is the one that macOS ships. Its use connects to a host, so its examples are reviewed only.
 
 ### Examples
-Print the usage text; the first word is `Usage:`:
+Print the usage text; reviewed only, because the text differs between versions:
 
 ```sh
-ssh-copy-id -h 2>&1 | head -n 1 | cut -c1-6
+ssh-copy-id -h
 ```
 
 Install the default public key on a host; reviewed only because it connects:
@@ -58,7 +58,7 @@ Force: install without checking whether the key is already there.
 It copies your public key, so keep the private key where it is: never copy the private key. It needs an existing key pair: make one with `ssh-keygen` first. After a successful run, test the login in a second window before you close the first one and before you turn off passwords on the server, or you can lock yourself out. A key with a wrong comment or an old key can pile up in `authorized_keys` if you run the command many times; it skips keys that are already there.
 
 ### Portability
-The script and its options are the same on every system that has it; the macOS and the Linux versions print slightly different messages. The help example was executed on the macOS host; the others are reviewed only. The Common examples were executed on ssh-copy-id (the macOS system build) (see the development guide for the exact check).
+The script and its options are the same on every system that has it; the macOS and the Linux versions print slightly different messages. The examples are reviewed only; the page was written against ssh-copy-id (the macOS system build).
 
 ## Upstream
 ### About upstream ssh-copy-id

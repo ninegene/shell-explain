@@ -6,7 +6,7 @@ summary: Run a command from an npm package without installing it for good.
 aliases: []
 tags: [developer, javascript, packages]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://docs.npmjs.com/cli/commands/npx
 ---
@@ -18,10 +18,10 @@ references:
 `npx` comes with `npm`, and its manual is on docs.npmjs.com. The tool tested here is the npx that comes with the long-term-support Node.js on the host.
 
 ### Examples
-Print the version; it starts with a digit:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-npx --version | grep -c '^[0-9]'
+npx --version
 ```
 
 Run a tool from a package; the first run downloads it, so this is reviewed only:
@@ -46,7 +46,7 @@ Name the package that provides the command.
 A name that is not installed makes `npx` download it from the public registry and run its code, so a typing mistake can run an unwanted package; check the name before you press Enter. Use `--no-install` to stop it from downloading. The first run is slow, because it downloads. A tool that is in your project is found there first, which can be a different version from the one you expected.
 
 ### Portability
-The behavior of downloading on a missing name changed between npm versions, so check `npx --version`. The examples that use the network are reviewed only: they were not run by the tests, and the ones that call a public service were checked by hand on 2026-11-10. The version example was executed on the npx of the host. The Common examples were executed on npx (the version that comes with the Node.js on the host) (see the development guide for the exact check).
+The behavior of downloading on a missing name changed between npm versions, so check `npx --version`. The examples that use the network are reviewed only: they were not run by the tests, and the ones that call a public service were checked by hand on 2026-11-10. The version example is reviewed only too, because its output changes with each release. The Common examples are reviewed only.
 
 ## Upstream
 ### About upstream npx

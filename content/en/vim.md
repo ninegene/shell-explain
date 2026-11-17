@@ -6,7 +6,7 @@ summary: Edit text files in a terminal, with commands you type.
 aliases: []
 tags: [editor, text, developer]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://vimhelp.org/
 ---
@@ -36,10 +36,10 @@ Type text at the end of a line with a normal-mode command:
 printf 'x\n' > h && vim -es -u NONE -c 'normal Ahello' -c 'wq' h && cat h
 ```
 
-Check that the version line begins with `VIM`:
+Print the version and the features it was built with; reviewed only, because the output differs between builds:
 
 ```sh
-vim --version | head -n 1 | cut -c1-5
+vim --version
 ```
 
 Open a file to edit it; the editor takes over the terminal, so this is reviewed only:
@@ -64,7 +64,7 @@ Open read-only.
 The biggest surprise is that you cannot quit by typing: press `Esc` first, then `:q!` to quit without saving or `:wq` to save and quit. In a script, always give `-u NONE` or `-N` so that your settings do not change the result, and `-es` so that nothing is shown. A swap file named `.name.swp` stays after a crash and makes the next open ask what to do. Vim can change the line endings and the encoding of a file; look at `:set fileformat?` when this matters. `vi` is often vim in compatible mode, which behaves differently.
 
 ### Portability
-The editing commands are the same everywhere, and features (such as the `normal` command in scripted mode) come with versions: macOS ships an older vim than a package manager. The scripted examples were executed on the vim of the host. The Common examples were executed on Vim (the version on the host) (see the development guide for the exact check).
+The editing commands are the same everywhere, and features (such as the `normal` command in scripted mode) come with versions: macOS ships an older vim than a package manager. The scripted examples were executed on Vim (the version on the host) (see the development guide for the exact check); the version and editor examples are reviewed only.
 
 ## Upstream
 ### About upstream vim

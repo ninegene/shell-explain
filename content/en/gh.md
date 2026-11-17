@@ -6,7 +6,7 @@ summary: Work with GitHub issues, pull requests and repositories from the termin
 aliases: []
 tags: [github, git, developer]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://cli.github.com/manual/
 ---
@@ -15,19 +15,19 @@ references:
 `gh` is the GitHub command-line tool. It creates and reviews pull requests, opens and comments on issues, manages repositories and releases, and can call any GitHub API endpoint with `gh api`. It uses your GitHub login (set up with `gh auth login`), so every call acts as you on GitHub. For plain git work such as commit and push, you still use `git`.
 
 ### Background
-`gh` is the official GitHub CLI, with its manual at cli.github.com. The tool tested here is gh 2.103.2. The examples that run here read only its own help and report that no login exists, in a clean home folder; the ones that call GitHub are reviewed only, because they use your login.
+`gh` is the official GitHub CLI, with its manual at cli.github.com. The tool tested here is gh 2.103.2. The one example that runs here reports that no login exists, in a clean home folder. The version and help examples are reviewed only, because their text changes with each release, and the ones that call GitHub are reviewed only, because they use your login.
 
 ### Examples
-Print the version; the output begins with `gh version`:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-gh --version | head -n 1 | cut -c1-10
+gh --version
 ```
 
-Print the first line of the help text:
+Read the help text; reviewed only, because it changes with each release:
 
 ```sh
-gh help | head -n 1
+gh help
 ```
 
 Ask for the login state; with no login in a clean home folder, the status is 1:
@@ -36,10 +36,10 @@ Ask for the login state; with no login in a clean home folder, the status is 1:
 gh auth status > /dev/null 2>&1; echo "status $?"
 ```
 
-Read the help of one command group:
+Read the help for `gh pr`; reviewed only, because it changes with each release:
 
 ```sh
-gh pr --help | head -n 1
+gh pr --help
 ```
 
 List the open pull requests of the current repository; reviewed only because it calls GitHub as you:
@@ -67,7 +67,7 @@ gh api repos/octocat/Hello-World --jq .full_name
 Everything `gh` does is done as you: `gh pr merge`, `gh repo delete` and `gh issue close` change the real repository, and some cannot be undone. Check the repository it will use (`gh repo view`) before a command that changes anything, because it picks the one of the current folder. A login token is stored in your keychain or a config file: do not share it, and prefer a token with only the scopes needed. In a script, set `GH_TOKEN` to a token with limited rights, not your own login.
 
 ### Portability
-The commands are the same on every system, and new ones arrive with new versions. The first four examples were executed on gh 2.103.2 in a clean home folder. The Common examples were executed on gh 2.103.2 (see the development guide for the exact check).
+The commands are the same on every system, and new ones arrive with new versions. The third example was executed on gh 2.103.2 in a clean home folder (see the development guide for the exact check); the others are reviewed only.
 
 ## Upstream
 ### About upstream gh

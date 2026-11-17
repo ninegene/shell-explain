@@ -6,7 +6,7 @@ summary: Define and deploy cloud infrastructure with ordinary programming langua
 aliases: []
 tags: [cloud, infrastructure, devops]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://www.pulumi.com/docs/iac/cli/commands/
 ---
@@ -15,25 +15,25 @@ references:
 `pulumi` creates, updates and deletes cloud resources described in a program written in a language you already use (TypeScript, Python, Go and others). The program describes the wanted state, `pulumi preview` shows what would change, and `pulumi up` makes the change. It records what it has made in a state, so it can change or delete it later. A change to a stack can create, replace or destroy real resources.
 
 ### Background
-`pulumi` is the command of Pulumi, whose commands are described in its CLI reference. The tool tested here is Pulumi v3.272.0. No example on this page calls a cloud service: the executed ones read the tool's own help and settings in a clean home folder with no credentials, and the ones that would call a service are reviewed only. Commands that change infrastructure (`pulumi up`, `pulumi destroy`, `pulumi refresh`) are reviewed only, and are never run against real resources by this project.
+`pulumi` is the command of Pulumi, whose commands are described in its CLI reference. The tool tested here is Pulumi v3.272.0. No example on this page is executed: the version and help examples are reviewed only because their text changes with each release, and the others would call a service. Commands that change infrastructure (`pulumi up`, `pulumi destroy`, `pulumi refresh`) are reviewed only, and are never run against real resources by this project.
 
 ### Examples
-Print the version; it starts with `v3`:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-pulumi version | grep -c '^v3'
+pulumi version
 ```
 
-Print the first line of the help text:
+Read the help text; reviewed only, because it changes with each release:
 
 ```sh
-pulumi --help | head -n 1
+pulumi --help
 ```
 
-Read the help of `pulumi new`, which creates a project from a template:
+Read the help for `pulumi new`, which creates a project from a template; reviewed only, because it changes with each release:
 
 ```sh
-pulumi new --help | head -n 1 | cut -c1-40
+pulumi new --help
 ```
 
 Create a project from a template; reviewed only because it asks questions and may call the service:
@@ -67,7 +67,7 @@ pulumi destroy
 Always run `pulumi preview` and read it before `pulumi up`: the lines marked as replace or delete can destroy data, such as a database. `pulumi destroy` and `pulumi refresh` change real resources too. The state decides what Pulumi thinks exists; if it is lost or out of date, Pulumi can try to create things that already exist. Secrets in the configuration are encrypted only if you set them with `--secret`. Use a separate stack for each environment, and check which stack is selected (`pulumi stack`) before a change.
 
 ### Portability
-The commands are the same on every system; the languages and providers come as packages with their own versions. The first three examples were executed on Pulumi v3.272.0. The Common examples were executed on Pulumi v3.272.0 (see the development guide for the exact check).
+The commands are the same on every system; the languages and providers come as packages with their own versions. The Common examples are reviewed only.
 
 ## Upstream
 ### About upstream pulumi

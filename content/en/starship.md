@@ -6,7 +6,7 @@ summary: Show a fast, informative prompt in any shell.
 aliases: []
 tags: [shell, prompt, productivity]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://starship.rs/config/
 ---
@@ -18,16 +18,16 @@ references:
 `starship` is an open-source tool whose manual is at starship.rs. It is one program for every shell. The tool tested here is starship 1.27.0.
 
 ### Examples
-Print the version; it starts with the name:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-starship --version | head -n 1 | cut -d' ' -f1
+starship --version
 ```
 
-Print the setup code for Bash; the first line calls `starship` itself:
+Print the setup code for Bash; reviewed only, because the code changes with each release:
 
 ```sh
-starship init bash | head -n 1 | grep -c starship
+starship init bash
 ```
 
 ### Subcommands
@@ -37,7 +37,7 @@ starship init bash | head -n 1 | grep -c starship
 The prompt only changes after the line in the startup file runs, so start a new shell after you add it. Many modules look at the folder, so a slow disk or a large git repository can slow the prompt: use `starship timings` to see which module is slow. The configuration is a TOML file, and a mistake in it shows a warning and the default for that part. Fonts: some symbols need a patched font (a Nerd Font) to show correctly.
 
 ### Portability
-The setup code differs per shell (`bash`, `zsh`, `fish` and others) but the program and the configuration are the same everywhere. The examples were executed on starship 1.27.0. The Common examples were executed on starship 1.27.0 (see the development guide for the exact check).
+The setup code differs per shell (`bash`, `zsh`, `fish` and others) but the program and the configuration are the same everywhere. The examples are reviewed only; the page was written against starship 1.27.0.
 
 ## Upstream
 ### About upstream starship

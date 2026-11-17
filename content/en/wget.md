@@ -6,7 +6,7 @@ summary: Download files from the web, without a browser.
 aliases: [gwget]
 tags: [network, web, download]
 implementations: [gnu, busybox]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://www.gnu.org/software/wget/manual/wget.html
   - https://busybox.net/downloads/BusyBox.html
@@ -65,23 +65,23 @@ Check that the address exists, without downloading it.
 Without `-O`, an existing file of the same name is not replaced: `wget` saves the new one as `name.1`, which is easy to miss in a script. A download that stops halfway leaves a part of the file; `-c` continues it. Put the address in quotes when it contains `&` or `?`. `wget` follows redirects by default, so the file you get may come from another site. `wget -r` can download a whole site and put load on it: use it with care and with `--wait`. Do not put passwords in the address or on the command line.
 
 ### Portability
-Only `-q`, `-O` and `-c` are in the Common examples, and BusyBox 1.37.0 supports a smaller set than GNU Wget. The Common examples are reviewed only. The help and version text are shown in the sections below and were executed.
+Only `-q`, `-O` and `-c` are in the Common examples, and BusyBox 1.37.0 supports a smaller set than GNU Wget. The Common examples are reviewed only, and so are the help, version and usage examples in the sections below, because their text changes with each release.
 
 ## GNU
 ### About GNU wget
 GNU Wget is the full-featured tool, tested here as version 1.25.0.
 
 ### GNU examples
-Print the first line of the help text, which names the tool and its version:
+Read the help text; reviewed only, because it changes with each release:
 
 ```sh
-wget --help | head -n 1 | cut -c1-8
+wget --help
 ```
 
-Print the version line:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-wget --version | head -n 1 | cut -c1-8
+wget --version
 ```
 
 ### Option: -r
@@ -92,13 +92,13 @@ Wait this many seconds between downloads.
 
 ## BusyBox
 ### About BusyBox wget
-BusyBox bundles wget as an applet, and anything beyond the common options depends on how it was built. Its download examples are reviewed only, like the common ones, and the example below was executed on BusyBox 1.37.0.
+BusyBox bundles wget as an applet, and anything beyond the common options depends on how it was built. Its download examples are reviewed only, like the common ones, and the example below is reviewed only too.
 
 ### BusyBox examples
-Run it without arguments to see its usage; the first line names BusyBox:
+Run it without arguments to see its usage; reviewed only, because the text depends on the version and build:
 
 ```sh
-wget 2>&1 | head -n 1 | cut -c1-7
+wget
 ```
 
 ### BusyBox notes

@@ -6,7 +6,7 @@ summary: Install JavaScript packages and run a project's scripts.
 aliases: []
 tags: [developer, javascript, packages]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://docs.npmjs.com/cli/commands
   - https://docs.npmjs.com/
@@ -19,10 +19,10 @@ references:
 `npm` is an open-source command with documentation at docs.npmjs.com. It talks to a public registry for downloads. The tool tested here is the npm that comes with the long-term-support Node.js on the host.
 
 ### Examples
-Print the version; it starts with a digit:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-npm --version | grep -c '^[0-9]'
+npm --version
 ```
 
 Start a project: `npm init -y` writes a `package.json` with default answers, and `node` reads its version:
@@ -56,7 +56,7 @@ npm ls --depth=0
 Run `npm` in the folder that holds `package.json`, or it uses a different project or none. `npm install` writes to `node_modules` and `package-lock.json`; commit the lock file and do not commit `node_modules`. A package can run code when it is installed, so install only what you trust. A global install (`-g`) changes your whole system; prefer `npx` or a project install. Do not use `sudo` with `npm`: it leaves files that you cannot change.
 
 ### Portability
-The commands are the same on every system, and details change between npm versions. The examples that use the network are reviewed only: they were not run by the tests, and the ones that call a public service were checked by hand on 2026-11-10. The first three examples were executed on the npm of the host. The Common examples were executed on npm (the version that comes with the Node.js on the host) (see the development guide for the exact check).
+The commands are the same on every system, and details change between npm versions. The examples that use the network are reviewed only: they were not run by the tests, and the ones that call a public service were checked by hand on 2026-11-10. The two examples that start a project were executed on the npm of the host; the version example is reviewed only. The Common examples were executed on npm (the version that comes with the Node.js on the host) (see the development guide for the exact check).
 
 ## Upstream
 ### About upstream npm

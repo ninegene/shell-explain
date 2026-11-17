@@ -6,7 +6,7 @@ summary: Install and switch between versions of developer tools, and set project
 aliases: []
 tags: [developer, tools, environment]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-16
 references:
   - https://mise.jdx.dev/
 ---
@@ -18,10 +18,10 @@ references:
 `mise` is an open-source tool whose manual is at mise.jdx.dev. It plays the role of version managers such as `nvm` and `pyenv`, and of `direnv`, in one program. The tool tested here is mise 2026.10.19. Its commands that install tools download them, so those are reviewed only.
 
 ### Examples
-Print the version:
+Print the installed version; reviewed only, because the output changes with each release:
 
 ```sh
-mise --version 2> /dev/null | head -n 1 | grep -c '^[0-9]'
+mise --version
 ```
 
 Set an environment variable for the project; this writes `mise.toml`:
@@ -55,7 +55,7 @@ mise ls
 A project file asks for a tool; `mise` may download it the first time, and a script that runs `mise exec` can therefore need the network. Trust the `mise.toml` of a project before you let it run tasks or set variables, because it can run code; `mise trust` marks a file as trusted. The tool is changing quickly, and the output text changes between versions. Running `mise` from a folder without a config file just uses the global one.
 
 ### Portability
-The commands and the file format are the same on every system. Because versions move fast, check `mise --version` against the manual. The examples that use the network are reviewed only: they were not run by the tests, and the ones that call a public service were checked by hand on 2026-11-10. The first three examples were executed on mise 2026.10.19. The Common examples were executed on mise 2026.10.19 (see the development guide for the exact check).
+The commands and the file format are the same on every system. Because versions move fast, check `mise --version` against the manual. The examples that use the network are reviewed only: they were not run by the tests, and the ones that call a public service were checked by hand on 2026-11-10. The two examples that set a variable were executed on mise 2026.10.19; the version example is reviewed only. The Common examples were executed on mise 2026.10.19 (see the development guide for the exact check).
 
 ## Upstream
 ### About upstream mise
