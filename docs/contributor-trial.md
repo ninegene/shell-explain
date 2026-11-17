@@ -19,7 +19,7 @@ The guide's `ps` examples assume a controlling terminal. Run `just test` in a te
 
 Capture the repository revision, date, task, OS and tool versions; the instructions and commands followed; pass/fail/skip results; time and points of confusion; and any assistance given. Check that the participant can identify the source file, preserve the content format, provide evidence for changed claims, understand the contribution licensing terms, and describe checks and limitations. Avoid recording private data or copying terminal output containing secrets.
 
-For a private trial, a patch or local branch may stand in for a PR; record that access, fork creation, and the actual GitHub PR workflow were not tested. Once public access is separately authorized and enabled, independently verify the fork, clone, branch, push, PR template, review, and response workflow. The private trial alone cannot close that part of the gate.
+If a participant cannot use GitHub, a patch or local branch may stand in for a PR; record that fork creation and the actual GitHub PR workflow were not tested. The repository is public, so a trial can verify the fork, clone, branch, push, PR template, review, and response workflow directly.
 
 ## Completion
 

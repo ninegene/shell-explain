@@ -17,7 +17,7 @@ Run `just` to list commands. Run `just test` for Go and available host-tool exam
 
 ## Contribution process
 
-Once public contributions open:
+To contribute:
 
 1. Search existing pages and issues. Open an issue for a new command, implementation, or larger change; small corrections can go directly to a pull request.
 2. Fork the repository, clone your fork and create a branch. Make changes to the canonical Markdown in `content/en/`, not generated JSON or separate CLI/web copies. Read the [content format](docs/content-format.md) and use an existing page as a schema example.
