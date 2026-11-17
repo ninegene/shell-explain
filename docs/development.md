@@ -93,7 +93,7 @@ The web test command first runs a development-server regression in a temporary r
 
 ## Continuous integration
 
-The `Native Linux AMD64` workflow (`.github/workflows/native-amd64.yml`) runs on GitHub's `ubuntu-26.04` x64 runner for every pull request and push to `main`. It builds `explain`, runs the CLI smoke matrix in `scripts/cli-smoke.sh`, and runs the same commands as `just test` and `just check`. It does not run `just web-test` for now: the dev-server watcher test failed on the runner, so run the browser tests locally. Host-tool checks there use the runner's Ubuntu GNU tools, not BusyBox or the macOS tools. The QEMU smoke check below is not run in CI. To run the CLI smoke matrix locally, build first and pass the binary and a new output folder: `bash scripts/cli-smoke.sh bin/explain "$(mktemp -d)/cli-smoke"`.
+The `Native Linux AMD64` workflow (`.github/workflows/native-amd64.yml`) runs on GitHub's `ubuntu-26.04` x64 runner for every pull request and push to `main`. It builds `explain`, runs the CLI smoke matrix in `scripts/cli-smoke.sh`, and runs the same commands as `just test` and `just check`. It runs the Playwright part of `just web-test` (site and CLI parity, search, copying, accessibility) but not its first step, the dev-server watcher test (`npm --prefix web run test:dev`), which failed on the runner for now; run `just web-test` locally when changing the content watcher. Host-tool checks there use the runner's Ubuntu GNU tools, not BusyBox or the macOS tools. The QEMU smoke check below is not run in CI. To run the CLI smoke matrix locally, build first and pass the binary and a new output folder: `bash scripts/cli-smoke.sh bin/explain "$(mktemp -d)/cli-smoke"`.
 
 ## Known limits
 
