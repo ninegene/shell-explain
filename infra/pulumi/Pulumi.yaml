@@ -1,0 +1,8 @@
+name: shell-explain
+description: Hosting for shell-explain.ninegene.com (S3, CloudFront, ACM, Route 53 records, deploy role)
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+backend:
+  url: s3://ninegene-pulumi-state?region=us-east-2

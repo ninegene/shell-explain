@@ -6,7 +6,7 @@ Command-reference project, private through development and iteration, with a pub
 
 ## Current state
 
-Stages 1–4 are implemented locally: original content in content/en, Go parser/CLI in internal and cmd, and an Astro static site in web. Current CLI/web usability is accepted as sufficient. Stage 4 (the command collection in docs/command-collection.md, 194 pages) is complete, and the planned beginner guides are written. Broader usability studies are deferred in docs/roadmap.md. Do not create installers, release/deployment workflows, change repository visibility, or publish without authorization.
+Stages 1–4 are implemented locally: original content in content/en, Go parser/CLI in internal and cmd, and an Astro static site in web. Current CLI/web usability is accepted as sufficient. Stage 4 (the command collection in docs/command-collection.md, 194 pages) is complete, and the planned beginner guides are written. Broader usability studies are deferred in docs/roadmap.md. Do not create installers, add further release/deployment workflows, change repository visibility, or publish without authorization (the website's AWS hosting under `infra/` and `.github/workflows/deploy.yml` is the authorized exception).
 
 ## Commands and implementation
 
@@ -23,7 +23,7 @@ Stages 1–4 are implemented locally: original content in content/en, Go parser/
 ## Architecture conventions
 
 - One reviewed Markdown source collection must supply CLI and website explanations.
-- Recommended CLI implementation is Go with embedded offline content; website uses Astro static generation and GitHub Pages hosting via GitHub Actions after stage 5's public transition. Use local previews during private iteration; do not add paid cloud hosting for this site.
+- Recommended CLI implementation is Go with embedded offline content; website uses Astro static generation, hosted on AWS (S3 + CloudFront, Pulumi in `infra/pulumi`, runbook in `infra/README.md`) and deployed by GitHub Actions. Use local previews during iteration. Applying the Pulumi stack, deploying and DNS changes are cloud writes: confirm each first.
 - Generated data, HTML, search indexes, and embedded bundles are outputs, never a second authoring source.
 - Resolve documentation by command implementation/version, not OS alone. Make ambiguous selection visible and support overrides.
 - Never execute example/input command lines to explain them. Any supported version probes must be explicit, bounded, command-specific, and documented.
@@ -48,7 +48,7 @@ Follow [docs/content-format.md](docs/content-format.md) when adding or updating 
 
 ## Publication and repository rules
 
-- Keep the repository private through stage 4. Stage 5 includes finalizing contribution guidance, changing visibility to public, and publishing the static site. Do not change visibility or deploy merely because these actions appear in the roadmap.
+- Keep the repository private through stage 4. Stage 5 includes finalizing contribution guidance and changing visibility to public. Do not change visibility or deploy merely because these actions appear in the roadmap.
 - Never add secrets, personal data, cloud identifiers, machine names, or private project names/details.
 - Keep sample paths and values generic; use example.org and synthetic fixtures.
 - Check licenses and attribution before copying content/code. Original software and shell examples use MIT; original explanatory content uses CC BY 4.0. See README.md.

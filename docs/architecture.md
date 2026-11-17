@@ -32,11 +32,11 @@ Pipeline/script parsing is deferred. If introduced, use a proper parser such as 
 
 Use Astro's content collections/build-time loaders for shared Markdown metadata and static routes. Astro documents both Markdown rendering and collection schemas. See [content collections](https://docs.astro.build/en/guides/content-collections/) and [Markdown](https://docs.astro.build/en/guides/markdown-content/).
 
-Build command pages, a catalog, tag pages, and a browser search index as static artifacts. The public reference needs no accounts, database, server renderer, or lab provisioning. Host the built files on GitHub Pages, with GitHub Actions building and deploying the Astro site. No Azure resources or paid cloud hosting are needed for this website.
+Build command pages, a catalog, tag pages, and a browser search index as static artifacts. The public reference needs no accounts, database, server renderer, or lab provisioning. Host the built files in a private S3 bucket behind CloudFront, defined in Pulumi (`infra/pulumi`), with GitHub Actions building and deploying the Astro site. No Azure resources, application server or database are needed for this website.
 
-Keep stages 1–4 private and use local Astro previews. Publish on GitHub Pages in stage 5 after the repository becomes public. GitHub Free supports Pages from public repositories; private-source Pages requires a qualifying paid GitHub plan and is not part of this plan. See [GitHub Pages availability](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) and [Astro's Pages deployment guide](https://docs.astro.build/en/guides/deploy/github/).
+Use local Astro previews during development. Publishing the site does not require a public repository; see [distribution](distribution.md) and [infra/README.md](../infra/README.md).
 
-Configure shell-explain.ninegene.com as the Pages custom domain, verify domain ownership, and configure DNS and HTTPS during authorized publication. Keep Astro's canonical site URL and asset paths consistent with the custom domain rather than assuming a repository subpath. Deployment and DNS changes remain outside this documentation-only update.
+The site is served at shell-explain.ninegene.com, with DNS records in the existing ninegene.com zone and an ACM certificate. Keep Astro's canonical site URL and asset paths consistent with that domain rather than assuming a repository subpath. The Content-Security-Policy allows only same-origin scripts, so the build must not inline scripts (`assetsInlineLimit: 0`).
 
 Provide explicit platform/implementation filters with shareable URLs. Default to a common portable view when possible. Browser OS detection must not claim to know which executable the visitor uses. Display version applicability, references, copyable examples, and links to related commands. Search/filter state should work with keyboard navigation and readable mobile layouts.
 

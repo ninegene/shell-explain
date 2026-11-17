@@ -4,7 +4,7 @@ Practical command explanations for the terminal and the web, maintained in one s
 
 - Repository: [ninegene/shell-explain](https://github.com/ninegene/shell-explain), private during development and iteration; planned public release in stage 5.
 - Executable: **`explain`**, for example `./bin/explain grep` after a local build.
-- Planned website: **shell-explain.ninegene.com**, built with Astro and hosted on GitHub Pages after the public release in stage 5.
+- Planned website: **shell-explain.ninegene.com**, built with Astro and hosted on AWS (S3 and CloudFront, defined in Pulumi under [infra](infra/README.md)).
 - CLI language: Go, with original Markdown embedded for offline use.
 - Status: **stages 1–4 implemented locally**. Current CLI and web usability are accepted as sufficient. The command collection (194 pages: GNU, macOS, BusyBox, procps, Bash builtins and single-project tools) is complete, and all planned beginner guides are written. No installer, public release, or deployment exists yet.
 
@@ -14,7 +14,7 @@ Explain what a command does, show useful examples, explain common options and mi
 
 The CLI and website must consume the same `.md` files. Neither keeps an independently edited copy of the explanations. Installation should eventually support downloadable binaries, a curl-based installer, Homebrew, and mise.
 
-Use local Astro previews during private development and iteration. After the repository becomes public, GitHub Actions will build and deploy the static site to GitHub Pages. No paid cloud hosting is planned for the website; domain registration remains separate.
+Use local Astro previews during development and iteration. A GitHub Actions workflow builds the static site and deploys it to S3 and CloudFront once the infrastructure is applied; hosting costs a few cents a month and does not require a public repository. Domain registration remains separate.
 
 ## Documentation
 

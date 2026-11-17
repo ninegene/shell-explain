@@ -1,0 +1,5 @@
+secretsprovider: awskms://alias/ninegene-pulumi?region=us-east-2
+encryptedkey: AQICAHgPzazC6KLjTA3dzUnCHh3RQUFSsB38ta92FtcJItqsygFgh31l8IP1v2PbzDuxgDtEAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMUp7vS5VXKIWpYnCpAgEQgDu0VJNzUddovmG9WqK8+JyMBlFTVRFiYIj09gFO/Rheup4c8TdUEW5sG3LDyX6Xv7k5mBJBX3ShySu7vw==
+config:
+  shell-explain:region: us-east-2
+  shell-explain:githubSubjectPrefix: repo:ninegene@1923005/shell-explain@1431880380
