@@ -479,6 +479,9 @@ test('copy preserves exact code and implementation links are shareable', async (
 test('desktop and mobile accessibility, keyboard navigation, and overflow', async ({
   page,
 }) => {
+  // The axe scan of 16 pages normally takes about 30 s, the default limit, so it
+  // timed out on slower CI runners.
+  test.setTimeout(120_000);
   for (const size of [
     { width: 1440, height: 1000 },
     { width: 390, height: 844 },
