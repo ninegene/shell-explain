@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Command-reference project; the repository has been public since 2026-11-17 and release binaries are planned for stage 5. Repository name: shell-explain. Executable name: explain. Static Astro website: shell-explain.ninegene.com. Read README.md and relevant docs before work.
+Command-reference project; the repository has been public since 2026-11-17 and release binaries, a curl installer and install docs (README, website /install/) exist; the first release is v0.1.0. Repository name: shell-explain. Executable name: explain. Static Astro website: shell-explain.ninegene.com. Read README.md and relevant docs before work.
 
 ## Current state
 
-Stages 1–4 are implemented locally: original content in content/en, Go parser/CLI in internal and cmd, and an Astro static site in web. Current CLI/web usability is accepted as sufficient. Stage 4 (the command collection in docs/command-collection.md, 194 pages) is complete, and the planned beginner guides are written. Broader usability studies are deferred in docs/roadmap.md. Do not create installers, add further release/deployment workflows, change repository visibility, or publish without authorization (the website's AWS hosting under `infra/` and `.github/workflows/deploy.yml` is the authorized exception).
+Stages 1–4 are implemented locally: original content in content/en, Go parser/CLI in internal and cmd, and an Astro static site in web. Current CLI/web usability is accepted as sufficient. Stage 4 (the command collection in docs/command-collection.md, 194 pages) is complete, and the planned beginner guides are written. Broader usability studies are deferred in docs/roadmap.md. Do not add further release/deployment workflows beyond the release tooling in docs/distribution.md, change repository visibility, or publish without authorization (the website's AWS hosting under `infra/` and `.github/workflows/deploy.yml` is the authorized exception).
 
 ## Commands and implementation
 

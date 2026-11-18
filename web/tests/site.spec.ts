@@ -515,6 +515,7 @@ test('desktop and mobile accessibility, keyboard navigation, and overflow', asyn
       '/commands/ls/',
       '/tags/text/',
       '/about/',
+      '/install/',
       '/learn/',
       '/learn/big-picture/',
       '/learn/glossary/',

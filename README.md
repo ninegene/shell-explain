@@ -6,13 +6,13 @@ Practical command explanations for the terminal and the web, maintained in one s
 - Executable: **`explain`**, for example `./bin/explain grep` after a local build.
 - Website: **shell-explain.ninegene.com**, built with Astro and hosted on AWS (S3 and CloudFront, defined in Pulumi under [infra](infra/README.md)).
 - CLI language: Go, with original Markdown embedded for offline use.
-- Status: **stages 1–4 implemented locally**. Current CLI and web usability are accepted as sufficient. The command collection (194 pages: GNU, macOS, BusyBox, procps, Bash builtins and single-project tools) is complete, and all planned beginner guides are written. The website is deployed. No installer or release binaries exist yet; those are planned for stage 5.
+- Status: **stages 1–4 implemented locally**. Current CLI and web usability are accepted as sufficient. The command collection (194 pages: GNU, macOS, BusyBox, procps, Bash builtins and single-project tools) is complete, and all planned beginner guides are written. The website is deployed, and the `explain` CLI is released as binaries (see [Install](#install)).
 
 ## Goal
 
 Explain what a command does, show useful examples, explain common options and mistakes, and select documentation appropriate to the installed implementation. Beginners should be able to understand the examples; experienced users should be able to find an unfamiliar option quickly.
 
-The CLI and website must consume the same `.md` files. Neither keeps an independently edited copy of the explanations. Installation should eventually support downloadable binaries, a curl-based installer, Homebrew, and mise.
+The CLI and website must consume the same `.md` files. Neither keeps an independently edited copy of the explanations. The CLI installs from release binaries, a curl-based installer, Homebrew, or mise.
 
 Use local Astro previews during development and iteration. A GitHub Actions workflow builds the static site and deploys it to S3 and CloudFront once the infrastructure is applied; hosting costs a few cents a month and does not require a public repository. Domain registration remains separate.
 
@@ -30,6 +30,24 @@ Use local Astro previews during development and iteration. A GitHub Actions work
 | [Roadmap](docs/roadmap.md) | Decisions, validation, and implementation stages |
 | [Development and verification](docs/development.md) | Build commands, local previews, test coverage, and known limits |
 | [Contributing](CONTRIBUTING.md) | Documentation contributions and source/licensing expectations |
+
+## Install
+
+Pick one. Binaries are published for macOS and Linux on ARM64 and AMD64.
+
+```sh
+brew install ninegene/tap/shell-explain
+```
+
+```sh
+mise use -g github:ninegene/shell-explain
+```
+
+```sh
+curl -fsSL https://github.com/ninegene/shell-explain/releases/latest/download/install.sh | sh
+```
+
+The install script verifies the SHA-256 checksum, installs into `~/.local/bin`, never uses sudo and refuses to replace an existing `explain` without `--force`; add `--dry-run` to preview. Then run `explain --version` and `explain grep`. Each [release](https://github.com/ninegene/shell-explain/releases) also has the archives, `checksums.txt` and a build provenance attestation (`gh attestation verify`). The same steps are on the [website](https://shell-explain.ninegene.com/install/); packaging details are in [Distribution](docs/distribution.md).
 
 ## Local quick start
 
@@ -81,7 +99,7 @@ Text output shows example usages for the selected implementation by default, und
 
 ## Project boundaries
 
-This project is being developed as a reusable reference tool, now public; release binaries and installers are planned for stage 5. It is not an interactive lab host. Other applications can eventually install a pinned binary or consume its documented JSON output. Lesson-specific hints, grading, accounts, and progress belong to those applications.
+This project is being developed as a reusable reference tool, now public; release binaries and installers are available (see Install). It is not an interactive lab host. Other applications can eventually install a pinned binary or consume its documented JSON output. Lesson-specific hints, grading, accounts, and progress belong to those applications.
 
 GNU/BSD behavior must be selected per command, not inferred solely from the operating system. The website cannot inspect the visitor's terminal; it must offer explicit implementation/platform selection.
 
