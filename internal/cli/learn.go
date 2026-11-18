@@ -25,7 +25,7 @@ func (c Config) guideWidth(op options) int {
 
 func writeHeading(out io.Writer, color bool, s string) {
 	if color {
-		fmt.Fprintf(out, "\x1b[1;36m%s\x1b[0m\n", s)
+		fmt.Fprintln(out, paint(true, ansiHeading, s))
 	} else {
 		fmt.Fprintln(out, s)
 	}

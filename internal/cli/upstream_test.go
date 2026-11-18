@@ -68,7 +68,7 @@ func TestSymbolicAliasAndUpstreamSelection(t *testing.T) {
 	for _, name := range []string{"[", "/usr/bin/[", "test"} {
 		var out, stderr bytes.Buffer
 		status := Run(context.Background(), c, []string{name}, &out, &stderr, Config{Version: "t", Width: 40, Detector: detect.Detector{OS: "darwin", Path: t.TempDir()}})
-		if status != 0 || !strings.Contains(out.String(), "test — upstream (inferred)") || !strings.Contains(out.String(), `[ "$n" -gt 3 ]`) {
+		if status != 0 || !strings.Contains(out.String(), "test — Evaluate a condition.") || !strings.Contains(out.String(), `[ "$n" -gt 3 ]`) {
 			t.Errorf("%q: %d %q %q", name, status, out.String(), stderr.String())
 		}
 	}

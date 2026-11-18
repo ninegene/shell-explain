@@ -6,7 +6,7 @@ summary: Log in to another computer, or run a command on it, over an encrypted c
 aliases: []
 tags: [ssh, network, remote]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-17
 references:
   - https://man.openbsd.org/ssh
   - https://man.openbsd.org/ssh_config
@@ -19,10 +19,82 @@ references:
 `ssh` is part of OpenSSH, whose manual is on man.openbsd.org. The settings it reads from `~/.ssh/config` are described in the `ssh_config` manual. The tool tested here is the OpenSSH that macOS ships. Commands that connect to a host are reviewed only, because the checks never contact another computer.
 
 ### Examples
-Show the installed version; reviewed only, because the output changes with each release:
+Log in; the first time, check the host fingerprint:
 
 ```sh
-ssh -V
+ssh user@host
+```
+
+Use a different port (`-p`; `scp` uses a capital `-P`):
+
+```sh
+ssh -p 2222 user@host
+```
+
+Use a specific key (`-i`):
+
+```sh
+ssh -i ~/.ssh/id_ed25519 user@host
+```
+
+Run one command and come back:
+
+```sh
+ssh user@host uptime
+```
+
+Quote a remote command so your shell leaves it alone:
+
+```sh
+ssh user@host 'cd app && git pull'
+```
+
+Local forward (`-L`): `localhost:8080` reaches host port 80:
+
+```sh
+ssh -L 8080:localhost:80 user@host
+```
+
+Remote forward (`-R`): host port 9000 to your port 3000:
+
+```sh
+ssh -R 9000:localhost:3000 user@host
+```
+
+SOCKS proxy (`-D`) on `localhost:1080` through the host:
+
+```sh
+ssh -D 1080 user@host
+```
+
+Tunnel only (`-N`, no shell), in the background (`-f`):
+
+```sh
+ssh -N -f -L 5432:db:5432 user@host
+```
+
+Go through a jump host (`-J`):
+
+```sh
+ssh -J jump@bastion user@host
+```
+
+Debug a connection (`-v`; `-vv` and `-vvv` say more):
+
+```sh
+ssh -v user@host
+```
+
+Test a GitHub key; it should say you authenticated:
+
+```sh
+ssh -T git@github.com
+```
+
+Keep an idle session alive (`-o` sets any config option):
+
+```sh
+ssh -o ServerAliveInterval=30 user@host
 ```
 
 Print the settings `ssh` would use for a host, without connecting, with `-G`; here the host name:
@@ -43,28 +115,10 @@ Set one option for this call with `-o`, here asking never to prompt:
 ssh -G -o BatchMode=yes example.org 2> /dev/null | grep -i '^batchmode '
 ```
 
-Log in to a host; reviewed only because it connects:
+Show the installed version:
 
 ```sh
-ssh alice@example.org
-```
-
-Run one command on a host and print its output; reviewed only:
-
-```sh
-ssh alice@example.org uptime
-```
-
-Forward a local port to a service on the host; reviewed only:
-
-```sh
-ssh -L 8080:localhost:80 alice@example.org
-```
-
-Reach a host through a jump host with `-J`; reviewed only:
-
-```sh
-ssh -J jump.example.org alice@internal.example.org
+ssh -V
 ```
 
 ### Option: -p

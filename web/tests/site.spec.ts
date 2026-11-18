@@ -146,12 +146,6 @@ for (const entry of catalog.entries) {
       const exampleSections = response.sections.filter(
         (s: { example_text?: string }) => s.example_text !== undefined,
       );
-      const exampleText =
-        exampleSections
-          .map((s: { example_text: string }) =>
-            s.example_text.replace(/\n$/, ''),
-          )
-          .join('\n\n') + '\n';
       const optionSections = response.sections.filter(
         (s: { option_text?: string }) => s.option_text !== undefined,
       );
@@ -201,14 +195,42 @@ for (const entry of catalog.entries) {
           ],
           { encoding: 'utf8' },
         );
-        expect(cliDetails).toContain('Options\n' + optionText);
+        // The terminal aligns spellings and descriptions in two columns and
+        // wraps them, so compare the words, not the line breaks.
+        const words = (text: string) => text.split(/\s+/).join(' ');
+        expect(words(cliDetails)).toContain(
+          words(
+            optionSections
+              .map((s: { option_text: string }) => s.option_text)
+              .join('\n'),
+          ),
+        );
       }
       const cliExamples = execFileSync(
         binary,
         [entry.id, '--implementation', implementation, '--width=0'],
         { encoding: 'utf8' },
       );
-      expect(cliExamples).toContain(exampleText);
+      // The terminal lays examples out differently from the page (a short
+      // command gets an aligned trailing comment), but every command must
+      // appear exactly as the page's copy buttons give it.
+      for (const section of exampleSections) {
+        for (const code of section.code) {
+          for (const line of code.split('\n')) {
+            expect(
+              cliExamples
+                .split('\n')
+                .some(
+                  (l: string) =>
+                    l === line ||
+                    (l.startsWith(line + '  ') &&
+                      l.slice(line.length).trimStart().startsWith('# ')),
+                ),
+              `command line missing from CLI output: ${line}`,
+            ).toBe(true);
+          }
+        }
+      }
       for (const section of response.sections) {
         await expect(page.locator(`[id="${section.id}"]`)).toHaveCount(1);
       }

@@ -78,6 +78,17 @@ func TestOptionLookupAndColor(t *testing.T) {
 	}
 }
 
+// hasExampleLine reports whether the output shows the command line unchanged,
+// either on its own line or followed by an aligned trailing comment.
+func hasExampleLine(output, line string) bool {
+	for _, l := range strings.Split(output, "\n") {
+		if l == line || (strings.HasPrefix(l, line+"  ") && strings.HasPrefix(strings.TrimLeft(l[len(line):], " "), "# ")) {
+			return true
+		}
+	}
+	return false
+}
+
 func TestExamplesDefaultAndDetails(t *testing.T) {
 	c, err := catalog.Load(content.Files)
 	if err != nil {
@@ -109,15 +120,24 @@ func TestExamplesDefaultAndDetails(t *testing.T) {
 				for _, section := range selected {
 					for _, code := range section.Code {
 						for _, line := range strings.Split(strings.TrimSuffix(code, "\n"), "\n") {
-							if !strings.Contains(examples, "\n"+line+"\n") {
+							if !hasExampleLine(examples, line) {
 								t.Errorf("missing or changed example: %q", line)
 							}
 						}
 					}
 				}
 				for _, ref := range e.References {
-					if strings.Contains(examples, ref) || !strings.Contains(details, ref) {
+					if !strings.Contains(examples, ref) || !strings.Contains(details, ref) {
 						t.Errorf("reference visibility: %s", ref)
+					}
+				}
+				page := "More:  " + SiteURL + "/commands/" + e.ID + "/"
+				if impl != "common" && len(e.Implementations) > 0 && !(len(e.Implementations) == 1 && e.Implementations[0] == "upstream") {
+					page += impl + "/"
+				}
+				for name, text := range map[string]string{"default": examples, "details": details} {
+					if !strings.Contains(text, page+"\n") {
+						t.Errorf("%s output does not link the website page: %s", name, page)
 					}
 				}
 			})
@@ -148,11 +168,11 @@ func TestGroupedOptions(t *testing.T) {
 	if status != 0 || stderr != "" || strings.Count(out, "\nOptions\n") != 1 || strings.Contains(out, "Option: -") {
 		t.Fatalf("options were not grouped: %d %s %s", status, out, stderr)
 	}
-	if !strings.Contains(out, "\n-n\nPrint each matching line") || !strings.Contains(out, "\n\n-i\nIgnore letter case") {
+	if !strings.Contains(out, "\n-n  Print each matching line") || !strings.Contains(out, "\n-i  Ignore letter case") {
 		t.Fatalf("options are missing their spelling or description: %s", out)
 	}
 	status, out, stderr = run(t, "grep", "--implementation=common", "--option=-i")
-	if status != 0 || stderr != "" || !strings.Contains(out, "Options\n-i\n") || strings.Contains(out, "\n-n\n") {
+	if status != 0 || stderr != "" || !strings.Contains(out, "Options\n-i  ") || strings.Contains(out, "\n-n  ") {
 		t.Fatalf("single option lookup included unrelated options: %d %s %s", status, out, stderr)
 	}
 }

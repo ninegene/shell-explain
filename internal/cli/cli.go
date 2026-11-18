@@ -159,60 +159,65 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 	color := op.color == "always" || (op.color == "auto" && cfg.Color)
 	heading := func(s string) {
 		if color {
-			fmt.Fprintf(out, "\x1b[1;36m%s\x1b[0m\n", s)
+			fmt.Fprintln(out, paint(true, ansiHeading, s))
 		} else {
 			fmt.Fprintln(out, s)
 		}
 	}
+	single := singleImplementation(e) != ""
 	if !op.details {
-		heading(fmt.Sprintf("%s — %s (%s)", e.Title, sel.Implementation, sel.Confidence))
-		fmt.Fprintln(out)
 		if op.option != "" {
+			heading(fmt.Sprintf("%s — %s (%s)", e.Title, sel.Implementation, sel.Confidence))
+			fmt.Fprintln(out)
 			heading("Options")
-			fmt.Fprint(out, catalog.OptionsText(sections, op.width))
+			fmt.Fprint(out, RenderOptions(sections, op.width, color))
 			return 0
 		}
+		heading(e.Title + " — " + e.Summary)
+		if !single {
+			// Which implementation was chosen only matters when there is a choice.
+			fmt.Fprintln(out, paint(color, ansiLabel, fmt.Sprintf("showing %s (%s)", sel.Implementation, sel.Confidence)))
+		}
+		fmt.Fprintln(out)
 		for _, s := range sections {
-			if op.option == "" && !s.IsExamples() {
-				continue
-			}
 			if s.IsExamples() {
-				fmt.Fprintln(out, s.ExampleText)
-			} else {
-				heading(s.Title)
-				fmt.Fprintln(out, catalog.Plain(s.Markdown, op.width))
+				fmt.Fprint(out, RenderExamples(catalog.ParseExamples(s.Markdown), op.width, color))
 			}
 		}
+		writeLinks(out, e, sel.Implementation, single, color)
 		return 0
 	}
 	heading(e.Title + " — " + e.Summary)
-	fmt.Fprintf(out, "\nDocumentation: %s (%s)\n", sel.Implementation, sel.Confidence)
+	meta := func(label, value string) {
+		fmt.Fprintln(out, paint(color, ansiLabel, label)+" "+value)
+	}
+	fmt.Fprintln(out)
+	meta("Documentation:", fmt.Sprintf("%s (%s)", sel.Implementation, sel.Confidence))
 	if sel.Executable != "" {
-		fmt.Fprintln(out, "Executable:", sel.Executable)
+		meta("Executable:", sel.Executable)
 	}
 	if sel.Version != "" {
-		fmt.Fprintln(out, "Version:", sel.Version)
+		meta("Version:", sel.Version)
 	}
-	fmt.Fprintln(out, "Selection:", sel.Evidence)
-	fmt.Fprintln(out, "Last updated:", e.Updated)
+	meta("Selection:", sel.Evidence)
+	meta("Last updated:", e.Updated)
 	fmt.Fprintln(out, catalog.Plain(e.VersionPolicy, op.width))
 	for _, warning := range sel.Warnings {
 		fmt.Fprint(out, catalog.Plain("Note: "+warning, op.width))
 	}
-	fmt.Fprintln(out)
 	optionsShown := false
 	for _, s := range sections {
 		if len(s.Options) > 0 {
 			if !optionsShown {
 				heading("Options")
-				fmt.Fprintln(out, catalog.OptionsText(sections, op.width))
+				fmt.Fprintln(out, RenderOptions(sections, op.width, color))
 				optionsShown = true
 			}
 			continue
 		}
 		heading(s.Title)
 		if s.IsExamples() {
-			fmt.Fprintln(out, s.ExampleText)
+			fmt.Fprintln(out, RenderExamples(catalog.ParseExamples(s.Markdown), op.width, color))
 		} else {
 			fmt.Fprintln(out, catalog.Plain(s.Markdown, op.width))
 		}
@@ -220,8 +225,10 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 	learnMore(c, e, out, color)
 	heading("References")
 	for _, ref := range e.References {
-		fmt.Fprintln(out, ref)
+		fmt.Fprintln(out, paint(color, ansiLink, ref))
 	}
+	fmt.Fprintln(out)
+	writeMore(out, e, sel.Implementation, single, color)
 	return 0
 }
 
