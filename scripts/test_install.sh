@@ -46,8 +46,8 @@ main() {
 	if "${install[@]}" >/dev/null 2>&1; then fail "an existing explain was replaced without --force"; fi
 	"${install[@]}" --force >/dev/null 2>&1 || fail "--force did not replace the file"
 
-	# A tampered checksum must stop the install before anything is written.
-	sed -i.bak 's/^[0-9a-f]/0/' "$work/base/v9.8.7/checksums.txt"
+	# A tampered checksum (a non-hex first character, so it always differs) must stop the install before anything is written.
+	sed -i.bak 's/^./x/' "$work/base/v9.8.7/checksums.txt"
 	rm -f "$work/bin/explain"
 	if "${install[@]}" >/dev/null 2>&1; then fail "a bad checksum was accepted"; fi
 	[[ ! -e "$work/bin/explain" ]] || fail "a file was installed despite a bad checksum"
