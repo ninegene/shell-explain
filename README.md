@@ -2,7 +2,7 @@
 
 Practical command explanations for the terminal and the web, maintained in one shared Markdown collection.
 
-- Repository: [ninegene/shell-explain](https://github.com/ninegene/shell-explain), public since 2026-11-17. Software and shell examples are MIT-licensed ([LICENSE](LICENSE)); original explanatory content is CC BY 4.0 ([LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)). Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
+- Repository: [ninegene/shell-explain](https://github.com/ninegene/shell-explain), public since 2026-11-17. Software and shell examples are MIT-licensed ([LICENSE](LICENSE)); original explanatory content is CC BY 4.0 ([LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)). Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Security reports: [SECURITY.md](SECURITY.md).
 - Executable: **`explain`**, for example `./bin/explain grep` after a local build.
 - Website: **shell-explain.ninegene.com**, built with Astro and hosted on AWS (S3 and CloudFront, defined in Pulumi under [infra](infra/README.md)).
 - CLI language: Go, with original Markdown embedded for offline use.
