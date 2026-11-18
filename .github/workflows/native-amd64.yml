@@ -48,6 +48,13 @@ jobs:
       - name: Smoke-test the built CLI
         shell: bash
         run: bash scripts/cli-smoke.sh "$RUNNER_TEMP/explain" "$RUNNER_TEMP/cli-smoke"
+      - name: Release and installer scripts
+        if: ${{ !cancelled() }}
+        run: |
+          shellcheck scripts/build-release.sh scripts/test_release.sh scripts/test_install.sh
+          shellcheck -s sh scripts/install.sh
+          bash scripts/test_release.sh
+          bash scripts/test_install.sh
       - name: Go tests
         if: ${{ !cancelled() }}
         run: go test ./...

@@ -14,6 +14,12 @@
     go build -trimpath -o bin/explain ./cmd/explain
     printf '\n%s\n%s\n' 'Built: bin/explain' 'Try: ./bin/explain grep'
 
+# Build release archives for a version into dist/ (local dry run; publishes nothing).
+@release-build version='v0.0.0-dev':
+    printf '\n%s\n' 'Building release archives (needs GNU tar; nothing is published)...'
+    bash scripts/build-release.sh '{{ version }}' dist
+    printf '\n%s\n' 'Built: dist/ (archives and checksums.txt)'
+
 # Validate Markdown and generate Astro's shared content data.
 @content:
     printf '\n%s\n' 'Validating content/ and exporting the shared catalog...'
