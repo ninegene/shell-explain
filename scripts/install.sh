@@ -157,7 +157,11 @@ main() {
 	fi
 
 	work="$(mktemp -d)"
-	trap 'rm -rf "$work"' EXIT INT TERM
+	# A signal handler returns to the script unless it exits, so INT and TERM exit and
+	# the EXIT trap does the cleanup.
+	trap 'rm -rf "$work"' EXIT
+	trap 'exit 130' INT
+	trap 'exit 143' TERM
 	printf 'downloading %s\n' "$archive_url"
 	curl -fsSL -o "$work/$archive" "$archive_url" || die "could not download $archive_url"
 	curl -fsSL -o "$work/checksums.txt" "$checksums_url" || die "could not download $checksums_url"
