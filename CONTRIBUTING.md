@@ -25,7 +25,7 @@ To contribute:
 4. Run the checks above relevant to the change. Describe the change, evidence, checks, and any skips in the pull request. Use screenshots or terminal output where helpful.
 5. Maintainers assess accuracy, portability, accessibility, license provenance, and shared CLI/web rendering. Address review feedback; maintainers merge accepted changes. Do not imply untested versions are supported.
 
-See [candidate starter issues](docs/starter-issues.md) for small contributions. Issue and PR templates are in [.github](.github).
+See [candidate starter issues](docs/starter-issues.md) for small contributions. Issue and PR templates are in [.github](.github). To report a security problem, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
 
 ## Command documentation
 
