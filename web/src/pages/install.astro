@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Install the explain CLI">
+  <div class="page-intro">
+    <div class="eyebrow">OFFLINE. ONE FILE.</div>
+    <h1>
+      Install
+      <br />
+      <em>explain.</em>
+    </h1>
+  </div>
+  <article class="about prose">
+    <p>
+      The <code>explain</code> command is a single offline binary with every
+      page built in. Pick one way to install it. Binaries are published for
+      macOS and Linux on Apple Silicon/ARM64 and Intel/AMD64 CPUs.
+    </p>
+    <h2>Homebrew</h2>
+    <pre tabindex="0"><code>brew install ninegene/tap/shell-explain</code></pre>
+    <p>
+      Homebrew builds the formula from source, so it needs no extra setup and
+      updates with <code>brew upgrade</code>.
+    </p>
+    <h2>mise</h2>
+    <pre tabindex="0"><code>mise use -g github:ninegene/shell-explain</code></pre>
+    <p>This installs the latest GitHub release.</p>
+    <h2>Install script</h2>
+    <pre tabindex="0"><code>curl -fsSL https://github.com/ninegene/shell-explain/releases/latest/download/install.sh | sh</code></pre>
+    <p>
+      The script picks the archive for your system, checks its SHA-256 against
+      the release's <code>checksums.txt</code> and puts <code>explain</code> in
+      <code>~/.local/bin</code>. It never uses sudo, never edits your shell
+      startup files and will not replace an existing <code>explain</code>
+      without <code>--force</code>. Read it first if you prefer, and run it with
+      <code>--dry-run</code> to see what it would do. Other options are
+      <code>--version</code> and <code>--dir</code>.
+    </p>
+    <h2>Download a release</h2>
+    <p>
+      Every
+      <a href="https://github.com/ninegene/shell-explain/releases">release</a>
+      has the archives, <code>checksums.txt</code> and a build provenance
+      attestation. Verify and unpack one by hand:
+    </p>
+    <pre tabindex="0"><code>shasum -a 256 -c --ignore-missing checksums.txt
+gh attestation verify explain_0.1.0_darwin_arm64.tar.gz --repo ninegene/shell-explain
+tar -xzf explain_0.1.0_darwin_arm64.tar.gz explain</code></pre>
+    <h2>Check it works</h2>
+    <pre tabindex="0"><code>explain --version
+explain grep</code></pre>
+    <p>
+      To uninstall, remove the <code>explain</code> file, or use
+      <code>brew uninstall</code> or <code>mise uninstall</code> for those
+      routes. The
+      <a href="https://github.com/ninegene/shell-explain#local-quick-start">
+        README quick start
+      </a>
+      shows how to build from source.
+    </p>
+  </article>
+</Layout>
