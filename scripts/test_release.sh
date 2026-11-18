@@ -78,6 +78,15 @@ main() {
 		fail "unexpected version output: $("$work/x/explain" --version)"
 	"$work/x/explain" ssh >/dev/null || fail "explain ssh failed"
 	bash scripts/build-release.sh bad >/dev/null 2>&1 && fail "a version without v was accepted"
+
+	# A relative output directory is resolved against the caller's directory, and
+	# unrelated files in it survive.
+	mkdir "$work/rel" && : >"$work/rel/keep.txt"
+	(cd "$work/rel" && bash "$OLDPWD/scripts/build-release.sh" --targets "$target" v9.8.7 out >/dev/null)
+	[[ -f "$work/rel/out/$name" ]] || fail "a relative output directory was not used as given"
+	: >"$work/rel/out/keep.txt"
+	(cd "$work/rel" && bash "$OLDPWD/scripts/build-release.sh" --targets "$target" v9.8.7 out >/dev/null)
+	[[ -f "$work/rel/out/keep.txt" && -f "$work/rel/keep.txt" ]] || fail "building deleted files it did not create"
 	printf 'ok: %s\n' "$name"
 }
 

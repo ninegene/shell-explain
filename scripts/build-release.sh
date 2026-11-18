@@ -12,7 +12,8 @@ Usage: build-release.sh [flags] <VERSION> [OUTPUT-DIR]
 
 Arguments:
   <VERSION>     Release version such as v0.1.0 (a leading v is required)
-  [OUTPUT-DIR]  Directory for the archives (default: dist)
+  [OUTPUT-DIR]  Directory for the archives (default: dist). It is created if
+                needed; only earlier archives and checksums.txt in it are replaced.
 
 Flags:
   --targets "OS/ARCH ..."  Targets to build (default: darwin/arm64 darwin/amd64
@@ -135,11 +136,16 @@ main() {
 	local version="${positional[0]}" outdir="${positional[1]:-dist}" tar_cmd epoch target
 	validate_version "$version"
 	tar_cmd="$(find_gnu_tar)" || die "GNU tar is required (on macOS: brew install gnu-tar)"
-	cd "$(git rev-parse --show-toplevel)"
+	# Resolve the output directory against the caller's directory before changing to
+	# the repository root, and never delete the directory itself: only the files
+	# this script writes are replaced.
+	mkdir -p "$outdir"
+	outdir="$(cd "$outdir" && pwd)"
+	# The repository root is the parent of the directory this script is in, wherever it is run from.
+	cd "$(dirname "${BASH_SOURCE[0]}")/.."
 	check_toolchain_notice
 	epoch="$(git log -1 --format=%ct)"
-	rm -rf "$outdir"
-	mkdir -p "$outdir"
+	rm -f "$outdir"/explain_*.tar.gz "$outdir/checksums.txt"
 	for target in $targets; do
 		[[ "$target" == */* ]] || die "target must look like linux/amd64 (got '$target')"
 		build_target "$version" "$outdir" "$target" "$epoch" "$tar_cmd"
