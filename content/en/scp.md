@@ -44,7 +44,7 @@ scp -r project alice@example.org:backup/
 
 Use another port with `-P` (a capital letter, unlike `ssh -p`); reviewed only:
 
-```sh
+```sh short="Use another port (-P, a capital, unlike ssh -p)"
 scp -P 2222 a.txt alice@example.org:backup/
 ```
 

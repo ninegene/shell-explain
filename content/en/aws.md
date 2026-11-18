@@ -26,13 +26,13 @@ aws --version
 
 Show where the credentials would come from; in a clean home folder every value is `<not set>`. The columns are compared with blanks collapsed:
 
-```sh
+```sh short="Show where credentials would come from"
 aws configure list 2> /dev/null | head -n 1
 ```
 
 Ask for a setting that is not set; nothing is printed, and the status is 1:
 
-```sh
+```sh short="An unset setting prints nothing and gives status 1"
 aws configure get region; echo "status $?"
 ```
 

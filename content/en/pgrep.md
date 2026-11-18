@@ -44,7 +44,7 @@ Find a background process by a word in its command line with `-f`; the number ma
 
 Use the exit status: 1 means that nothing matched, and nothing is printed:
 
-```sh
+```sh short="Status 1 means nothing matched; nothing is printed"
 pgrep -f "no-such-process-$$" || echo none
 ```
 

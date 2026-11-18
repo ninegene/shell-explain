@@ -22,7 +22,7 @@ The macOS manual for its checksum tools says the `-sum` forms, including `sha256
 ### Examples
 Print the digest of some text; `printf` is used because `echo` adds a newline that changes the digest:
 
-```sh
+```sh short="Print the digest of some text (printf, not echo)"
 printf abc | sha256sum
 ```
 
@@ -34,7 +34,7 @@ printf abc | sha256sum | cut -c1-8
 
 Print the digest of a file; the file name follows the digest:
 
-```sh
+```sh short="Print the digest of a file; the name follows"
 printf abc > f.txt && sha256sum f.txt
 ```
 

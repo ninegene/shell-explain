@@ -46,7 +46,7 @@ tail -c 6 notes.txt
 
 Print the last line of several files; each is introduced by a header:
 
-```sh
+```sh short="Print the last line of several files, with headers"
 tail -n 1 app.log logs/server.log
 ```
 

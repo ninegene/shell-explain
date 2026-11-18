@@ -27,7 +27,7 @@ stdbuf -o0 echo hi
 
 Make a program in a pipeline send each line as soon as it is ready; the text is unchanged:
 
-```sh
+```sh short="Send each line as soon as it is ready; text is unchanged"
 printf 'a\nb\n' | stdbuf -oL cat
 ```
 

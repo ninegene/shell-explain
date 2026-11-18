@@ -33,7 +33,7 @@ printf 'one\ntwo\nthree\n' | fmt
 
 Keep separate paragraphs apart, since an empty line ends a paragraph:
 
-```sh
+```sh short="Keep paragraphs apart: an empty line ends one"
 printf 'one\ntwo\n\nthree\nfour\n' | fmt
 ```
 

@@ -22,7 +22,7 @@ The `fold` utility first appeared in 1BSD and was rewritten for 4.3BSD-Reno, and
 ### Examples
 Wrap lines at 10 characters, even in the middle of a word:
 
-```sh
+```sh short="Wrap lines at 10 characters, even mid-word"
 echo 'the quick brown fox' | fold -w 10
 ```
 
@@ -34,7 +34,7 @@ echo 'the quick brown fox' | fold -s -w 12
 
 Compare with the same width without `-s`, which cuts a word:
 
-```sh
+```sh short="The same width without -s cuts a word"
 echo 'the quick brown fox' | fold -w 12
 ```
 

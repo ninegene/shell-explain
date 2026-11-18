@@ -22,13 +22,13 @@ The `env` command appeared in 4.4BSD, according to the macOS manual, which also 
 ### Examples
 Run a command with one extra variable; the change lasts only for that command:
 
-```sh
+```sh short="Run a command with one extra variable, only for it"
 env FOO=bar sh -c 'echo "$FOO"'
 ```
 
 Start with an empty environment except for what you give, with `-i`; `env` then prints just that one variable:
 
-```sh
+```sh short="Start with an empty environment plus what you give (-i)"
 env -i FOO=bar env
 ```
 

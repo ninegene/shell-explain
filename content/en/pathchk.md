@@ -21,7 +21,7 @@ A `pathchk` utility appeared in FreeBSD 5.0, according to the macOS manual, whic
 ### Examples
 Check that a name uses only portable characters; it succeeds silently:
 
-```sh
+```sh short="Check that a name uses only portable characters"
 pathchk -p good/name && echo ok
 ```
 

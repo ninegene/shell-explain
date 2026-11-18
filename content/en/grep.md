@@ -36,7 +36,7 @@ grep -n -i 'error' app.log
 
 Match a literal string rather than treating punctuation as a regular expression:
 
-```sh
+```sh short="Match a literal string, not a regular expression"
 grep -F 'example.org' app.log
 ```
 
@@ -60,19 +60,19 @@ grep -l 'ERROR' app.log logs/server.log
 
 Match whole words only, so `error` does not match inside a longer word:
 
-```sh
+```sh short="Match whole words only, not inside longer words"
 grep -w 'error' app.log
 ```
 
 Match either of two patterns with an extended regular expression:
 
-```sh
+```sh short="Match either pattern (extended regular expression)"
 grep -E 'ERROR|INFO' app.log
 ```
 
 Combine several patterns without regular-expression syntax by repeating `-e`:
 
-```sh
+```sh short="Combine several patterns by repeating -e"
 grep -e 'INFO' -e 'example' app.log
 ```
 

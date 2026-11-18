@@ -26,13 +26,13 @@ printf hello | basenc --base64
 
 Encode it as base16, which is hexadecimal in capital letters:
 
-```sh
+```sh short="Encode as base16 (hexadecimal in capitals)"
 printf hello | basenc --base16
 ```
 
 Encode it in the URL-safe base64 alphabet, which uses `-` and `_` instead of `+` and `/`:
 
-```sh
+```sh short="Encode in the URL-safe base64 alphabet (- and _)"
 printf '\377\376' | basenc --base64url
 ```
 

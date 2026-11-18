@@ -20,7 +20,7 @@ references:
 ### Examples
 Format a script from standard input; the layout of `if` is tidied:
 
-```sh
+```sh short="Format a script from standard input"
 printf 'if true;then echo hi;fi\n' | shfmt
 ```
 

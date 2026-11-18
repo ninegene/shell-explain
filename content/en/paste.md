@@ -46,13 +46,13 @@ printf 'a\nb\nc\n' > names.txt && paste -sd, names.txt
 
 Arrange a stream into columns; each `-` takes the next line of standard input, so three of them make three columns:
 
-```sh
+```sh short="Arrange a stream into columns, one - per column"
 seq 6 | paste - - -
 ```
 
 Join numbers into an expression for a calculator, with a plus sign as the separator:
 
-```sh
+```sh short="Join numbers into an expression, separated by +"
 seq 3 | paste -sd+ -
 ```
 

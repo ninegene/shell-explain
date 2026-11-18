@@ -22,7 +22,7 @@ The `du` utility and its `-a` and `-s` options first appeared in Version 1 AT&T 
 ### Examples
 Show the total for a folder with `-s` (summary), in kilobyte units with `-k`; `cut` keeps only the path to show the shape of the line:
 
-```sh
+```sh short="Total for a folder (-s) in kilobytes (-k), path only"
 du -sk logs | cut -f2
 ```
 
@@ -40,7 +40,7 @@ du -a logs | cut -f2
 
 List only the first level of folders below here with `-d 1`:
 
-```sh
+```sh short="List only the first level of folders (-d 1)"
 du -d 1 . | cut -f2
 ```
 

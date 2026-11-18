@@ -52,7 +52,7 @@ sort fruit.txt | uniq -c | sort -rn
 
 Without sorting, only adjacent repeats are removed, so this file is unchanged:
 
-```sh
+```sh short="Without sorting, only adjacent repeats are removed"
 uniq fruit.txt
 ```
 

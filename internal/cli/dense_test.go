@@ -24,7 +24,7 @@ func TestRenderExamplesAlignsShortLinesAndStacksTheRest(t *testing.T) {
 		"\n" +
 		"# Two lines\n" +
 		"a \\\n  b\n"
-	if got := RenderExamples(examples, 60, false); got != want {
+	if got := RenderExamples(examples, 60, false, true); got != want {
 		t.Errorf("got:\n%s\nwant:\n%s", got, want)
 	}
 }
@@ -79,5 +79,15 @@ func TestPaletteIsThemeSafe(t *testing.T) {
 		if hasColor && hasBold {
 			t.Errorf("%s combines bold with a color", name)
 		}
+	}
+}
+
+func TestShortLabelOnlyInDefaultLayout(t *testing.T) {
+	examples := []catalog.Example{{Description: "Log in to a host; the first time, check the fingerprint it shows", Short: "Log in", Code: "ssh user@host"}}
+	if got := RenderExamples(examples, 100, false, true); got != "ssh user@host  # Log in\n" {
+		t.Errorf("short layout: %q", got)
+	}
+	if got := RenderExamples(examples, 100, false, false); !strings.Contains(got, "# Log in to a host; the first time") {
+		t.Errorf("full layout must keep the full description: %q", got)
 	}
 }

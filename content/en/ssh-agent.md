@@ -32,7 +32,7 @@ ssh-agent -a "/tmp/sa$$" sh -c 'ssh-add -l > /dev/null 2>&1; echo "status $?"'; 
 
 Start an agent for the whole session and set the variables in the current shell; reviewed only because it leaves a program running:
 
-```sh
+```sh short="Start an agent for the session, setting variables here"
 eval "$(ssh-agent -s)"
 ```
 

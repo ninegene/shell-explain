@@ -22,7 +22,7 @@ A `who` command appeared in Version 1 AT&T UNIX, according to the macOS manual, 
 ### Examples
 Run it; the lines depend on who is logged in, so only success is shown:
 
-```sh
+```sh short="Run it; only success is shown"
 who > /dev/null && echo ok
 ```
 

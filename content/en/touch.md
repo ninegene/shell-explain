@@ -34,7 +34,7 @@ touch a.txt b.txt && ls a.txt b.txt
 
 Update the time of an existing file; its contents stay the same:
 
-```sh
+```sh short="Update the time of an existing file; contents stay"
 touch notes.txt && head -n 1 notes.txt
 ```
 

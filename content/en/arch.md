@@ -21,13 +21,13 @@ The macOS manual describes `arch` as a tool that runs a command under a given ar
 ### Examples
 Print the machine type; the name depends on the machine, so only the shape is shown:
 
-```sh
+```sh short="Print the machine type; only its shape is shown"
 arch | grep -c '^[a-z0-9_]*$'
 ```
 
 Compare with `uname -m` to see that both name the machine; on macOS `arch` and `uname -m` agree on Apple silicon and Intel:
 
-```sh
+```sh short="Compare with uname -m; both name the machine"
 test -n "$(arch)" && echo named
 ```
 

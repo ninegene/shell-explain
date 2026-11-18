@@ -33,7 +33,7 @@ printf 'hello\n' > f.txt && curl -s -o out.txt "file://$PWD/f.txt" && cat out.tx
 
 Fetch a short text from the GitHub API; `-s` hides the progress meter:
 
-```sh
+```sh short="Fetch a short text; -s hides the progress meter"
 curl -s https://api.github.com/zen
 ```
 
@@ -45,7 +45,7 @@ curl -s https://api.github.com/repos/octocat/Hello-World | jq -r .full_name
 
 Show only the status line of the answer, with `-I` to ask for the headers only:
 
-```sh
+```sh short="Show only the status line, using -I"
 curl -sI https://api.github.com | head -n 1
 ```
 

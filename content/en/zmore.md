@@ -21,7 +21,7 @@ The macOS manual describes `zmore` and `zless` together, as tools to view compre
 ### Examples
 View a compressed file at a terminal; the space bar shows the next screen and `q` quits:
 
-```sh
+```sh short="View a compressed file (space: next screen, q quits)"
 zmore access.log.gz
 ```
 

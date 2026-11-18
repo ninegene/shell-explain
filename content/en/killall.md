@@ -21,7 +21,7 @@ The macOS manual documents `killall` as sending a signal to processes by name. T
 ### Examples
 Stop every process named `sleep` that you own, with the default `TERM`:
 
-```sh
+```sh short="Stop every process named sleep that you own"
 killall sleep
 ```
 
@@ -39,7 +39,7 @@ killall -9 sleep
 
 Check that a process with that name exists without stopping it, with signal 0:
 
-```sh
+```sh short="Check that a process with that name exists (signal 0)"
 killall -0 sleep && echo running
 ```
 

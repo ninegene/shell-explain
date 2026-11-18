@@ -22,7 +22,7 @@ The `ps` command is part of every Unix-like system, and three implementations ar
 ### Examples
 Print the heading that `ps` always prints; the column names are `PID` and others:
 
-```sh
+```sh short="Print the heading that ps always prints"
 ps | head -n 1 | grep -c PID
 ```
 
@@ -34,7 +34,7 @@ ps -o pid | head -n 1
 
 List all processes, one number per line, and check that your own shell is in the list (`$$` is its number):
 
-```sh
+```sh short="List all processes and check that your shell is in the list"
 ps -e -o pid= | grep -c "^ *$$\$"
 ```
 

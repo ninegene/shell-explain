@@ -26,13 +26,13 @@ npx --version
 
 Run a tool from a package; the first run downloads it, so this is reviewed only:
 
-```sh
+```sh short="Run a tool from a package"
 npx prettier --version
 ```
 
 Say which package gives the command with `--package`, when the names differ; reviewed only:
 
-```sh
+```sh short="Name the package for a command (--package)"
 npx --package typescript tsc --version
 ```
 

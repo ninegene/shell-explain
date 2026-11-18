@@ -20,7 +20,7 @@ references:
 ### Examples
 Print the first eight characters of the BLAKE2b digest of some text:
 
-```sh
+```sh short="Print the start of the BLAKE2b digest of some text"
 printf abc | b2sum | cut -c1-8
 ```
 

@@ -22,7 +22,7 @@ The `uname` command appeared in PWB UNIX 1.0, and 4.4BSD was the first Berkeley 
 ### Examples
 Print the kernel name; the plain command gives the same as `-s`:
 
-```sh
+```sh short="Print the kernel name; the plain command equals -s"
 test "$(uname)" = "$(uname -s)" && echo same
 ```
 
@@ -40,7 +40,7 @@ uname -r | grep -c .
 
 Print the machine hardware name, such as `x86_64` or `arm64`:
 
-```sh
+```sh short="Print the machine hardware name (e.g. arm64)"
 uname -m | grep -c .
 ```
 

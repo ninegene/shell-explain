@@ -32,7 +32,7 @@ printf 'one\ntwo\n' > f.txt && bat --decorations=always --style=numbers f.txt
 
 Say which language to highlight with `-l`, for text that has no file name:
 
-```sh
+```sh short="Name the language with -l when there is no file name"
 echo '{"a":1}' | bat -l json --style=plain
 ```
 

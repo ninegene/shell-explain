@@ -21,13 +21,13 @@ The `users` command appeared in 3.0BSD, according to the macOS manual. Today the
 ### Examples
 Run it; the output depends on who is logged in, so only success is shown:
 
-```sh
+```sh short="Run it; only success is shown"
 users > /dev/null && echo ok
 ```
 
 Send the output to a pipe and check that the command still succeeds when nobody is logged in; the output may be empty:
 
-```sh
+```sh short="Pipe the output; it succeeds even if nobody is logged in"
 users | cat > /dev/null && echo ok
 ```
 

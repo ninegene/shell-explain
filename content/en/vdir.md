@@ -20,7 +20,7 @@ references:
 ### Examples
 List a folder in the long format; the first line is the `total`, then one line per file:
 
-```sh
+```sh short="Long format: a total, then a line per file"
 mkdir d && touch d/a d/b && vdir d | grep -c .
 ```
 

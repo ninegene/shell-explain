@@ -21,13 +21,13 @@ references:
 ### Examples
 Run a command that finishes in time; its output is passed through:
 
-```sh
+```sh short="Run a command that finishes in time"
 timeout 5 echo hi
 ```
 
 Stop a command that runs too long; the shell shows that it did not succeed:
 
-```sh
+```sh short="Stop a command that runs too long"
 timeout 1 sleep 5 || echo stopped
 ```
 

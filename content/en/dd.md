@@ -22,7 +22,7 @@ A `dd` command appeared in Version 5 AT&T UNIX, according to the macOS manual, w
 ### Examples
 Copy the first three bytes from standard input; `2>/dev/null` hides the summary that `dd` prints on standard error:
 
-```sh
+```sh short="Copy the first three bytes of standard input"
 printf abcdef | dd bs=3 count=1 2>/dev/null
 ```
 

@@ -20,7 +20,7 @@ The GNU manual documents the four programs together as the diffutils manual. Lin
 ### Examples
 Ask a program of the package for its version; the first line names the package. Reviewed only, because this page has no program of its own to run:
 
-```sh
+```sh short="Ask a program of the package for its version"
 diff --version | head -n 1
 ```
 

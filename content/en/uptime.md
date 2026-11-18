@@ -22,13 +22,13 @@ The `uptime` command appeared in 3.0BSD, according to the macOS manual. Today th
 ### Examples
 Print the line and check that it contains `up`; the numbers change all the time:
 
-```sh
+```sh short="Check that the line contains up"
 uptime | grep -c up
 ```
 
 Show only the load averages by cutting the line at its label; the word `load` appears on all three systems:
 
-```sh
+```sh short="Show only the load averages, by cutting at the label"
 uptime | grep -c load
 ```
 

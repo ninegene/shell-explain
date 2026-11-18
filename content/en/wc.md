@@ -46,7 +46,7 @@ wc -c notes.txt
 
 Count the lines of a command's output; reading standard input prints no file name:
 
-```sh
+```sh short="Count the lines of a command's output; no file name"
 cat notes.txt | wc -l
 ```
 

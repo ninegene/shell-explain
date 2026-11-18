@@ -34,7 +34,7 @@ expr 7 / 2
 
 Multiply; the star must be quoted or escaped so the shell does not expand it:
 
-```sh
+```sh short="Multiply; quote the star so the shell leaves it"
 expr 3 \* 4
 ```
 
@@ -46,7 +46,7 @@ expr 3 \< 5
 
 Match text with a regular expression; the result is the number of matching characters:
 
-```sh
+```sh short="Match a regular expression; print the matched length"
 expr abc : 'a.*'
 ```
 

@@ -26,19 +26,19 @@ uv --version
 
 Start a new project in a folder; `-q` keeps it quiet, and the files it makes are listed:
 
-```sh
+```sh short="Start a new project in a folder (-q is quiet)"
 uv init -q demo && ls demo
 ```
 
 Create a virtual environment and check that its folder exists:
 
-```sh
+```sh short="Create a virtual environment and check the folder"
 uv venv -q && test -d .venv && echo venv
 ```
 
 Add a dependency to a project; this downloads, so it is reviewed only:
 
-```sh
+```sh short="Add a dependency to a project"
 uv init -q demo && cd demo && uv add requests
 ```
 

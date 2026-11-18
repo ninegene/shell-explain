@@ -22,7 +22,7 @@ The `yes` command appeared in Version 7 AT&T UNIX, according to the macOS manual
 ### Examples
 Print three lines of `y`; `head` stops the endless output after three lines:
 
-```sh
+```sh short="Print three lines of y; head stops the endless output"
 yes | head -n 3
 ```
 
@@ -40,7 +40,7 @@ yes data | head -n 1000 | grep -c data
 
 Answer a confirmation prompt automatically, with a program that asks twice:
 
-```sh
+```sh short="Answer a confirmation prompt automatically (asks twice)"
 yes | (read a; read b; echo "$a$b")
 ```
 

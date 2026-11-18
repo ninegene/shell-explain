@@ -22,7 +22,7 @@ Today the name covers GNU sync, the sync that macOS ships, and the sync applet i
 ### Examples
 Flush all pending writes; there is no output when it works:
 
-```sh
+```sh short="Flush all pending writes; no output when it works"
 sync && echo done
 ```
 

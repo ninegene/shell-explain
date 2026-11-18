@@ -28,7 +28,7 @@ id -u | grep -c '^[0-9][0-9]*$'
 
 Print your user name; `-u` selects the user and `-n` asks for the name:
 
-```sh
+```sh short="Compare id -un with whoami: same name"
 test "$(id -un)" = "$(whoami)" && echo same
 ```
 

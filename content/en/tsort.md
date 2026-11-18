@@ -27,7 +27,7 @@ printf 'a b\nb c\n' | tsort
 
 Give more pairs, including two that start from the same name; any order that respects every pair is valid, so only one is shown here:
 
-```sh
+```sh short="Give more pairs; any order that respects them is valid"
 printf 'a b\na c\n' | tsort | head -n 1
 ```
 

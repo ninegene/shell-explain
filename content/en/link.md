@@ -22,7 +22,7 @@ Today the name covers GNU link, the link that macOS ships, and the link applet i
 ### Examples
 Make a second name for a file; both names are the same file:
 
-```sh
+```sh short="Make a second name for a file"
 link notes.txt hard.txt && head -n 1 hard.txt
 ```
 

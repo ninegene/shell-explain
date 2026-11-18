@@ -34,7 +34,7 @@ mv app.log logs/ && ls logs
 
 Move several files into a directory; the last name is the destination:
 
-```sh
+```sh short="Move several files into the last-named directory"
 mv app.log notes.txt logs && ls logs
 ```
 
@@ -46,7 +46,7 @@ mv logs old-logs && ls old-logs
 
 Replace an existing file without asking; `-f` suppresses a prompt:
 
-```sh
+```sh short="Overwrite without asking (-f)"
 mv -f notes.txt app.log && head -n 1 app.log
 ```
 

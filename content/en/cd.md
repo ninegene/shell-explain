@@ -61,7 +61,7 @@ These examples describe the `cd` built into Bash and were executed on Bash 5.2.3
 ### Bash examples
 Return to the previous directory:
 
-```sh
+```sh short="Return to the previous directory"
 cd -
 ```
 
@@ -69,7 +69,7 @@ Bash uses OLDPWD for this shortcut and prints the new directory.
 
 Resolve symbolic links to the physical directory:
 
-```sh
+```sh short="Go to the physical directory, resolving symbolic links (-P)"
 cd -P projects
 ```
 

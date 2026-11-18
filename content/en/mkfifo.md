@@ -28,13 +28,13 @@ mkfifo p && test -p p && echo fifo
 
 See that it shows as a pipe in a long listing; the first character is `p`:
 
-```sh
+```sh short="In a long listing it shows as a pipe (p)"
 mkfifo p && ls -l p | cut -c1
 ```
 
 Send text through it: a background writer and a reader in the foreground:
 
-```sh
+```sh short="Send text through it with a background writer"
 mkfifo p && (echo hi > p &) && cat p
 ```
 
