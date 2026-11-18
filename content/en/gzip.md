@@ -34,7 +34,7 @@ gzip -k app.log && ls app.log*
 
 Print the uncompressed contents of a compressed file without writing a file:
 
-```sh
+```sh short="Print the uncompressed contents, writing no file"
 gzip -k app.log && gzip -dc app.log.gz
 ```
 
@@ -46,13 +46,13 @@ gzip notes.txt && gzip -d notes.txt.gz && head -n 1 notes.txt
 
 Compress into a chosen file, leaving the input alone, by writing to standard output:
 
-```sh
+```sh short="Compress to a chosen file, keeping the input"
 gzip -c app.log > copy.log.gz && ls *.gz
 ```
 
 Decompress to standard output with `gunzip -c`, the spelling that `gunzip` answers for on this page; the compressed file is left in place:
 
-```sh
+```sh short="Decompress to standard output (gunzip -c)"
 printf data | gzip > f.gz && gunzip -c f.gz
 ```
 

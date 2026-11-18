@@ -40,7 +40,7 @@ chown "$(id -u)" notes.txt && test "$(ls -l notes.txt | awk '{print $3}')" = "$(
 
 Apply it to a folder and everything inside it with `-R`:
 
-```sh
+```sh short="Apply it to a folder and everything inside (-R)"
 chown -R "$(id -u)" projects logs && echo ok
 ```
 

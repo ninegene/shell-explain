@@ -461,6 +461,9 @@ func RenderHTML(markdown string) (string, []string, error) {
 			if lang != "sh" && lang != "bash" && lang != "console" && lang != "text" {
 				return ast.WalkStop, fmt.Errorf("unsupported code language %q", lang)
 			}
+			if _, err := ShortLabel(fenceInfo(v, source)); err != nil {
+				return ast.WalkStop, err
+			}
 			var b strings.Builder
 			for i := 0; i < v.Lines().Len(); i++ {
 				seg := v.Lines().At(i)

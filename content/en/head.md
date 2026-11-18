@@ -34,7 +34,7 @@ head -n 2 notes.txt
 
 Print the first line of several files; each is introduced by a header:
 
-```sh
+```sh short="Print the first line of several files, with headers"
 head -n 1 app.log logs/server.log
 ```
 

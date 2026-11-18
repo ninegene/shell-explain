@@ -46,7 +46,7 @@ echo 'hello world' | tr -d 'o'
 
 Keep only digits by deleting everything else (the newline is deleted too):
 
-```sh
+```sh short="Keep only digits by deleting the rest (and the newline)"
 echo 'abc123' | tr -cd '0-9'
 ```
 
@@ -58,7 +58,7 @@ echo 'a:b:c' | tr ':' '\n'
 
 Turn the commas of a file into tabs by redirecting it in:
 
-```sh
+```sh short="Turn the commas of a file into tabs"
 tr ',' '\t' < data.csv
 ```
 

@@ -25,13 +25,13 @@ According to the gawk manual, the name awk comes from the initials of its design
 ### Examples
 Print the first field of every line. Fields are separated by blanks by default:
 
-```sh
+```sh short="Print the first field of every line (blank-separated)"
 awk '{print $1}' notes.txt
 ```
 
 Split on commas with `-F,` and print the first column, header line included:
 
-```sh
+```sh short="Split on commas with -F, and print the first column"
 awk -F, '{print $1}' data.csv
 ```
 
@@ -49,7 +49,7 @@ awk -F, 'NR > 1 {sum += $2} END {print sum}' data.csv
 
 Print the second field of lines that match a pattern. The pattern goes between slashes and is case sensitive:
 
-```sh
+```sh short="Print field 2 of lines matching a /pattern/ (case sensitive)"
 awk '/ERROR/ {print $2}' app.log
 ```
 

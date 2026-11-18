@@ -21,7 +21,7 @@ GNU Wget is a project of the GNU system, documented in the Wget manual. BusyBox 
 ### Examples
 Print the text from a short answer to the screen: `-q` hides the progress report, and `-O -` writes to standard output:
 
-```sh
+```sh short="Print a short answer to the screen (-q, -O -)"
 wget -q -O - https://api.github.com/zen
 ```
 

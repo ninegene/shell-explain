@@ -22,7 +22,7 @@ Today the name covers GNU mknod, the mknod that macOS ships (in `/sbin`), and th
 ### Examples
 Create a named pipe with the type letter `p`, and check that it is one:
 
-```sh
+```sh short="Create a named pipe (type p) and check it"
 mknod p p && test -p p && echo fifo
 ```
 

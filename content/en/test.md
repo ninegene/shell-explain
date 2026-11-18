@@ -71,7 +71,7 @@ test ! -e missing.txt && echo not there
 
 Write the same test with brackets; the spaces inside them are required:
 
-```sh
+```sh short="The same test with brackets (the spaces are required)"
 [ -n "x" ] && echo set
 ```
 

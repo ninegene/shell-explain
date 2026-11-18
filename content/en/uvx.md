@@ -26,13 +26,13 @@ uvx --version
 
 Run a tool from a package; the first run downloads it, so this is reviewed only:
 
-```sh
+```sh short="Run a tool from a package"
 uvx ruff --version
 ```
 
 Run a tool from a package whose name differs from the command, with `--from`; reviewed only:
 
-```sh
+```sh short="Run a tool from a package with another name (--from)"
 uvx --from httpie http --version
 ```
 

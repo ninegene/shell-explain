@@ -32,7 +32,7 @@ codex --help
 
 Give it a task and run it without an interactive session; reviewed only because it sends text to a service and can change files:
 
-```sh
+```sh short="Run a task without an interactive session"
 codex exec "Add a unit test for the parser"
 ```
 

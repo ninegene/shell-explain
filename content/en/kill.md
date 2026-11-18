@@ -28,7 +28,7 @@ Start a background process, stop it with the default signal and wait for it:
 
 Check that a process exists without sending a real signal, using signal 0; `$$` is the shell itself:
 
-```sh
+```sh short="Check that a process exists, with signal 0"
 kill -0 $$ && echo alive
 ```
 

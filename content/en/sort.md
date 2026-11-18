@@ -46,7 +46,7 @@ sort -u fruit.txt
 
 Sort a comma-separated file by its second column; the header sorts first because it has no number:
 
-```sh
+```sh short="Sort a CSV file by its second column (-k2,2n)"
 sort -t, -k2,2n data.csv
 ```
 

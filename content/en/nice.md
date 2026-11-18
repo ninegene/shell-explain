@@ -34,7 +34,7 @@ nice -n 10 sh -c 'echo working'
 
 Check that the shell found `nice` and passed the number on, by running a program that exits with a status:
 
-```sh
+```sh short="Check that nice passes on the program's status"
 nice -n 5 sh -c 'exit 3'; echo $?
 ```
 

@@ -19,81 +19,81 @@ references:
 `ssh` is part of OpenSSH, whose manual is on man.openbsd.org. The settings it reads from `~/.ssh/config` are described in the `ssh_config` manual. The tool tested here is the OpenSSH that macOS ships. Commands that connect to a host are reviewed only, because the checks never contact another computer.
 
 ### Examples
-Log in; the first time, check the host fingerprint:
+Log in to a host; the first time, check the fingerprint it shows:
 
-```sh
+```sh short="Log in; the first time, check the host fingerprint"
 ssh user@host
 ```
 
-Use a different port (`-p`; `scp` uses a capital `-P`):
+Use a different port with `-p` (`scp` uses a capital `-P`):
 
-```sh
+```sh short="Use a different port (-p; scp uses a capital -P)"
 ssh -p 2222 user@host
 ```
 
-Use a specific key (`-i`):
+Use a specific key with `-i`:
 
-```sh
+```sh short="Use a specific key (-i)"
 ssh -i ~/.ssh/id_ed25519 user@host
 ```
 
-Run one command and come back:
+Run one command on the host and come back:
 
-```sh
+```sh short="Run one command and come back"
 ssh user@host uptime
 ```
 
-Quote a remote command so your shell leaves it alone:
+Quote a longer remote command so your own shell does not split it:
 
-```sh
+```sh short="Quote a remote command so your shell leaves it alone"
 ssh user@host 'cd app && git pull'
 ```
 
-Local forward (`-L`): `localhost:8080` reaches host port 80:
+Forward a local port with `-L`, so `http://localhost:8080` reaches port 80 on the host:
 
-```sh
+```sh short="Local forward (-L): localhost:8080 reaches host port 80"
 ssh -L 8080:localhost:80 user@host
 ```
 
-Remote forward (`-R`): host port 9000 to your port 3000:
+Forward a port back with `-R`, so port 9000 on the host reaches your port 3000:
 
-```sh
+```sh short="Remote forward (-R): host port 9000 to your port 3000"
 ssh -R 9000:localhost:3000 user@host
 ```
 
-SOCKS proxy (`-D`) on `localhost:1080` through the host:
+Make a SOCKS proxy on `localhost:1080` with `-D` that sends traffic through the host:
 
-```sh
+```sh short="SOCKS proxy (-D) on localhost:1080 through the host"
 ssh -D 1080 user@host
 ```
 
-Tunnel only (`-N`, no shell), in the background (`-f`):
+Open only a tunnel, with no shell (`-N`), in the background (`-f`):
 
-```sh
+```sh short="Tunnel only (-N, no shell), in the background (-f)"
 ssh -N -f -L 5432:db:5432 user@host
 ```
 
-Go through a jump host (`-J`):
+Go through a jump host with `-J`:
 
-```sh
+```sh short="Go through a jump host (-J)"
 ssh -J jump@bastion user@host
 ```
 
-Debug a connection (`-v`; `-vv` and `-vvv` say more):
+Debug a connection with `-v`; `-vv` and `-vvv` say more:
 
-```sh
+```sh short="Debug a connection (-v; -vv and -vvv say more)"
 ssh -v user@host
 ```
 
-Test a GitHub key; it should say you authenticated:
+Test a GitHub key; it should say that you have authenticated:
 
-```sh
+```sh short="Test a GitHub key; it should say you authenticated"
 ssh -T git@github.com
 ```
 
-Keep an idle session alive (`-o` sets any config option):
+Keep an idle session from being dropped; `-o` sets any config option:
 
-```sh
+```sh short="Keep an idle session alive (-o sets any config option)"
 ssh -o ServerAliveInterval=30 user@host
 ```
 

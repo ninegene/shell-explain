@@ -21,7 +21,7 @@ references:
 ### Examples
 Shuffle the numbers 1 to 5; sorting the result shows that none was lost:
 
-```sh
+```sh short="Shuffle 1 to 5; sorting shows none was lost"
 seq 5 | shuf | sort -n | paste -sd, -
 ```
 
@@ -39,7 +39,7 @@ seq 6 > n6.txt && shuf -n 3 n6.txt | grep -c .
 
 Pick one random line; here the file has one line, so the answer is known:
 
-```sh
+```sh short="Pick one random line (here the file has only one)"
 printf 'only\n' | shuf -n 1
 ```
 

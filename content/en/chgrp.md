@@ -28,7 +28,7 @@ chgrp "$(id -g)" notes.txt && echo ok
 
 Apply it to a folder and everything inside it with `-R`:
 
-```sh
+```sh short="Apply it to a folder and everything inside (-R)"
 chgrp -R "$(id -g)" projects logs && echo ok
 ```
 

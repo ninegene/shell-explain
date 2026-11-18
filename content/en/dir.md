@@ -26,7 +26,7 @@ mkdir d && touch d/a d/b && dir d
 
 Show a name with a space as an escaped name, which stays on one line:
 
-```sh
+```sh short="Show a name with a space escaped on one line"
 mkdir d && touch 'd/a b' && dir d
 ```
 

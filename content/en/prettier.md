@@ -21,7 +21,7 @@ references:
 ### Examples
 Format a file and print the result; the extra spaces and the missing semicolon are fixed:
 
-```sh
+```sh short="Format a file and print the result"
 printf 'a  =  1\n' > a.js && prettier a.js
 ```
 

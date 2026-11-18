@@ -39,7 +39,7 @@ echo 30 | factor
 
 Check whether a number is prime: a prime has exactly one factor, itself:
 
-```sh
+```sh short="Check whether a number is prime (one factor)"
 factor 17 | awk '{print NF - 1}'
 ```
 

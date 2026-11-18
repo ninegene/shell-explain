@@ -22,7 +22,7 @@ Today the name covers GNU zcat (part of gzip), the zcat that macOS ships (part o
 ### Examples
 Read a compressed file from standard input; this form works on every implementation:
 
-```sh
+```sh short="Read a compressed file from standard input"
 printf data | gzip > f.gz && zcat < f.gz
 ```
 
@@ -34,7 +34,7 @@ printf 'a\nb\n' | gzip > f.gz && zcat < f.gz | wc -l | tr -d ' '
 
 Do the same with `gunzip -c`, which names the file and works everywhere:
 
-```sh
+```sh short="Do the same with gunzip -c, which works everywhere"
 printf data | gzip > f.gz && gunzip -c f.gz
 ```
 

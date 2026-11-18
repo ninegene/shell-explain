@@ -20,13 +20,13 @@ references:
 ### Examples
 List the open files of your own shell, and show the heading; the first column is `COMMAND`:
 
-```sh
+```sh short="List your shell's open files, heading only"
 lsof -p $$ | head -n 1 | cut -d' ' -f1
 ```
 
 Print only the process number with `-t`, which is useful as input for `kill`:
 
-```sh
+```sh short="Print only the process number (-t) for kill"
 lsof -t -p $$ | grep -c "^$$\$"
 ```
 
@@ -38,7 +38,7 @@ lsof -a -p $$ -d cwd -Fn | tail -n 1 | cut -c1-2
 
 Find the process that listens on a port; this needs the right to see other users' processes for a full answer, and is reviewed only:
 
-```sh
+```sh short="Find the process that listens on a port"
 lsof -i :8080
 ```
 

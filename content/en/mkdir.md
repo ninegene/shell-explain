@@ -28,7 +28,7 @@ mkdir reports && ls -d reports
 
 Create a directory and any missing parents; `-p` is also quiet when the directory already exists:
 
-```sh
+```sh short="Create a directory and missing parents (-p)"
 mkdir -p reports/2026/q1 && ls reports/2026
 ```
 

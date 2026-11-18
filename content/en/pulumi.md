@@ -50,7 +50,7 @@ pulumi preview
 
 Apply the changes; this can create, replace or destroy real resources, so it is reviewed only:
 
-```sh
+```sh short="Apply the changes"
 pulumi up
 ```
 

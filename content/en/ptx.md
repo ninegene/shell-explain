@@ -20,7 +20,7 @@ references:
 ### Examples
 Make an index of one short line, with an output width of 40 characters; the keyword column is in the middle, and the spacing is compared with blanks collapsed:
 
-```sh
+```sh short="Make an index of one short line, 40 characters wide"
 printf 'the quick fox\n' | ptx -w 40
 ```
 

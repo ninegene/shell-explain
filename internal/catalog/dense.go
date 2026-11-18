@@ -1,6 +1,7 @@
 package catalog
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -14,7 +15,11 @@ import (
 // lays the same pairs out more densely (see internal/cli).
 type Example struct {
 	Description string
-	Code        string
+	// Short is an optional label of about 50 characters for the default terminal
+	// layout, authored on the code fence as ```sh short="...". The website and
+	// --details keep the full Description.
+	Short string
+	Code  string
 }
 
 // ParseExamples returns the examples in an examples section, in authored
@@ -50,8 +55,10 @@ func ParseExamples(markdown string) []Example {
 				segment := n.Lines().At(i)
 				code.Write(segment.Value(source))
 			}
+			short, _ := ShortLabel(fenceInfo(n.(*ast.FencedCodeBlock), source))
 			examples = append(examples, Example{
 				Description: CleanDescription(strings.Join(prose, " ")),
+				Short:       short,
 				Code:        strings.TrimRight(code.String(), "\n"),
 			})
 			prose = nil
@@ -73,4 +80,42 @@ func CleanDescription(s string) string {
 	s = reviewedOnly.ReplaceAllString(s, "")
 	s = strings.TrimSpace(strings.TrimRight(strings.TrimSpace(s), ":"))
 	return strings.TrimSpace(strings.TrimRight(s, ";,"))
+}
+
+// MaxShortLabel is the longest short label, in characters.
+const MaxShortLabel = 70
+
+var shortLabel = regexp.MustCompile(`^short="([^"]*)"$`)
+
+// fenceInfo returns what follows the language on a code fence's opening line.
+func fenceInfo(n *ast.FencedCodeBlock, source []byte) string {
+	if n.Info == nil {
+		return ""
+	}
+	info := strings.TrimSpace(string(n.Info.Segment.Value(source)))
+	lang := string(n.Language(source))
+	return strings.TrimSpace(strings.TrimPrefix(info, lang))
+}
+
+// ShortLabel reads the `short="..."` attribute from the text after the
+// language on a code fence. The empty string means there is none. The label is
+// plain text on one line, so a terminal comment can use it as it is.
+func ShortLabel(info string) (string, error) {
+	if info == "" {
+		return "", nil
+	}
+	m := shortLabel.FindStringSubmatch(info)
+	if m == nil {
+		return "", fmt.Errorf("unsupported code fence attribute %q; only short=\"...\" is allowed", info)
+	}
+	label := m[1]
+	if label == "" || len([]rune(label)) > MaxShortLabel || strings.TrimSpace(label) != label {
+		return "", fmt.Errorf("short label must be 1-%d characters without surrounding spaces: %q", MaxShortLabel, label)
+	}
+	for _, r := range label {
+		if r < ' ' || r == 0x7f || r == '`' {
+			return "", fmt.Errorf("short label contains a control character or backtick: %q", label)
+		}
+	}
+	return label, nil
 }

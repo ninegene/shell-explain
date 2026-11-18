@@ -21,7 +21,7 @@ The macOS manual describes `zmore` and `zless` together, as tools to view compre
 ### Examples
 Look at a compressed file in the pager; at a terminal you can scroll and press `q` to quit:
 
-```sh
+```sh short="Look at a compressed file in the pager (q quits)"
 zless access.log.gz
 ```
 

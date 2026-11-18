@@ -35,13 +35,13 @@ ls logs
 
 List only the files that match a pattern; the shell expands `*.log` before `ls` runs:
 
-```sh
+```sh short="List only files matching a pattern (the shell expands it)"
 ls *.log
 ```
 
 Show a directory itself instead of its contents. The trailing slash in the pattern matches only directories:
 
-```sh
+```sh short="Show directories themselves, not their contents"
 ls -d */
 ```
 
@@ -53,7 +53,7 @@ ls -a logs
 
 List directories and everything below them. Naming two directories keeps the output the same on every implementation, with a header line for each:
 
-```sh
+```sh short="List directories and everything below them"
 ls -R logs projects
 ```
 
@@ -65,7 +65,7 @@ ls -r
 
 Show the permission string of a file; `-l` is the long format and `cut` keeps its first ten characters:
 
-```sh
+```sh short="Show the permission string of a file (-l)"
 ls -l notes.txt | cut -c1-10
 ```
 

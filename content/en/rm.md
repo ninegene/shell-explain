@@ -40,7 +40,7 @@ rm -r logs && ls
 
 Ignore a file that does not exist, with no error and a zero exit status:
 
-```sh
+```sh short="Ignore a file that does not exist (-f)"
 rm -f missing.txt && echo done
 ```
 

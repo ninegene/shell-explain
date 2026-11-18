@@ -181,7 +181,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 		fmt.Fprintln(out)
 		for _, s := range sections {
 			if s.IsExamples() {
-				fmt.Fprint(out, RenderExamples(catalog.ParseExamples(s.Markdown), op.width, color))
+				fmt.Fprint(out, RenderExamples(catalog.ParseExamples(s.Markdown), op.width, color, true))
 			}
 		}
 		writeLinks(out, e, sel.Implementation, single, color)
@@ -217,7 +217,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 		}
 		heading(s.Title)
 		if s.IsExamples() {
-			fmt.Fprintln(out, RenderExamples(catalog.ParseExamples(s.Markdown), op.width, color))
+			fmt.Fprintln(out, RenderExamples(catalog.ParseExamples(s.Markdown), op.width, color, false))
 		} else {
 			fmt.Fprintln(out, catalog.Plain(s.Markdown, op.width))
 		}

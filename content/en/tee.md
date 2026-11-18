@@ -22,7 +22,7 @@ The macOS manual says `tee` is expected to be compatible with IEEE Std 1003.2 (P
 ### Examples
 Show the text and save a copy of it in a file; `cat` shows what was saved:
 
-```sh
+```sh short="Show the text and save a copy; cat shows the copy"
 echo hello | tee out.txt && cat out.txt
 ```
 

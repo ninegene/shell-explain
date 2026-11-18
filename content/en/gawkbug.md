@@ -26,7 +26,7 @@ gawkbug --version
 
 Start a report; it opens your editor with the form and sends the mail when you save and quit; reviewed only:
 
-```sh
+```sh short="Start a report; it mails it when you save and quit"
 gawkbug
 ```
 

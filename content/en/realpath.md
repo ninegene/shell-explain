@@ -22,7 +22,7 @@ The `realpath` utility first appeared in FreeBSD 4.3, according to the macOS man
 ### Examples
 Print the absolute path of a file reached through `..`. The output starts with a slash, so `grep -c` counts one match:
 
-```sh
+```sh short="Print the absolute path of a file reached through .."
 realpath logs/../notes.txt | grep -c '^/'
 ```
 
@@ -63,7 +63,7 @@ realpath --relative-to=logs notes.txt
 
 Accept a path whose last part does not exist yet; `-m` allows missing parts, and `basename` keeps the final name:
 
-```sh
+```sh short="Accept a path whose last part is missing (-m)"
 basename "$(realpath -m logs/new.txt)"
 ```
 

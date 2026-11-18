@@ -20,13 +20,13 @@ references:
 ### Examples
 Run it; the lines depend on who is logged in, so only success is shown:
 
-```sh
+```sh short="Run it; only success is shown"
 pinky > /dev/null && echo ok
 ```
 
 Use the short form, which leaves out the home directory and shell fields:
 
-```sh
+```sh short="Use the short form (no home directory or shell fields)"
 pinky -s > /dev/null && echo ok
 ```
 

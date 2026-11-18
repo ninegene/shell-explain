@@ -26,13 +26,13 @@ echo 'hello world' | sd world there
 
 Swap two words with groups; the groups are written `$1` and `$2`:
 
-```sh
+```sh short="Swap two words with groups ($1, $2)"
 echo 'hello world' | sd '(\w+) (\w+)' '$2 $1'
 ```
 
 Treat the pattern as plain text with `-F`, so the dot is a dot:
 
-```sh
+```sh short="Treat the pattern as plain text (-F)"
 printf 'a.b\n' | sd -F '.' '-'
 ```
 

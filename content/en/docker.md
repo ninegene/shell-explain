@@ -32,13 +32,13 @@ docker run --help
 
 List the contexts, which are the daemons the client can talk to; the default one is named `default`:
 
-```sh
+```sh short="List contexts, the daemons the client can talk to"
 docker context ls --format '{{.Name}}'
 ```
 
 Run a short-lived container and remove it afterwards with `--rm`; reviewed only because it needs a daemon and downloads an image:
 
-```sh
+```sh short="Run a short-lived container and remove it (--rm)"
 docker run --rm alpine echo hello
 ```
 
@@ -50,7 +50,7 @@ docker ps
 
 Build an image from the `Dockerfile` in this folder and name it with `-t`; reviewed only:
 
-```sh
+```sh short="Build an image from this folder and name it (-t)"
 docker build -t demo .
 ```
 

@@ -21,7 +21,7 @@ references:
 ### Examples
 Print the identifier and check that it is eight hexadecimal digits:
 
-```sh
+```sh short="Print the identifier: eight hexadecimal digits"
 hostid | grep -c '^[0-9a-f]\{8\}$'
 ```
 

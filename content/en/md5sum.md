@@ -22,7 +22,7 @@ The macOS manual for its checksum tools says the `-sum` forms, including `md5sum
 ### Examples
 Print the digest of some text; `printf` is used because `echo` adds a newline that changes the digest:
 
-```sh
+```sh short="Print the digest of some text (printf, not echo)"
 printf abc | md5sum
 ```
 

@@ -22,7 +22,7 @@ A `tty` command appeared in Version 1 AT&T UNIX, according to the macOS manual, 
 ### Examples
 Ask when input is not a terminal; `/dev/null` is not one, so the answer is `not a tty` and the status is 1:
 
-```sh
+```sh short="Ask when input is not a terminal: status 1"
 tty < /dev/null; echo $?
 ```
 

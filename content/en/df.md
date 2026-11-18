@@ -22,13 +22,13 @@ A `df` command appeared in Version 1 AT&T UNIX, according to the macOS manual, w
 ### Examples
 Show the file system that holds the current folder, in 1024-byte units with `-k`; the first column heading is `Filesystem`:
 
-```sh
+```sh short="File system of this folder, in 1 KiB units (-k)"
 df -k . | head -n 1 | cut -d' ' -f1
 ```
 
 Use the POSIX format with `-P`, which keeps every file system on one line and uses the same columns everywhere:
 
-```sh
+```sh short="POSIX format (-P): one line per file system"
 df -Pk . | head -n 1 | cut -d' ' -f1
 ```
 
@@ -40,7 +40,7 @@ df -h . | head -n 1 | cut -d' ' -f1
 
 Count the lines for one path: the heading and one file system:
 
-```sh
+```sh short="Count the lines for one path (heading plus one)"
 df -Pk . | grep -c .
 ```
 

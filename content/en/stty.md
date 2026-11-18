@@ -34,13 +34,13 @@ stty size
 
 Turn off echo so typed text is hidden, then turn it back on; do this only in a script that always restores it:
 
-```sh
+```sh short="Hide typed text, then turn echo back on (restore it!)"
 stty -echo; read -r secret; stty echo
 ```
 
 Return the terminal to reasonable defaults after something left it in a strange state:
 
-```sh
+```sh short="Reset the terminal to sane defaults"
 stty sane
 ```
 

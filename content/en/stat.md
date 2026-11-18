@@ -22,7 +22,7 @@ The `stat` utility appeared in NetBSD 1.6 and FreeBSD 4.10, according to the Fre
 ### Examples
 Test that a file exists. The output is discarded, and `stat` exits with a non-zero status for a missing file:
 
-```sh
+```sh short="Test that a file exists"
 stat notes.txt > /dev/null && echo exists
 ```
 
@@ -51,7 +51,7 @@ stat -c '%s' notes.txt
 
 Print the octal permission bits and the file name; `%a` is the mode and `%n` the name:
 
-```sh
+```sh short="Print the octal permission bits and the name (%a, %n)"
 stat -c '%a %n' notes.txt
 ```
 
@@ -77,7 +77,7 @@ stat -f '%z' notes.txt
 
 Print the octal permission bits and the file name; `%Lp` is the low permission bits and `%N` the name:
 
-```sh
+```sh short="Print the octal permission bits and the name (%Lp, %N)"
 stat -f '%Lp %N' notes.txt
 ```
 

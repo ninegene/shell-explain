@@ -26,7 +26,7 @@ fzf --version
 
 Filter a list without the interface, with `-f`; the letters `an` match lines that contain `a` then `n`:
 
-```sh
+```sh short="Filter a list without the interface (-f)"
 printf 'apple\nbanana\ncherry\n' | fzf -f an
 ```
 

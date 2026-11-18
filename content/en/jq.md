@@ -51,7 +51,7 @@ echo '[{"n":"a","v":1},{"n":"b","v":2}]' | jq -r '.[] | select(.v > 1) | .n'
 
 Build new JSON from a variable with `--arg`, using `-n` for no input:
 
-```sh
+```sh short="Build new JSON from a variable (--arg, -n)"
 jq -n --arg x hi -c '{greeting:$x}'
 ```
 

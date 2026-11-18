@@ -28,19 +28,19 @@ printf 'a\nb\n' | xargs echo
 
 Run the command with at most two arguments each time:
 
-```sh
+```sh short="Run with at most two arguments each time (-n 2)"
 printf 'a\nb\nc\n' | xargs -n 2 echo
 ```
 
 Run the command once for each input item by putting it in a `{}` placeholder:
 
-```sh
+```sh short="Run once per item, with a {} placeholder"
 printf 'one\ntwo\n' | xargs -I {} echo item-{}
 ```
 
 Read null-separated items so a space stays inside one name; the null separator is what `find -print0` produces:
 
-```sh
+```sh short="Read null-separated items, as from find -print0"
 printf 'a b\0c\0' | xargs -0 -n 1 echo
 ```
 
@@ -52,7 +52,7 @@ printf 'app.log\nnotes.txt\n' | xargs wc -l
 
 Do nothing when the input is empty, instead of running the command once with no arguments:
 
-```sh
+```sh short="Do nothing when the input is empty (-r)"
 printf '' | xargs -r echo ran; echo finished
 ```
 

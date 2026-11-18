@@ -22,13 +22,13 @@ An `od` command appeared in Version 1 AT&T UNIX, according to the macOS manual, 
 ### Examples
 Show the characters of some text, one per column, without the position column:
 
-```sh
+```sh short="Show the characters of some text, one per column"
 printf abc | od -An -c
 ```
 
 Show the bytes as hexadecimal numbers with `-t x1`, which is one byte per number:
 
-```sh
+```sh short="Show the bytes as hexadecimal numbers (-t x1)"
 printf abc | od -An -tx1
 ```
 

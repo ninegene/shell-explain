@@ -22,7 +22,7 @@ A `tar` command appeared in Seventh Edition Unix, released in January 1979, acco
 ### Examples
 Create an archive from a directory and list its contents:
 
-```sh
+```sh short="Create an archive from a directory and list it"
 tar -cf logs.tar logs && tar -tf logs.tar
 ```
 
@@ -34,7 +34,7 @@ tar -cf backup.tar app.log notes.txt && tar -tf backup.tar
 
 Create a gzip-compressed archive and list it. The `-z` flag works in both modes:
 
-```sh
+```sh short="Create a gzip-compressed archive and list it (-z)"
 tar -czf logs.tgz logs && tar -tzf logs.tgz
 ```
 

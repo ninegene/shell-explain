@@ -20,7 +20,7 @@ references:
 ### Examples
 Print the commands for a Bourne-style shell with `-b`; the first line sets the variable:
 
-```sh
+```sh short="Print shell commands that set LS_COLORS (-b)"
 dircolors -b | grep -c '^LS_COLORS='
 ```
 
@@ -32,7 +32,7 @@ dircolors -c | grep -c '^setenv LS_COLORS'
 
 Print the built-in table; the lines that start with `DIR` set the directory color:
 
-```sh
+```sh short="Print the built-in table (DIR sets directory color)"
 dircolors -p | grep -c '^DIR'
 ```
 

@@ -21,13 +21,13 @@ references:
 ### Examples
 Print the number of processors; the exact number depends on the machine, so the example only checks that a number is printed:
 
-```sh
+```sh short="Print the processor count (number shape checked)"
 nproc | grep -c '^[0-9][0-9]*$'
 ```
 
 Use it to choose a number of jobs, for example for `make -j`:
 
-```sh
+```sh short="Pick a job count, e.g. for make -j"
 jobs=$(nproc); test "$jobs" -ge 1 && echo ok
 ```
 

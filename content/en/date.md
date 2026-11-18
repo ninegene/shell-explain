@@ -36,19 +36,19 @@ date +%H:%M:%S | grep -c '^[0-9][0-9]:[0-9][0-9]:[0-9][0-9]$'
 
 Print the time as seconds since 1970-01-01 UTC, handy for timestamps and comparisons:
 
-```sh
+```sh short="Print seconds since 1970-01-01 UTC"
 date +%s | grep -c '^[0-9]*$'
 ```
 
 Print an ISO 8601 timestamp in UTC, such as `2026-11-08T22:05:09Z`:
 
-```sh
+```sh short="Print an ISO 8601 timestamp in UTC"
 date -u +%Y-%m-%dT%H:%M:%SZ | grep -c 'Z$'
 ```
 
 Print the name of the time zone in use; with `-u` it is always `UTC`:
 
-```sh
+```sh short="Print the time zone name; with -u it is UTC"
 date -u +%Z
 ```
 
@@ -74,7 +74,7 @@ date -u -d @86400 +%Y-%m-%d
 
 Parse a date and time written in words or digits and print it as seconds since 1970:
 
-```sh
+```sh short="Parse a date and print it as seconds since 1970"
 date -u -d '2026-11-08 12:00' +%s
 ```
 

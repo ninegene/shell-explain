@@ -22,7 +22,7 @@ Today the name covers GNU chroot, the chroot that macOS ships (in `/usr/sbin`), 
 ### Examples
 Start a shell with `/srv/root` as its root; it needs `/srv/root/bin/sh` and the libraries that shell uses:
 
-```sh
+```sh short="Run a shell in /srv/root; it needs its own bin/sh and libraries"
 chroot /srv/root /bin/sh
 ```
 

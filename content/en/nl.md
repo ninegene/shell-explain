@@ -34,7 +34,7 @@ printf 'one\n\ntwo\n' | nl -b a
 
 Number only the lines that are not empty, which is the default, written out as `-b t`:
 
-```sh
+```sh short="Number only non-empty lines (the default, -b t)"
 printf 'one\n\ntwo\n' | nl -b t
 ```
 

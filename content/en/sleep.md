@@ -40,7 +40,7 @@ for i in 1 2; do echo "step $i"; sleep 1; done
 
 Run something after a delay, in the background, and wait for it:
 
-```sh
+```sh short="Run after a delay in the background; wait"
 (sleep 1; echo later) & wait
 ```
 

@@ -50,17 +50,21 @@ type block struct {
 	inline bool
 }
 
-// RenderExamples lays examples out for a terminal. A short command with a
+// RenderExamples lays examples out for a terminal. With useShort, an example's
+// short label replaces its full description; --details passes false. A short command with a
 // short description becomes one line, `command  # description`, with the
 // comments of neighbouring lines aligned. Everything else keeps the authored
 // shape: the description as comment lines above the command. The commands are
 // never changed or wrapped, so they can be copied as they are shown.
-func RenderExamples(examples []catalog.Example, lineWidth int, color bool) string {
+func RenderExamples(examples []catalog.Example, lineWidth int, color, useShort bool) string {
 	if lineWidth <= 0 {
 		lineWidth = defaultWidth
 	}
 	blocks := make([]block, len(examples))
 	for i, e := range examples {
+		if useShort && e.Short != "" {
+			e.Description = e.Short
+		}
 		blocks[i] = block{Example: e, inline: e.Description != "" && e.Code != "" &&
 			!strings.Contains(e.Code, "\n") && width(e.Code) <= maxInlineCode &&
 			width(e.Code)+4+width(e.Description) <= lineWidth}

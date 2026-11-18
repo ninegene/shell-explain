@@ -34,19 +34,19 @@ cp app.log logs/ && ls logs
 
 Copy several files into a directory; the last name is the destination:
 
-```sh
+```sh short="Copy several files into the last-named directory"
 cp notes.txt app.log logs && ls logs
 ```
 
 Copy a directory and everything inside it. `-R` is the portable spelling of recursive copy:
 
-```sh
+```sh short="Copy a directory and its contents (-R, portable)"
 cp -R logs logs-copy && ls logs-copy
 ```
 
 Keep the modification time and permissions of the original:
 
-```sh
+```sh short="Keep modification time and permissions (-p)"
 cp -p notes.txt kept.txt && ls kept.txt
 ```
 

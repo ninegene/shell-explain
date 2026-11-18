@@ -20,7 +20,7 @@ references:
 ### Examples
 Print a number with an SI suffix, where a thousand is shown with a `k` or `K` suffix:
 
-```sh
+```sh short="Print a number with an SI suffix"
 numfmt --to=si 1500
 ```
 

@@ -22,7 +22,7 @@ The macOS manual says `nohup` is expected to be POSIX.2 compatible, and gives no
 ### Examples
 Run a command with `nohup`; here its output is not a terminal, so it is passed through:
 
-```sh
+```sh short="Run a command; non-terminal output is passed through"
 nohup echo hi
 ```
 

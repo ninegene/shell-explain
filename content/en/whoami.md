@@ -22,7 +22,7 @@ The macOS manual lists `whoami` as equivalent to `id -un`, without giving a date
 ### Examples
 Print your user name; here only that something was printed is shown:
 
-```sh
+```sh short="Print your user name"
 whoami | grep -c .
 ```
 

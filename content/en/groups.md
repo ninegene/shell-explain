@@ -22,7 +22,7 @@ The macOS manual lists the historic `groups` command as equivalent to `id -Gn`, 
 ### Examples
 Print your groups; the names depend on the system, so only that something is printed is shown:
 
-```sh
+```sh short="Print your groups (the names depend on the system)"
 groups | grep -c .
 ```
 
