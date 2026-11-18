@@ -1,6 +1,6 @@
 # Distribution and release plan
 
-The CLI can be built locally with just build and the Astro site can be previewed locally. The website is live (see below). No public binaries, installers, package definitions, or releases exist yet. Distribution commands in this document are proposed future interfaces.
+The CLI can be built locally with just build and the Astro site can be previewed locally. The website is live (see below). The release tooling described below exists in the repository; until a release has been published and each route tested from a clean environment, the install commands in this document are proposed interfaces, not instructions.
 
 The repository was private through stages 1–4 and became public on 2026-11-17. Stage 5 continues with contribution guidance and publishing release artifacts. Development builds do not constitute a public release. Binary distributions must include the MIT and CC BY 4.0 license texts and applicable attribution for embedded content and third-party dependencies. See [third-party notices](third-party-notices.md) for the inventory and release checks, and the [roadmap](roadmap.md) for the sequence and authorization boundaries.
 
@@ -10,11 +10,26 @@ Start with macOS and Linux on ARM64 and AMD64. Publish versioned GitHub release 
 
 Embed the Markdown-derived reference bundle so normal lookup works offline without Python, Node, a database, or an AI API. Release the content revision alongside the binary. Keep unknown/missing content responses useful. A future content-update mechanism must be explicit, verified, and compatible with the binary schema; it is not required for version one.
 
-Release automation such as [GoReleaser](https://goreleaser.com/) is a candidate. Review the current free feature set and package-manager policies before relying on any publisher. A release tool supporting a packaging route does not establish that Homebrew's official repositories will accept it.
+Release automation is a plain script and a workflow, not a release tool, so there is nothing extra to pin or trust:
+
+- `scripts/build-release.sh VERSION [OUTDIR]` (or `just release-build VERSION`) cross-compiles pure-Go binaries (`CGO_ENABLED=0`, `-trimpath`, version set with `-X main.version`) for darwin and linux on arm64 and amd64. Each archive is `explain_<version>_<os>_<arch>.tar.gz` with `explain` at the top level next to `LICENSE`, `LICENSE-CC-BY-4.0`, `README.md`, `docs/third-party-notices.md` and `third-party/`. A `checksums.txt` lists the SHA-256 of every archive. Archives are reproducible for a commit (GNU tar with fixed order, owner, times and modes, and `gzip -n`). It refuses to build with a Go toolchain that `docs/third-party-notices.md` does not mention, so the shipped runtime notices stay accurate.
+- `.github/workflows/release.yml` runs when a `v*` tag is pushed. It checks that the tag is a version on `main`, runs the Go checks and the script tests, builds the archives, smoke-tests the archive for each of linux/amd64, linux/arm64, darwin/arm64 and darwin/amd64 on a native runner, attests build provenance, and creates a **draft** release containing the archives, `checksums.txt` and `install.sh`. A person reviews and publishes the draft. Running the workflow by hand from the Actions tab is a dry run: it builds and smoke-tests a `v0.0.0-dispatch` build and creates no release.
+- Keep the Go version in the workflow, `docs/third-party-notices.md` and `third-party/go-runtime` in step when the toolchain changes.
+
+Verify a download with `shasum -a 256 -c checksums.txt` (or `sha256sum -c`) and, for provenance, `gh attestation verify <archive> --repo ninegene/shell-explain`. Checksums from the same release prove only that the files were not corrupted; the attestation is the signed statement of where they were built.
+
+### Release procedure
+
+1. Check the third-party notices against the toolchain and dependencies, and that `main` has passed CI.
+2. Tag the release commit on `main` (`git tag -a v0.1.0 -m v0.1.0 && git push origin v0.1.0`). Pushing a tag is the publishing decision and needs explicit authorization.
+3. Review the draft release: the archives, checksums, notes and provenance. Publish it.
+4. Test each install route from a clean environment (curl installer, mise, Homebrew), then update the Homebrew formula and the README install section.
+
+GoReleaser was considered and not adopted: it adds a tool and an action to pin and a token to store for tap updates, for no feature this project needs.
 
 ## curl-based installer
 
-Provide an HTTPS installer and a manual archive-download alternative. Detect OS/CPU, select an immutable versioned artifact, verify its digest, and install to a user-writable destination such as `~/.local/bin`. Support version and destination flags, useful errors, and a dry-run mode. Avoid sudo and automatic shell startup edits by default.
+Provide an HTTPS installer (`scripts/install.sh`, attached to each release) and a manual archive-download alternative. Detect OS/CPU, select an immutable versioned artifact, verify its digest, and install to a user-writable destination such as `~/.local/bin`. Support version and destination flags, useful errors, and a dry-run mode. Avoid sudo and automatic shell startup edits by default.
 
 Downloading an installer to inspect before running should be documented alongside any one-line pipe-to-shell shortcut. Checksums obtained from the same compromised source do not independently establish authenticity; signed release metadata/provenance improves the trust story.
 
