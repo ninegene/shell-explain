@@ -27,6 +27,10 @@ func TestMain(m *testing.M) {
 			fmt.Println("gzip 1.13\nCopyright (C) 2023 Free Software Foundation, Inc.")
 		case "gnu-coreutils":
 			fmt.Println("sort (GNU coreutils) 9.11")
+		case "uutils":
+			fmt.Println("sort (uutils coreutils) 0.10.0")
+		case "uutils-multicall":
+			fmt.Println("coreutils 0.10.0 (multi-call binary)")
 		case "procps":
 			fmt.Println("ps from procps-ng 4.0.5")
 		case "gnu-zcat":
@@ -132,6 +136,20 @@ func TestCoreutilsProbesAndAppleSystemPaths(t *testing.T) {
 				t.Fatalf("%s %s: %+v %v", command, tt.mode, s, err)
 			}
 		}
+	}
+	// uutils coreutils (Ubuntu 26.04's cat, sort, ...) is named, never mistaken for GNU, and
+	// keeps the common content because no page has a uutils view.
+	for _, tt := range []struct{ mode, command string }{{"uutils", "sort"}, {"uutils-multicall", "coreutils"}} {
+		t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", tt.mode)
+		s, err := (Detector{OS: "linux", Path: dir}).Select(context.Background(), Request{Name: tt.command, Command: tt.command, GNUView: true})
+		if err != nil || s.Implementation != "common" || s.Confidence != "detected" || s.Version != "0.10.0" || !strings.Contains(s.Evidence, "uutils coreutils") || !strings.Contains(strings.Join(s.Warnings, " "), "--implementation gnu") {
+			t.Fatalf("%s banner: %+v %v", tt.mode, s, err)
+		}
+	}
+	// A page without a GNU view, such as arch, must not suggest --implementation gnu.
+	t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", "uutils")
+	if s, err := (Detector{OS: "linux", Path: dir}).Select(context.Background(), Request{Name: "arch", Command: "arch"}); err != nil || strings.Contains(strings.Join(s.Warnings, " "), "--implementation gnu") || !strings.Contains(strings.Join(s.Warnings, " "), "no GNU view") {
+		t.Fatalf("uutils without GNU view: %+v %v", s, err)
 	}
 	t.Setenv("SHELL_EXPLAIN_PROBE_FIXTURE", "gnu-dd")
 	if s, err := d.Select(context.Background(), Request{Name: "dd", Command: "dd"}); err != nil || s.Implementation != "gnu" || s.Confidence != "detected" || s.Version != "9.11" {

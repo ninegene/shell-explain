@@ -161,7 +161,9 @@ func prepareExampleTools(t *testing.T, id, impl, executable string) (string, str
 func exampleTool(d detect.Detector, command, implementation string) string {
 	candidates := []string{command}
 	if implementation == "gnu" {
-		candidates = []string{"g" + command, command}
+		// Homebrew prefixes GNU tools with g; Ubuntu 26.04 and later run uutils for most
+		// coreutils names and install GNU coreutils with a gnu prefix (gnucat, gnusort).
+		candidates = []string{"g" + command, "gnu" + command, command}
 	}
 	if implementation == "mawk" {
 		// mawk is installed as mawk; a plain awk may be any implementation.
