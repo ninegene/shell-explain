@@ -46,6 +46,9 @@ type Request struct {
 	// Single names the only implementation an entry documents (such as
 	// "upstream"), so selection needs no detection.
 	Single string
+	// GNUView reports whether the entry has a GNU view, so a uutils warning only
+	// suggests --implementation gnu where that selection exists.
+	GNUView bool
 }
 
 func (r Request) shells() []string {
@@ -135,12 +138,19 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 		banner := out.String()
 		first := strings.SplitN(banner, "\n", 2)[0]
 		if probeCtx.Err() == nil && !errors.Is(err, exec.ErrWaitDelay) {
+			uutils := false
 			switch {
 			case d.OS == "darwin" && (strings.Contains(banner, "BSD grep") || strings.Contains(first, "-Apple") || strings.HasPrefix(first, "Apple ")):
 				// Apple's banners can say "GNU compatible", "(GNU sort) ...-Apple" or "Apple gzip 479".
 				s.Implementation = "apple"
 			case strings.Contains(banner, "BusyBox"):
 				s.Implementation = "busybox"
+			case strings.Contains(first, "(uutils coreutils) ") || (strings.HasPrefix(first, "coreutils ") && strings.HasSuffix(first, " (multi-call binary)")):
+				// uutils coreutils, the Rust reimplementation that Ubuntu 26.04 installs as cat, ls,
+				// sort and most other coreutils names, prints "cat (uutils coreutils) 0.10.0", and its
+				// multi-call program prints "coreutils 0.10.0 (multi-call binary)". No page has a uutils
+				// view, so the common content stays selected and the evidence names uutils.
+				uutils = true
 			case strings.Contains(first, "(GNU ") || strings.Contains(first, "(coreutils)") || strings.HasPrefix(first, "GNU Awk ") || strings.HasPrefix(first, "GNU patch ") || strings.HasPrefix(first, "GNU Wget ") || (strings.Contains(first, "(gzip) ") && strings.Contains(banner, "Free Software Foundation")) || (strings.HasPrefix(first, "gzip ") && strings.Contains(banner, "Free Software Foundation")):
 				// GNU gzip prints "gzip 1.13" plus a Free Software Foundation notice, GNU dd prints
 				// "dd (coreutils) 9.11" without the word GNU, GNU patch prints "GNU patch 2.8", GNU zcat prints "zcat (gzip) 1.14",
@@ -160,6 +170,10 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 				s.Evidence = "Bounded native executable --version probe"
 				s.Version = firstVersion(banner)
 			}
+			if uutils {
+				s.Evidence = "Bounded native executable --version probe found uutils coreutils, which has no separate documentation; showing common content"
+				s.Warnings = append(s.Warnings, uutilsWarning(r.Command, r.GNUView))
+			}
 		} else {
 			s.Warnings = append(s.Warnings, "Version probe or output waiting timed out; implementation may be inferred or unknown.")
 		}
@@ -171,12 +185,28 @@ func (d Detector) Select(ctx context.Context, r Request) (Selection, error) {
 		s.Confidence = "inferred"
 		s.Evidence = "macOS system executable path (not version-certified)"
 	}
-	if s.Implementation == "common" {
+	if s.Implementation == "common" && s.Confidence != "detected" {
 		s.Evidence = "Executable found, but implementation is unknown"
 		s.Warnings = append(s.Warnings, "Use --implementation for variant-specific help; PATH lookup cannot see parent-shell aliases or functions.")
 	}
 	return s, nil
 }
+
+// uutilsWarning says that a uutils command is not GNU, where Ubuntu puts the GNU one, and
+// suggests --implementation gnu only when the page has a GNU view.
+func uutilsWarning(command string, gnuView bool) string {
+	advice := " This page has no GNU view."
+	if gnuView {
+		advice = " Use --implementation gnu for the GNU sections."
+	}
+	gnuName := "GNU " + command + " is installed as gnu" + command
+	if command == "coreutils" {
+		// Ubuntu installs GNU coreutils as separate gnu-prefixed commands, not a multi-call program.
+		gnuName = "GNU coreutils is installed as separate gnu-prefixed commands, such as gnucat"
+	}
+	return "uutils coreutils is a Rust reimplementation that aims to match GNU coreutils but differs in places." + advice + " On Ubuntu 26.04 and later, " + gnuName + "."
+}
+
 func isAppleSystemPath(resolved, command string) bool {
 	for _, dir := range appleSystemDirs {
 		if resolved == dir+"/"+command {
