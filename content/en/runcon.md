@@ -6,9 +6,10 @@ summary: Run a command with a given SELinux security context.
 aliases: [gruncon]
 tags: [process, security, selinux]
 implementations: [gnu]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/runcon-invocation.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuruncon.1.html
 ---
 ## Common
 ### Overview

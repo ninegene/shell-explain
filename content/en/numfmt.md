@@ -6,9 +6,10 @@ summary: Convert numbers to and from human-readable sizes such as 1.5K or 2M.
 aliases: [gnumfmt]
 tags: [numbers, text, formatting]
 implementations: [gnu]
-updated: 2026-11-12
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/numfmt-invocation.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnunumfmt.1.html
 ---
 ## Common
 ### Overview

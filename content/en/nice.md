@@ -6,11 +6,12 @@ summary: Run a command with a lower or higher scheduling priority.
 aliases: [gnice]
 tags: [process, system]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/nice-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=nice&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnunice.1.html
 ---
 ## Common
 ### Overview

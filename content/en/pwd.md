@@ -6,12 +6,13 @@ summary: Print the folder you are in.
 aliases: [gpwd]
 tags: [shell, navigation, directories]
 implementations: [bash, gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/bash/manual/html_node/Bourne-Shell-Builtins.html#index-pwd
   - https://www.gnu.org/software/coreutils/manual/html_node/pwd-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=pwd&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnupwd.1.html
 ---
 ## Common
 ### Overview

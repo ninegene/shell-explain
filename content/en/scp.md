@@ -6,9 +6,10 @@ summary: Copy files to or from another computer over SSH.
 aliases: []
 tags: [ssh, network, files]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://man.openbsd.org/scp
+  - https://manpages.ubuntu.com/manpages/resolute/man1/scp.1.html
 ---
 ## Common
 ### Overview

@@ -6,9 +6,10 @@ summary: Report a bug in gawk, the GNU awk, by mail.
 aliases: []
 tags: [awk, bugs, gnu]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/gawk/manual/html_node/Bugs.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gawkbug.1.html
 ---
 ## Common
 ### Overview

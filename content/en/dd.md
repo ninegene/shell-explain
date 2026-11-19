@@ -6,11 +6,12 @@ summary: Copy bytes from an input to an output, with control over block sizes an
 aliases: [gdd]
 tags: [files, binary, disks]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=dd&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnudd.1.html
 ---
 ## Common
 ### Overview

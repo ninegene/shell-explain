@@ -6,11 +6,12 @@ summary: Send a signal to processes found by name or by their command line.
 aliases: []
 tags: [process, system]
 implementations: [apple, procps, busybox]
-updated: 2026-11-12
+updated: 2026-11-18
 references:
   - https://gitlab.com/procps-ng/procps
   - https://man.freebsd.org/cgi/man.cgi?query=pkill&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/pkill.1.html
 ---
 ## Common
 ### Overview

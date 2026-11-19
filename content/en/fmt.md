@@ -6,10 +6,11 @@ summary: Reflow paragraphs of text to a chosen line width.
 aliases: [gfmt]
 tags: [text, formatting]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/fmt-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=fmt&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnufmt.1.html
 ---
 ## Common
 ### Overview

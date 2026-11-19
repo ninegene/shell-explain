@@ -6,10 +6,11 @@ summary: Run JavaScript outside a browser.
 aliases: []
 tags: [developer, javascript, runtime]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://nodejs.org/docs/latest/api/cli.html
   - https://nodejs.org/docs/latest/api/
+  - https://manpages.ubuntu.com/manpages/resolute/man1/node.1.html
 ---
 ## Common
 ### Overview

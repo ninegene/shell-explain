@@ -6,9 +6,10 @@ summary: Find and replace text with regular expressions, in a simpler way than s
 aliases: []
 tags: [text, replace, developer]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://github.com/chmln/sd#readme
+  - https://manpages.ubuntu.com/manpages/resolute/man1/sd.1.html
 ---
 ## Common
 ### Overview

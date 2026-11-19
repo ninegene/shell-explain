@@ -6,11 +6,12 @@ summary: Show how much disk space files and folders use.
 aliases: [gdu]
 tags: [files, system, size]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-09
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/du-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=du&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnudu.1.html
 ---
 ## Common
 ### Overview

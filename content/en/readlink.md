@@ -6,11 +6,12 @@ summary: Show where a symbolic link points, or resolve a path completely.
 aliases: [greadlink]
 tags: [files, links, paths]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/readlink-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=readlink&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnureadlink.1.html
 ---
 ## Common
 ### Overview

@@ -6,10 +6,11 @@ summary: Print the names of users who are logged in.
 aliases: [gusers]
 tags: [users, system]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/users-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=users&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuusers.1.html
 ---
 ## Common
 ### Overview

@@ -6,10 +6,11 @@ summary: Compare three files and show where they differ.
 aliases: [gdiff3]
 tags: [files, text, compare]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/diffutils/manual/html_node/Invoking-diff3.html
   - https://man.freebsd.org/cgi/man.cgi?query=diff3&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/diff3.1.html
 ---
 ## Common
 ### Overview

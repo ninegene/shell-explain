@@ -6,10 +6,11 @@ summary: Apply a diff to files, to update them or to undo a change.
 aliases: [gpatch]
 tags: [files, text, compare]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/diffutils/manual/html_node/Invoking-patch.html
   - https://man.freebsd.org/cgi/man.cgi?query=patch&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/patch.1.html
 ---
 ## Common
 ### Overview

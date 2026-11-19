@@ -6,11 +6,12 @@ summary: Set a file to an exact size, shrinking or extending it.
 aliases: [gtruncate]
 tags: [files, size]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/truncate-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=truncate&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnutruncate.1.html
 ---
 ## Common
 ### Overview

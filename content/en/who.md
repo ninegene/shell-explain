@@ -6,11 +6,12 @@ summary: Show who is logged in, and from which terminal.
 aliases: [gwho]
 tags: [users, system]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/who-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=who&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuwho.1.html
 ---
 ## Common
 ### Overview

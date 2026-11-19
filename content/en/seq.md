@@ -6,11 +6,12 @@ summary: Print a sequence of numbers.
 aliases: [gseq]
 tags: [text, numbers, scripts]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/seq-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=seq&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuseq.1.html
 ---
 ## Common
 ### Overview

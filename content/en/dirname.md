@@ -6,11 +6,12 @@ summary: Print the folder part of a path.
 aliases: [gdirname]
 tags: [files, paths]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-09
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/dirname-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=dirname&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnudirname.1.html
 ---
 ## Common
 ### Overview

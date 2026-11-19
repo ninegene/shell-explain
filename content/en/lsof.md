@@ -6,9 +6,10 @@ summary: List the open files of processes, including network connections.
 aliases: []
 tags: [process, system, network]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://man7.org/linux/man-pages/man8/lsof.8.html
+  - https://manpages.ubuntu.com/manpages/resolute/man8/lsof.8.html
 ---
 ## Common
 ### Overview

@@ -6,9 +6,10 @@ summary: Build and run programs in containers.
 aliases: []
 tags: [containers, developer, devops]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://docs.docker.com/reference/cli/docker/
+  - https://manpages.ubuntu.com/manpages/resolute/man1/docker.1.html
 ---
 ## Common
 ### Overview

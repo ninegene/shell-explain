@@ -6,11 +6,12 @@ summary: Move or rename files and directories.
 aliases: [gmv]
 tags: [files, directories]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-08
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/mv-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=mv&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/mv.1.html
 ---
 ## Common
 ### Overview

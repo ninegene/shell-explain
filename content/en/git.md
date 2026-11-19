@@ -6,10 +6,11 @@ summary: Track changes to files in a project, and share them.
 aliases: []
 tags: [git, version-control, developer]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://git-scm.com/docs
   - https://git-scm.com/book/en/v2
+  - https://manpages.ubuntu.com/manpages/resolute/man1/git.1.html
 ---
 ## Common
 ### Overview

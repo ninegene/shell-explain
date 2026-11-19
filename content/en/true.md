@@ -6,12 +6,13 @@ summary: Do nothing and succeed.
 aliases: [gtrue]
 tags: [shell, scripts]
 implementations: [bash, gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/bash/manual/html_node/Bourne-Shell-Builtins.html#index-true
   - https://www.gnu.org/software/coreutils/manual/html_node/true-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=true&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/true.1.html
 ---
 ## Common
 ### Overview

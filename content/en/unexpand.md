@@ -6,11 +6,12 @@ summary: Convert runs of spaces to tabs.
 aliases: [gunexpand]
 tags: [text, formatting]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/unexpand-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=unexpand&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuunexpand.1.html
 ---
 ## Common
 ### Overview

@@ -6,10 +6,11 @@ summary: Find files by name in a prebuilt index, very quickly.
 aliases: [glocate]
 tags: [files, search, index]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/findutils/manual/html_node/Invoking-locate.html
   - https://man.freebsd.org/cgi/man.cgi?query=locate&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/locate.findutils.1.html
 ---
 ## Common
 ### Overview

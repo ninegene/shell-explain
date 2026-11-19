@@ -6,10 +6,11 @@ summary: Show how much memory is free and used.
 aliases: []
 tags: [system, memory]
 implementations: [procps, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://gitlab.com/procps-ng/procps
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/free.1.html
 ---
 ## Common
 ### Overview

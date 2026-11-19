@@ -6,10 +6,11 @@ summary: Print the number of processing units available.
 aliases: [gnproc]
 tags: [system]
 implementations: [gnu, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/nproc-invocation.html
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnunproc.1.html
 ---
 ## Common
 ### Overview

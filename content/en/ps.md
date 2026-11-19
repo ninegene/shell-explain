@@ -6,11 +6,12 @@ summary: List the processes that are running.
 aliases: []
 tags: [process, system]
 implementations: [apple, procps, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://gitlab.com/procps-ng/procps
   - https://man.freebsd.org/cgi/man.cgi?query=ps&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/ps.1.html
 ---
 ## Common
 ### Overview

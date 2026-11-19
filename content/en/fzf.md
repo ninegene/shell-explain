@@ -6,9 +6,10 @@ summary: Pick a line from a list by typing a few letters.
 aliases: []
 tags: [search, interactive, productivity]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://github.com/junegunn/fzf#readme
+  - https://manpages.ubuntu.com/manpages/resolute/man1/fzf.1.html
 ---
 ## Common
 ### Overview

@@ -6,10 +6,11 @@ summary: Find bugs and risky constructs in shell scripts.
 aliases: []
 tags: [shell, scripts, lint]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.shellcheck.net/wiki/
   - https://github.com/koalaman/shellcheck#readme
+  - https://manpages.ubuntu.com/manpages/resolute/man1/shellcheck.1.html
 ---
 ## Common
 ### Overview

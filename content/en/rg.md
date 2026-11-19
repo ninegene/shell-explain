@@ -6,9 +6,10 @@ summary: Search the files under a folder for a pattern, fast, ignoring what .git
 aliases: [ripgrep]
 tags: [search, text, developer]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
+  - https://manpages.ubuntu.com/manpages/resolute/man1/rg.1.html
 ---
 ## Common
 ### Overview

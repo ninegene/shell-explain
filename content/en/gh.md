@@ -6,9 +6,10 @@ summary: Work with GitHub issues, pull requests and repositories from the termin
 aliases: []
 tags: [github, git, developer]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://cli.github.com/manual/
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gh.1.html
 ---
 ## Common
 ### Overview

@@ -6,9 +6,10 @@ summary: Pack files and folders into a .zip archive.
 aliases: []
 tags: [files, archive, compression]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://infozip.sourceforge.net/Zip.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/zip.1.html
 ---
 ## Common
 ### Overview

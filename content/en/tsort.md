@@ -6,10 +6,11 @@ summary: Sort items so that each comes after the items it depends on.
 aliases: [gtsort]
 tags: [text, sorting, dependencies]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/tsort-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=tsort&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnutsort.1.html
 ---
 ## Common
 ### Overview

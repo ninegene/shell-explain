@@ -6,12 +6,14 @@ summary: Process text line by line with patterns and actions.
 aliases: [gawk, mawk]
 tags: [text, columns, logs]
 implementations: [gnu, apple, busybox, mawk]
-updated: 2026-11-08
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/gawk/manual/
   - https://man.freebsd.org/cgi/man.cgi?query=awk&sektion=1
   - https://invisible-island.net/mawk/manpage/mawk.html
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gawk.1.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/mawk.1.html
 ---
 ## Common
 ### Overview

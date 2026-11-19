@@ -6,11 +6,12 @@ summary: Change the group of files.
 aliases: [gchgrp]
 tags: [files, permissions]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/chgrp-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=chgrp&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuchgrp.1.html
 ---
 ## Common
 ### Overview

@@ -6,11 +6,12 @@ summary: Run a command with a changed environment, or print the environment.
 aliases: [genv]
 tags: [shell, environment, scripts]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/env-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=env&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuenv.1.html
 ---
 ## Common
 ### Overview

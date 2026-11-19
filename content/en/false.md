@@ -6,12 +6,13 @@ summary: Do nothing and fail.
 aliases: [gfalse]
 tags: [shell, scripts]
 implementations: [bash, gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/bash/manual/html_node/Bourne-Shell-Builtins.html#index-false
   - https://www.gnu.org/software/coreutils/manual/html_node/false-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=false&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnufalse.1.html
 ---
 ## Common
 ### Overview

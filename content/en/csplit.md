@@ -6,10 +6,11 @@ summary: Cut a file into pieces at lines that match a pattern or a line number.
 aliases: [gcsplit]
 tags: [files, text]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/csplit-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=csplit&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnucsplit.1.html
 ---
 ## Common
 ### Overview

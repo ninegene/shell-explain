@@ -6,10 +6,11 @@ summary: Copy files and folders, sending only what changed.
 aliases: []
 tags: [files, backup, network]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://rsync.samba.org/documentation.html
   - https://github.com/kristapsdz/openrsync#readme
+  - https://manpages.ubuntu.com/manpages/resolute/man1/rsync.1.html
 ---
 ## Common
 ### Overview

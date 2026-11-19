@@ -6,11 +6,12 @@ summary: Find processes by name or by their command line and print their numbers
 aliases: []
 tags: [process, system]
 implementations: [apple, procps, busybox]
-updated: 2026-11-12
+updated: 2026-11-18
 references:
   - https://gitlab.com/procps-ng/procps
   - https://man.freebsd.org/cgi/man.cgi?query=pgrep&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/pgrep.1.html
 ---
 ## Common
 ### Overview

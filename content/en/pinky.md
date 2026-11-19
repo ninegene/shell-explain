@@ -6,9 +6,10 @@ summary: Show a short report on logged-in users, in the style of the finger comm
 aliases: [gpinky]
 tags: [users, system]
 implementations: [gnu]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/pinky-invocation.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnupinky.1.html
 ---
 ## Common
 ### Overview

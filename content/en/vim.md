@@ -6,9 +6,10 @@ summary: Edit text files in a terminal, with commands you type.
 aliases: []
 tags: [editor, text, developer]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://vimhelp.org/
+  - https://manpages.ubuntu.com/manpages/resolute/man1/vim.1.html
 ---
 ## Common
 ### Overview

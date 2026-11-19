@@ -6,11 +6,12 @@ summary: Compare two files byte by byte.
 aliases: [gcmp]
 tags: [files, compare]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/diffutils/manual/html_node/Invoking-cmp.html
   - https://man.freebsd.org/cgi/man.cgi?query=cmp&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/cmp.1.html
 ---
 ## Common
 ### Overview

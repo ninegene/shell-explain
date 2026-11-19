@@ -6,10 +6,11 @@ summary: View a compressed file one screen at a time, with the simple more pager
 aliases: []
 tags: [text, compression, pager]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/gzip/manual/gzip.html
   - https://man.freebsd.org/cgi/man.cgi?query=gzip&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/zmore.1.html
 ---
 ## Common
 ### Overview

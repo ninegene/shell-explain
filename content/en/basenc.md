@@ -6,9 +6,10 @@ summary: Encode or decode data with several base-N encodings.
 aliases: [gbasenc]
 tags: [text, encoding]
 implementations: [gnu]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/basenc-invocation.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnubasenc.1.html
 ---
 ## Common
 ### Overview

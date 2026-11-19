@@ -6,11 +6,12 @@ summary: Change the owner and group of files.
 aliases: [gchown]
 tags: [files, permissions]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/chown-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=chown&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuchown.1.html
 ---
 ## Common
 ### Overview

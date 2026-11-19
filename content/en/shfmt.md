@@ -6,9 +6,10 @@ summary: Format shell scripts in one consistent style.
 aliases: []
 tags: [shell, scripts, format]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://github.com/mvdan/sh#shfmt
+  - https://manpages.ubuntu.com/manpages/resolute/man1/shfmt.1.html
 ---
 ## Common
 ### Overview

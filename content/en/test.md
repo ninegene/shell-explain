@@ -6,12 +6,13 @@ summary: Check files, strings and numbers, and report with the exit status.
 aliases: [gtest, "["]
 tags: [shell, scripts, conditions]
 implementations: [bash, gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/bash/manual/html_node/Bourne-Shell-Builtins.html#index-test
   - https://www.gnu.org/software/coreutils/manual/html_node/test-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=test&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnutest.1.html
 ---
 ## Common
 ### Overview

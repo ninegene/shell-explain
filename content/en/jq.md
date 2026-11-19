@@ -6,10 +6,11 @@ summary: Read and transform JSON on the command line.
 aliases: []
 tags: [json, text, data]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://jqlang.org/manual/
   - https://jqlang.org/
+  - https://manpages.ubuntu.com/manpages/resolute/man1/jq.1.html
 ---
 ## Common
 ### Overview
