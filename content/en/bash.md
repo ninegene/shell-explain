@@ -6,9 +6,10 @@ summary: Start a Bash shell, run a script, or run one line of Bash.
 aliases: []
 tags: [shell, scripts, bash]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/bash/manual/bash.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/bash.1.html
 ---
 ## Common
 ### Overview

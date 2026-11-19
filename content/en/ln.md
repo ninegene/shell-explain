@@ -6,11 +6,12 @@ summary: Make hard links and symbolic links to files.
 aliases: [gln]
 tags: [files, links]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-09
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/ln-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=ln&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuln.1.html
 ---
 ## Common
 ### Overview

@@ -6,10 +6,11 @@ summary: Run a command and stop it if it takes too long.
 aliases: [gtimeout]
 tags: [scripts, process]
 implementations: [gnu, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/timeout-invocation.html
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnutimeout.1.html
 ---
 ## Common
 ### Overview

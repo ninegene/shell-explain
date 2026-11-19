@@ -6,9 +6,10 @@ summary: Run the commands of a project from a file named justfile.
 aliases: []
 tags: [developer, build, scripts]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://just.systems/man/en/
+  - https://manpages.ubuntu.com/manpages/resolute/man1/just.1.html
 ---
 ## Common
 ### Overview

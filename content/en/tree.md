@@ -6,9 +6,10 @@ summary: Show a folder and everything inside it as an indented tree.
 aliases: []
 tags: [files, directories, developer]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://oldmanprogrammer.net/source.php?dir=projects/tree
+  - https://manpages.ubuntu.com/manpages/resolute/man1/tree.1.html
 ---
 ## Common
 ### Overview

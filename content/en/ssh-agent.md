@@ -6,9 +6,10 @@ summary: Hold your SSH keys in memory so you type a passphrase only once.
 aliases: []
 tags: [ssh, security, keys]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://man.openbsd.org/ssh-agent
+  - https://manpages.ubuntu.com/manpages/resolute/man1/ssh-agent.1.html
 ---
 ## Common
 ### Overview

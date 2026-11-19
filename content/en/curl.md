@@ -6,10 +6,11 @@ summary: Transfer data to or from a server with a URL.
 aliases: []
 tags: [network, web, http]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://curl.se/docs/manpage.html
   - https://curl.se/docs/
+  - https://manpages.ubuntu.com/manpages/resolute/man1/curl.1.html
 ---
 ## Common
 ### Overview

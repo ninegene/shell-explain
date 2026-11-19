@@ -6,11 +6,12 @@ summary: Sort lines of text.
 aliases: [gsort]
 tags: [text, files, sorting]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-08
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/sort-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=sort&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnusort.1.html
 ---
 ## Common
 ### Overview

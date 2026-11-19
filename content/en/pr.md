@@ -6,10 +6,11 @@ summary: Format text for printing, in pages and columns.
 aliases: [gpr]
 tags: [text, formatting]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/pr-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=pr&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnupr.1.html
 ---
 ## Common
 ### Overview

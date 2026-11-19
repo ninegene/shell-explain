@@ -6,11 +6,12 @@ summary: Show free and used space on mounted file systems.
 aliases: [gdf, dh]
 tags: [files, system, size]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/df-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=df&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/df.1.html
 ---
 ## Common
 ### Overview

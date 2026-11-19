@@ -6,11 +6,12 @@ summary: Remove empty directories.
 aliases: [grmdir]
 tags: [files, directories]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/rmdir-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=rmdir&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnurmdir.1.html
 ---
 ## Common
 ### Overview

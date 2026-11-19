@@ -6,10 +6,11 @@ summary: Check whether a path name is valid and portable.
 aliases: [gpathchk]
 tags: [files, paths, scripts]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/pathchk-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=pathchk&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnupathchk.1.html
 ---
 ## Common
 ### Overview

@@ -6,9 +6,10 @@ summary: Build or refresh the index that locate searches.
 aliases: [gupdatedb]
 tags: [files, search, index]
 implementations: [gnu]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/findutils/manual/html_node/Invoking-updatedb.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/updatedb.findutils.1.html
 ---
 ## Common
 ### Overview

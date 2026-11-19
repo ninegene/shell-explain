@@ -6,10 +6,11 @@ summary: Run Python programs and scripts.
 aliases: [python]
 tags: [developer, python, runtime]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://docs.python.org/3/using/cmdline.html
   - https://docs.python.org/3/
+  - https://manpages.ubuntu.com/manpages/resolute/man1/python3.1.html
 ---
 ## Common
 ### Overview

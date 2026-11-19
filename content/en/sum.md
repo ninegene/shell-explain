@@ -6,11 +6,12 @@ summary: Print an old-style checksum and block count of files.
 aliases: [gsum]
 tags: [files, checksum]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/sum-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=sum&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnusum.1.html
 ---
 ## Common
 ### Overview

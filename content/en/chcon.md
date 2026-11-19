@@ -6,9 +6,10 @@ summary: Change the SELinux security context of files.
 aliases: [gchcon]
 tags: [files, security, selinux]
 implementations: [gnu]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/chcon-invocation.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuchcon.1.html
 ---
 ## Common
 ### Overview

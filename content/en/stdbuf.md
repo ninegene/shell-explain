@@ -6,10 +6,11 @@ summary: Run a command with changed buffering of its input and output.
 aliases: [gstdbuf]
 tags: [process, pipes, scripts]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/stdbuf-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=stdbuf&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnustdbuf.1.html
 ---
 ## Common
 ### Overview

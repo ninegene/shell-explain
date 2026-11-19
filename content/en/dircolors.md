@@ -6,9 +6,10 @@ summary: Set up the colors that ls uses for file types.
 aliases: [gdircolors]
 tags: [terminal, files, configuration]
 implementations: [gnu]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/dircolors-invocation.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnudircolors.1.html
 ---
 ## Common
 ### Overview

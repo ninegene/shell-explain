@@ -6,9 +6,10 @@ summary: Make a permuted index, listing each word with the text around it.
 aliases: [gptx]
 tags: [text, index]
 implementations: [gnu]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/ptx-invocation.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuptx.1.html
 ---
 ## Common
 ### Overview

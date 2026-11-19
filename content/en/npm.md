@@ -6,10 +6,11 @@ summary: Install JavaScript packages and run a project's scripts.
 aliases: []
 tags: [developer, javascript, packages]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://docs.npmjs.com/cli/commands
   - https://docs.npmjs.com/
+  - https://manpages.ubuntu.com/manpages/resolute/man1/npm.1.html
 ---
 ## Common
 ### Overview

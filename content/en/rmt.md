@@ -6,9 +6,10 @@ summary: Let tar and other programs use a tape drive on another computer.
 aliases: []
 tags: [archive, tape, network]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/tar/manual/html_node/Remote-Tape-Server.html
+  - https://manpages.ubuntu.com/manpages/resolute/man8/rmt-tar.8.html
 ---
 ## Common
 ### Overview

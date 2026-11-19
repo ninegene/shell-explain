@@ -6,11 +6,12 @@ summary: Show the busiest processes and the load, updating as you watch.
 aliases: []
 tags: [process, system, monitoring]
 implementations: [apple, procps, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://gitlab.com/procps-ng/procps
   - https://man.freebsd.org/cgi/man.cgi?query=top&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/top.1.html
 ---
 ## Common
 ### Overview

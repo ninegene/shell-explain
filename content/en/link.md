@@ -6,11 +6,12 @@ summary: Make a hard link with the plain two-argument form.
 aliases: [glink]
 tags: [files, links]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/link-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=link&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnulink.1.html
 ---
 ## Common
 ### Overview

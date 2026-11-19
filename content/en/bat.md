@@ -6,9 +6,10 @@ summary: Show files with syntax highlighting, line numbers and paging.
 aliases: []
 tags: [files, text, developer]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://github.com/sharkdp/bat#readme
+  - https://manpages.ubuntu.com/manpages/resolute/man1/batcat.1.html
 ---
 ## Common
 ### Overview

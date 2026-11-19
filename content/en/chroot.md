@@ -6,11 +6,12 @@ summary: Run a command with a different folder as the root of the file system.
 aliases: [gchroot]
 tags: [system, security, containers]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/chroot-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=chroot&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man8/gnuchroot.8.html
 ---
 ## Common
 ### Overview

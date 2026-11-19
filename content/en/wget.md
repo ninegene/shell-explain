@@ -6,10 +6,11 @@ summary: Download files from the web, without a browser.
 aliases: [gwget]
 tags: [network, web, download]
 implementations: [gnu, busybox]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/wget/manual/wget.html
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/wget.1.html
 ---
 ## Common
 ### Overview

@@ -6,10 +6,11 @@ summary: Print a numeric identifier for this host.
 aliases: [ghostid]
 tags: [system]
 implementations: [gnu, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/hostid-invocation.html
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuhostid.1.html
 ---
 ## Common
 ### Overview

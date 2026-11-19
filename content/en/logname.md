@@ -6,10 +6,11 @@ summary: Print the name you logged in with.
 aliases: [glogname]
 tags: [users, system]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/logname-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=logname&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnulogname.1.html
 ---
 ## Common
 ### Overview

@@ -6,11 +6,12 @@ summary: Show the differences between two files or two folders.
 aliases: [gdiff]
 tags: [files, text, compare]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/diffutils/manual/html_node/Invoking-diff.html
   - https://man.freebsd.org/cgi/man.cgi?query=diff&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/diff.1.html
 ---
 ## Common
 ### Overview

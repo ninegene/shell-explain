@@ -6,9 +6,10 @@ summary: Compute or verify BLAKE2 checksums of files.
 aliases: [gb2sum]
 tags: [files, checksum, security]
 implementations: [gnu]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/b2sum-invocation.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/b2sum.1.html
 ---
 ## Common
 ### Overview

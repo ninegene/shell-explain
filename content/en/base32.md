@@ -6,9 +6,10 @@ summary: Encode data as base32 text, or decode it back.
 aliases: [gbase32]
 tags: [text, encoding]
 implementations: [gnu]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/base32-invocation.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnubase32.1.html
 ---
 ## Common
 ### Overview

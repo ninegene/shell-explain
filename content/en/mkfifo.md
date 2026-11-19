@@ -6,11 +6,12 @@ summary: Create a named pipe, a file that connects two programs.
 aliases: [gmkfifo]
 tags: [files, pipes, ipc]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/mkfifo-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=mkfifo&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnumkfifo.1.html
 ---
 ## Common
 ### Overview

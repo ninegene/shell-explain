@@ -6,11 +6,12 @@ summary: Dump the bytes of a file as octal, hexadecimal, decimal or characters.
 aliases: [god]
 tags: [files, binary, debugging]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/od-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=od&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuod.1.html
 ---
 ## Common
 ### Overview

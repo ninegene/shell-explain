@@ -6,11 +6,12 @@ summary: Write cached data to disk.
 aliases: [gsync]
 tags: [files, system]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/sync-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=sync&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnusync.1.html
 ---
 ## Common
 ### Overview

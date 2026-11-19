@@ -6,11 +6,12 @@ summary: Print a CRC checksum and the byte count of files.
 aliases: [gcksum]
 tags: [files, checksum]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/cksum-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=cksum&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnucksum.1.html
 ---
 ## Common
 ### Overview

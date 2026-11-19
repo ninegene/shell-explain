@@ -6,11 +6,12 @@ summary: Copy what comes in to a file and to the screen at the same time.
 aliases: [gtee]
 tags: [files, pipes, streams]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-09
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/tee-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=tee&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnutee.1.html
 ---
 ## Common
 ### Overview

@@ -6,10 +6,11 @@ summary: Compute or verify SHA-384 checksums of files.
 aliases: [gsha384sum]
 tags: [files, checksum, security]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/sha2-utilities.html
   - https://man.freebsd.org/cgi/man.cgi?query=sha384sum&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/sha384sum.1.html
 ---
 ## Common
 ### Overview

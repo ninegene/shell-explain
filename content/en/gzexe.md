@@ -6,10 +6,11 @@ summary: Compress a program so that it unpacks itself each time it runs.
 aliases: []
 tags: [files, compression, programs]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/gzip/manual/gzip.html
   - https://man.freebsd.org/cgi/man.cgi?query=gzip&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gzexe.1.html
 ---
 ## Common
 ### Overview

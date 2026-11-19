@@ -6,11 +6,12 @@ summary: Compute or verify SHA-1 checksums of files.
 aliases: [gsha1sum]
 tags: [files, checksum, security]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/sha1sum-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=sha1sum&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/sha1sum.1.html
 ---
 ## Common
 ### Overview

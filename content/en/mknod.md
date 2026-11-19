@@ -6,11 +6,12 @@ summary: Create special files such as named pipes and device nodes.
 aliases: [gmknod]
 tags: [files, devices, system]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/mknod-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=mknod&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnumknod.1.html
 ---
 ## Common
 ### Overview

@@ -6,9 +6,10 @@ summary: Run a command from an npm package without installing it for good.
 aliases: []
 tags: [developer, javascript, packages]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://docs.npmjs.com/cli/commands/npx
+  - https://manpages.ubuntu.com/manpages/resolute/man1/npx.1.html
 ---
 ## Common
 ### Overview

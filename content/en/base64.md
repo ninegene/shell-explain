@@ -6,11 +6,12 @@ summary: Encode data as text, or decode it back.
 aliases: [gbase64]
 tags: [text, encoding]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/base64-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=base64&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnubase64.1.html
 ---
 ## Common
 ### Overview

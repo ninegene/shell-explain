@@ -6,11 +6,12 @@ summary: Find lines of text that match a pattern.
 aliases: [ggrep, egrep, fgrep]
 tags: [text, search, logs]
 implementations: [gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/grep/manual/
   - https://man.freebsd.org/cgi/man.cgi?query=grep&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/grep.1.html
 ---
 ## Common
 ### Overview

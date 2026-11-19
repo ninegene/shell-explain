@@ -34,6 +34,20 @@ var optionName = regexp.MustCompile(`^--?[A-Za-z0-9][A-Za-z0-9-]*$`)
 // segments. Add a spelling here only for a real command name, such as test's `[`.
 var symbolicNames = map[string]bool{"[": true}
 
+// UbuntuManpagesRelease is the Ubuntu release that every manpages.ubuntu.com
+// reference links to, so all pages point at the same (LTS) release and none
+// silently follows the newest development release.
+const UbuntuManpagesRelease = "resolute"
+
+var ubuntuManpage = regexp.MustCompile(`^/manpages/` + UbuntuManpagesRelease + `/man([1-9])/[A-Za-z0-9._+-]+\.([1-9])\.html$`)
+
+// validUbuntuManpage reports whether a manpages.ubuntu.com reference uses the
+// canonical, release-pinned page URL with matching section numbers.
+func validUbuntuManpage(u *url.URL) bool {
+	m := ubuntuManpage.FindStringSubmatch(u.Path)
+	return u.Scheme == "https" && u.RawQuery == "" && u.Fragment == "" && m != nil && m[1] == m[2]
+}
+
 // Implementation is one selectable documentation view. Implementations are
 // distinct upstream projects or shells, never operating-system guesses.
 type Implementation struct {
@@ -426,6 +440,9 @@ func validateMetadata(m Metadata) error {
 	for _, ref := range m.References {
 		if !safeURL(ref) {
 			return fmt.Errorf("unsafe reference URL %q", ref)
+		}
+		if u, _ := url.Parse(ref); strings.EqualFold(u.Hostname(), "manpages.ubuntu.com") && !validUbuntuManpage(u) {
+			return fmt.Errorf("reference %q to manpages.ubuntu.com must be https://manpages.ubuntu.com/manpages/%s/man<N>/<name>.<N>.html", ref, UbuntuManpagesRelease)
 		}
 	}
 	return nil

@@ -6,10 +6,11 @@ summary: Combine lines of two sorted files that share a key.
 aliases: [gjoin]
 tags: [text, files, columns]
 implementations: [gnu, apple]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/coreutils/manual/html_node/join-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=join&sektion=1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnujoin.1.html
 ---
 ## Common
 ### Overview

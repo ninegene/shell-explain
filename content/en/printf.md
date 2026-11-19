@@ -6,12 +6,13 @@ summary: Print text using a format string, with exact control over newlines and 
 aliases: [gprintf]
 tags: [shell, text, scripts]
 implementations: [bash, gnu, apple, busybox]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html#index-printf
   - https://www.gnu.org/software/coreutils/manual/html_node/printf-invocation.html
   - https://man.freebsd.org/cgi/man.cgi?query=printf&sektion=1
   - https://busybox.net/downloads/BusyBox.html
+  - https://manpages.ubuntu.com/manpages/resolute/man1/gnuprintf.1.html
 ---
 ## Common
 ### Overview

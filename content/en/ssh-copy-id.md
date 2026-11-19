@@ -6,9 +6,10 @@ summary: Install your public key on a server so you can log in with the key.
 aliases: [sshcopyid]
 tags: [ssh, keys, remote]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://github.com/openssh/openssh-portable/blob/master/contrib/ssh-copy-id.1
+  - https://manpages.ubuntu.com/manpages/resolute/man1/ssh-copy-id.1.html
 ---
 ## Common
 ### Overview

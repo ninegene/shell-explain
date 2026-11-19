@@ -6,9 +6,10 @@ summary: Find files and folders by name, in a simpler and faster way than find.
 aliases: []
 tags: [files, search, developer]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://github.com/sharkdp/fd#readme
+  - https://manpages.ubuntu.com/manpages/resolute/man1/fdfind.1.html
 ---
 ## Common
 ### Overview

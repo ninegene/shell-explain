@@ -6,9 +6,10 @@ summary: Jump to folders you use often with a few letters.
 aliases: [z]
 tags: [shell, navigation, productivity]
 implementations: [upstream]
-updated: 2026-11-16
+updated: 2026-11-18
 references:
   - https://github.com/ajeetdsouza/zoxide#readme
+  - https://manpages.ubuntu.com/manpages/resolute/man1/zoxide.1.html
 ---
 ## Common
 ### Overview

@@ -6,9 +6,10 @@ summary: Add private keys to the SSH agent, or list the keys it holds.
 aliases: [sshadd]
 tags: [ssh, security, keys]
 implementations: [upstream]
-updated: 2026-11-10
+updated: 2026-11-18
 references:
   - https://man.openbsd.org/ssh-add
+  - https://manpages.ubuntu.com/manpages/resolute/man1/ssh-add.1.html
 ---
 ## Common
 ### Overview
