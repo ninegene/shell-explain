@@ -163,6 +163,32 @@ func TestDetailsFlagPositionsAndJSONContract(t *testing.T) {
 	}
 }
 
+func TestSearchExamples(t *testing.T) {
+	status, out, stderr := run(t, "search", "extract", "archive", "--color=never")
+	if status != 0 || stderr != "" || !strings.Contains(out, "\nExamples\n[tar]\n") || !strings.Contains(out, "tar -xf") {
+		t.Fatalf("search did not list tar examples: %d %q %q", status, out, stderr)
+	}
+	status, out, _ = run(t, "search", "compress", "--format=json")
+	var parsed struct {
+		Examples []catalog.ExampleHit `json:"examples"`
+	}
+	if status != 0 || json.Unmarshal([]byte(out), &parsed) != nil || len(parsed.Examples) != 10 || parsed.Examples[0].Code == "" {
+		t.Fatalf("JSON examples missing or not limited to 10: %d %s", status, out)
+	}
+	_, out, _ = run(t, "search", "compress", "--format=json", "--limit=2")
+	if json.Unmarshal([]byte(out), &parsed) != nil || len(parsed.Examples) != 2 {
+		t.Fatalf("--limit not applied: %s", out)
+	}
+	if _, out, _ = run(t, "search", "zzzzqqq"); !strings.Contains(out, "Nothing matched") {
+		t.Fatalf("no-match message missing: %q", out)
+	}
+	for _, args := range [][]string{{"list", "--limit=3"}, {"grep", "--limit=3"}, {"search", "tar", "--limit=0"}} {
+		if status, _, _ := run(t, args...); status != 2 {
+			t.Fatalf("invalid --limit use accepted: %v", args)
+		}
+	}
+}
+
 func TestGroupedOptions(t *testing.T) {
 	status, out, stderr := run(t, "grep", "--implementation=common", "--details", "--width=72")
 	if status != 0 || stderr != "" || strings.Count(out, "\nOptions\n") != 1 || strings.Contains(out, "Option: -") {

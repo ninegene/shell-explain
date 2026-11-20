@@ -60,6 +60,7 @@ validate_outputs() {
 	check_output 'repeated grep lookups match' repeat_matches "$output" || failures=1
 	check_output 'list includes grep' grep -Fq 'grep ' "$output/list.stdout" || failures=1
 	check_output 'search finds grep' grep -Fq 'grep ' "$output/search.stdout" || failures=1
+	check_output 'use-case search finds tar examples' grep -Fq '[tar]' "$output/search-usecase.stdout" || failures=1
 	check_output 'guide renders' grep -Fq 'From Keypress to Screen' "$output/guide.stdout" || failures=1
 	check_output 'glossary renders' grep -Fq 'Kernel' "$output/glossary.stdout" || failures=1
 	return "$failures"
@@ -74,6 +75,7 @@ run_matrix() {
 	run_case "$output" grep-json "$binary" --no-probe --implementation gnu --format json grep || failures=1
 	run_case "$output" list "$binary" list || failures=1
 	run_case "$output" search "$binary" search logs || failures=1
+	run_case "$output" search-usecase "$binary" search extract archive || failures=1
 	run_case "$output" guide "$binary" learn big-picture --no-pager || failures=1
 	run_case "$output" glossary "$binary" glossary kernel --no-pager || failures=1
 	validate_outputs "$output" || failures=1

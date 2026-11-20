@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"sync"
 	"unicode"
 
 	"github.com/yuin/goldmark"
@@ -165,6 +166,10 @@ type Catalog struct {
 	Series          []SeriesInfo     `json:"series"`
 	Guides          []Guide          `json:"guides"`
 	Glossary        Glossary         `json:"glossary"`
+
+	// examples is the lazily built index behind SearchExamples.
+	examplesOnce sync.Once
+	examples     []ExampleHit
 }
 
 func Load(files fs.FS) (*Catalog, error) {

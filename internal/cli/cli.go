@@ -21,7 +21,7 @@ var Help = `explain — practical, offline command help
 Usage:
   explain COMMAND [flags]
   explain list [--format json]
-  explain search WORDS [--format json]
+  explain search WORDS [--limit N] [--format json]   Commands, guides, words and examples
   explain learn [GUIDE] [--section NAME]       Beginner guides; GUIDE is a name or number
   explain glossary [WORD]                      Short definitions of words you will see
 
@@ -45,6 +45,9 @@ JSON always includes the full selected reference, independently of --details.
 Examples are never executed. PATH detection cannot see parent-shell aliases/functions.
 `
 
+// defaultExampleLimit is how many example hits search shows unless --limit says otherwise.
+const defaultExampleLimit = 10
+
 var implementationList = catalog.ImplementationIDs(", ")
 
 type Config struct {
@@ -58,8 +61,8 @@ type Config struct {
 }
 type options struct {
 	implementation, platform, option, format, color, section string
-	width                                                    int
-	widthSet                                                 bool
+	width, limit                                             int
+	widthSet, limitSet                                       bool
 	noProbe, help, version, details, noPager                 bool
 	args                                                     []string
 }
@@ -87,6 +90,9 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 	if len(op.args) == 0 {
 		return failure(out, errOut, op.format, fmt.Errorf("specify a command, list, or search"))
 	}
+	if op.limitSet && op.args[0] != "search" {
+		return failure(out, errOut, op.format, fmt.Errorf("--limit applies to search only"))
+	}
 	switch op.args[0] {
 	case "learn":
 		return runLearn(c, op, out, errOut, cfg)
@@ -99,6 +105,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 		entries := c.Entries
 		var guides []catalog.Guide
 		var terms []catalog.GlossaryTerm
+		var examples []catalog.ExampleHit
 		if op.args[0] == "search" {
 			if len(op.args) < 2 {
 				return failure(out, errOut, op.format, fmt.Errorf("search needs a query"))
@@ -107,6 +114,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 			entries = c.Search(query)
 			guides = c.SearchGuides(query)
 			terms = c.SearchTerms(query)
+			examples = c.SearchExamples(query, op.limit)
 		} else if len(op.args) > 1 {
 			return failure(out, errOut, op.format, fmt.Errorf("list takes no arguments"))
 		}
@@ -119,6 +127,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 				}
 				result["guides"] = summaries
 				result["terms"] = terms
+				result["examples"] = examples
 			}
 			return encode(out, result)
 		}
@@ -131,7 +140,20 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 		for _, t := range terms {
 			fmt.Fprintf(out, "word     explain glossary %q  (%s)\n", t.Term, t.FirstSentence())
 		}
-		if len(entries)+len(guides)+len(terms) == 0 {
+		if len(examples) > 0 {
+			color := op.color == "always" || (op.color == "auto" && cfg.Color)
+			fmt.Fprintln(out)
+			if color {
+				fmt.Fprintln(out, paint(true, ansiHeading, "Examples"))
+			} else {
+				fmt.Fprintln(out, "Examples")
+			}
+			for _, h := range examples {
+				fmt.Fprintln(out, paint(color, ansiLabel, "["+h.Command+"]"))
+				fmt.Fprint(out, RenderExamples([]catalog.Example{{Description: h.Description, Short: h.Short, Code: h.Code}}, op.width, color, true))
+			}
+		}
+		if len(entries)+len(guides)+len(terms)+len(examples) == 0 {
 			fmt.Fprintln(out, "Nothing matched. Try: explain list, explain learn, or explain glossary")
 		}
 		return 0
@@ -258,7 +280,7 @@ func failure(out, errOut io.Writer, format string, err error) int {
 	return 2
 }
 func parse(args []string, width int) (options, error) {
-	o := options{format: "text", color: "auto", width: width, args: []string{}}
+	o := options{format: "text", color: "auto", width: width, limit: defaultExampleLimit, args: []string{}}
 	literal := false
 	for i := 0; i < len(args); i++ {
 		a := args[i]
@@ -318,6 +340,12 @@ func parse(args []string, width int) (options, error) {
 				return o, fmt.Errorf("width must be 0–1000")
 			}
 			o.width, o.widthSet = n, true
+		case "--limit":
+			n, err := strconv.Atoi(val)
+			if err != nil || n < 1 || n > 1000 {
+				return o, fmt.Errorf("limit must be 1–1000")
+			}
+			o.limit, o.limitSet = n, true
 		default:
 			return o, fmt.Errorf("unknown flag %s", key)
 		}
