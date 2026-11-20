@@ -92,7 +92,7 @@ explain learn big-picture
 explain glossary kernel
 ```
 
-`explain learn` lists the beginner guides, and `explain learn GUIDE` (a name or a number) reads one, optionally a single `--section`. `explain glossary` lists short definitions of words beginners meet, and `explain glossary WORD` reads one. `explain search` also finds guides and glossary words, and matches what you want to do against the descriptions and commands of every authored example (up to 10 shown; `--limit N` shows more). On a terminal, a guide or the glossary opens in your pager (`$PAGER`, or `less`); use `--no-pager` to print it directly.
+`explain learn` lists the beginner guides, and `explain learn GUIDE` (a name or a number) reads one, optionally a single `--section`. `explain glossary` lists short definitions of words beginners meet, and `explain glossary WORD` reads one. `explain search` also finds guides and glossary words, and matches what you want to do against the descriptions and commands of every authored example (up to 10 shown; `--limit N` shows more). On a terminal, text output opens in your pager (`$PAGER`, or `less`, which prints short output directly); use `--no-pager` or set `EXPLAIN_NO_PAGER=1` to print it directly. JSON is never paged.
 
 `explain` provides information; it does not run the example command or install the command being explained. Full pipeline/script explanation is a possible later feature, not part of the first release.
 

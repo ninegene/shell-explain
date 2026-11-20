@@ -253,19 +253,33 @@ func TestWantsPager(t *testing.T) {
 	for args, want := range map[string]bool{
 		"learn big-picture":               true,
 		"learn 1":                         true,
-		"learn":                           false,
+		"learn":                           true,
 		"learn big-picture --no-pager":    false,
 		"learn big-picture --format json": false,
 		"glossary":                        true,
-		"glossary kernel":                 false,
+		"glossary kernel":                 true,
 		"glossary --no-pager":             false,
-		"grep":                            false,
-		"list":                            false,
-		"--help":                          false,
+		"grep":                            true,
+		"grep --details":                  true,
+		"grep --no-pager":                 false,
+		"grep --format json":              false,
+		"list":                            true,
+		"search logs":                     true,
+		"--help":                          true,
+		"--version":                       false,
 		"learn big-picture --bogus":       false,
 	} {
 		if got := WantsPager(strings.Fields(args)); got != want {
 			t.Errorf("WantsPager(%q) = %v, want %v", args, got, want)
+		}
+	}
+}
+
+func TestWantsPagerEnvironment(t *testing.T) {
+	for value, want := range map[string]bool{"": true, "0": true, "1": false, "yes": false} {
+		t.Setenv(NoPagerEnv, value)
+		if got := WantsPager([]string{"grep"}); got != want {
+			t.Errorf("%s=%q: WantsPager = %v, want %v", NoPagerEnv, value, got, want)
 		}
 	}
 }
