@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
 	"os"
 	"regexp"
@@ -8,6 +10,9 @@ import (
 	"strings"
 	"testing"
 	"unicode/utf8"
+
+	"github.com/ninegene/shell-explain/content"
+	"github.com/ninegene/shell-explain/internal/catalog"
 )
 
 func TestLearnListAndReading(t *testing.T) {
@@ -324,5 +329,32 @@ func TestStartPager(t *testing.T) {
 	n, _ := r.Read(buf)
 	if string(buf[:n]) != "through the pager\n" {
 		t.Fatalf("pager output %q", buf[:n])
+	}
+}
+
+func TestBrowse(t *testing.T) {
+	// Without a terminal, browse refuses and points to search.
+	status, _, stderr := run(t, "browse")
+	if status != 2 || !strings.Contains(stderr, "needs a terminal; use explain search") {
+		t.Fatalf("browse without a terminal: %d %q", status, stderr)
+	}
+	for _, args := range [][]string{{"browse", "--format=json"}, {"browse", "--details"}, {"browse", "--limit=2"}} {
+		if status, _, _ := run(t, args...); status != 2 {
+			t.Errorf("browse accepted %v", args)
+		}
+	}
+	// With a terminal, the words after browse become the first query.
+	c, err := catalog.Load(content.Files)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var query string
+	cfg := Config{Version: "test", Browse: func(q string) error { query = q; return nil }}
+	var out, errOut bytes.Buffer
+	if status := Run(context.Background(), c, []string{"browse", "extract", "archive"}, &out, &errOut, cfg); status != 0 || query != "extract archive" {
+		t.Fatalf("browse: status %d query %q err %q", status, query, errOut.String())
+	}
+	if WantsPager([]string{"browse"}) {
+		t.Error("browse must not use the pager")
 	}
 }

@@ -47,7 +47,8 @@ func guideFlags(op options, allowSection bool) error {
 // like --no-pager. Any value except empty or "0" disables it.
 const NoPagerEnv = "EXPLAIN_NO_PAGER"
 
-func pagerDisabledByEnv() bool {
+// PagerDisabled reports whether EXPLAIN_NO_PAGER turns paging off.
+func PagerDisabled() bool {
 	v := os.Getenv(NoPagerEnv)
 	return v != "" && v != "0"
 }
@@ -58,7 +59,7 @@ func pagerDisabledByEnv() bool {
 // directly, because the default pager (less -FRX) exits when it fits on one
 // screen.
 func wantsPager(op options) bool {
-	return !op.noPager && !pagerDisabledByEnv() && op.format == "text" && !op.version
+	return !op.noPager && !PagerDisabled() && op.format == "text" && !op.version && (len(op.args) == 0 || op.args[0] != "browse")
 }
 
 // WantsPager reports whether args ask for text output that should go through a

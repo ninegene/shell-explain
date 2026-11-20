@@ -24,7 +24,7 @@ Schema version 1 and a deterministic SHA-256 content revision identify the bundl
 
 Initial commands: show an explanation, list entries, search entries, show a particular option, choose an implementation/platform, and emit structured JSON. Include version/help output, noninteractive plain text, terminal-width wrapping, and color controls. Use a pager only on a terminal, with `--no-pager` and `EXPLAIN_NO_PAGER` to turn it off, and never require one. Do not manipulate the user's shell configuration.
 
-Normal lookup must not contact a hosted API or an AI service. Do not execute sample commands. Unknown commands/options should get an honest unavailable result and useful nearby matches, not invented help.
+Normal lookup must not contact a hosted API or an AI service. Do not execute sample commands. The interactive browser (`explain browse`, and bare `explain` on a terminal) is an optional front end over the same catalog and renderer; it is never started when standard input or output is not a terminal, and it detects implementations without launching processes. Unknown commands/options should get an honest unavailable result and useful nearby matches, not invented help.
 
 Pipeline/script parsing is deferred. If introduced, use a proper parser such as [mvdan/sh](https://github.com/mvdan/sh) and keep parsing separate from interpretation/execution. Explaining a syntactically valid command does not certify it as safe.
 

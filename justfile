@@ -3,7 +3,7 @@
     printf '\n%s\n\n' 'Shell Explain — development commands'
     printf '%s\n' 'Commands:'
     '{{ just_executable() }}' --list --unsorted --list-heading '' --list-prefix '  just ' --color never
-    printf '\n%s\n' 'Prerequisites: just, Go 1.24+, Node.js 22.23.4+, and npm.'
+    printf '\n%s\n' 'Prerequisites: just, Go 1.26+, Node.js 22.23.4+, and npm.'
     printf '%s\n' 'Web setup: npm ci --prefix web'
     printf '%s\n' 'Browser-test setup: cd web && npx playwright install chromium'
     printf '\n%s\n\n' 'Details: docs/development.md. No command publishes or deploys; infra-preview only reads AWS.'

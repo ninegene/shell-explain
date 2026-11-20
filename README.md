@@ -51,7 +51,7 @@ The install script verifies the SHA-256 checksum, installs into `~/.local/bin`, 
 
 ## Local quick start
 
-Requires [just](https://github.com/casey/just), Go 1.24+, and Node 22.23.4+. Install the command runner with `brew install just` on macOS.
+Requires [just](https://github.com/casey/just), Go 1.26+, and Node 22.23.4+. Install the command runner with `brew install just` on macOS.
 
 Run `just` or `just help` to see all development commands and setup requirements. Plain `just` only displays help; it does not build or download dependencies.
 
@@ -77,6 +77,8 @@ The site has the command reference at `/commands/`, the beginner guides at `/lea
 The currently implemented interface supports these forms once the binary is on PATH:
 
 ```console
+explain
+explain browse extract archive
 explain grep
 explain grep --details
 explain ggrep
@@ -93,6 +95,25 @@ explain glossary kernel
 ```
 
 `explain learn` lists the beginner guides, and `explain learn GUIDE` (a name or a number) reads one, optionally a single `--section`. `explain glossary` lists short definitions of words beginners meet, and `explain glossary WORD` reads one. `explain search` also finds guides and glossary words, and matches what you want to do against the descriptions and commands of every authored example (up to 10 shown; `--limit N` shows more). On a terminal, text output opens in your pager (`$PAGER`, or `less`, which prints short output directly); use `--no-pager` or set `EXPLAIN_NO_PAGER=1` to print it directly. JSON is never paged.
+
+### Interactive browser
+
+On a terminal, `explain` with no arguments (or `explain browse [WORDS]`) opens a browser: a search box, a list of commands and a preview of the selected one. Typing filters the list the way `explain search` does, by command metadata or by a matching example, and the preview shows the matching examples first, then the same text `explain COMMAND` prints. It uses no network, starts no process to detect the implementation (like `--no-probe`), and never runs an example.
+
+| Key | Action |
+| --- | --- |
+| type | Filter the list |
+| `↑` `↓`, `ctrl+p` `ctrl+n` | Move through the list (or through the examples while the preview is focused) |
+| `tab` | Focus the preview to step through its examples; `tab` or `esc` returns |
+| `ctrl+y`, or `y` in the preview | Copy the selected example's code |
+| `enter` | Toggle the full reference (like `--details`) |
+| `pgup` `pgdn` | Scroll the preview |
+| `esc` | Clear the search; on an empty search, quit |
+| `ctrl+c` | Quit |
+
+Copying uses `pbcopy` on macOS and `wl-copy`, `xclip` or `xsel` on Linux, and falls back to the terminal's OSC 52 clipboard sequence when none is installed.
+
+The first time you run `explain` with no arguments on a terminal, it shows the usage (in the pager), then asks whether to show it every time. Answer `n` and later runs open the browser directly; the answer is kept in `explain/config` in your user config directory (on macOS, `~/Library/Application Support`; on Linux, `$XDG_CONFIG_HOME` or `~/.config`). Delete that file to be asked again; `explain --help` always shows the usage. When standard input or output is not a terminal, `explain` with no arguments just prints the usage, and `explain browse` exits with an error pointing to `explain search`.
 
 `explain` provides information; it does not run the example command or install the command being explained. Full pipeline/script explanation is a possible later feature, not part of the first release.
 
