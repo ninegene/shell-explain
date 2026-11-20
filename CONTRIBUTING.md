@@ -4,7 +4,7 @@ The project has a local shared-content, CLI, and Astro implementation and the re
 
 ## Setup and checks
 
-Install `just`, Go 1.24 or newer, Node.js 22.23.4 or newer, and npm. From the repository root, install the locked web dependencies and the browser used by the web tests:
+Install `just`, Go 1.26 or newer, Node.js 22.23.4 or newer, and npm. From the repository root, install the locked web dependencies and the browser used by the web tests:
 
 ```sh
 npm ci --prefix web
