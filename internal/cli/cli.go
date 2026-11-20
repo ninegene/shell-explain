@@ -33,13 +33,14 @@ Flags (may appear before or after COMMAND):
   --format text|json                           Output format (default text)
   --width N                                    Prose width; compact descriptions capped at 100
   --section NAME                               Show one section of a guide (learn only)
-  --no-pager                                   Print guides and the glossary without a pager
+  --no-pager                                   Print without a pager (or set EXPLAIN_NO_PAGER=1)
   --color auto|always|never                     Heading color (default auto)
   --no-probe                                   Disable native --version probes
   --help                                      Show this help
   --version                                   Show binary and content versions
 
 Implementations: ` + implementationList + `.
+On a terminal, text output longer than one screen goes through a pager ($PAGER, or less).
 Text output shows example usages by default. --option selects an option directly.
 JSON always includes the full selected reference, independently of --details.
 Examples are never executed. PATH detection cannot see parent-shell aliases/functions.

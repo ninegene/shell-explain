@@ -26,7 +26,7 @@ func main() {
 	if n, err := strconv.Atoi(os.Getenv("COLUMNS")); err == nil && n >= 20 && n <= 1000 {
 		width, guideWidth = n, n
 	}
-	// Guides and the glossary are long; show them through the pager on a terminal.
+	// Long text output goes through the pager on a terminal (see cli.WantsPager).
 	var out io.Writer = os.Stdout
 	finish := func() {}
 	if cli.WantsPager(os.Args[1:]) {

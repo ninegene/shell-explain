@@ -22,7 +22,7 @@ Schema version 1 and a deterministic SHA-256 content revision identify the bundl
 
 ## CLI scope
 
-Initial commands: show an explanation, list entries, search entries, show a particular option, choose an implementation/platform, and emit structured JSON. Include version/help output, noninteractive plain text, terminal-width wrapping, and color controls. Do not require a pager or manipulate the user's shell configuration.
+Initial commands: show an explanation, list entries, search entries, show a particular option, choose an implementation/platform, and emit structured JSON. Include version/help output, noninteractive plain text, terminal-width wrapping, and color controls. Use a pager only on a terminal, with `--no-pager` and `EXPLAIN_NO_PAGER` to turn it off, and never require one. Do not manipulate the user's shell configuration.
 
 Normal lookup must not contact a hosted API or an AI service. Do not execute sample commands. Unknown commands/options should get an honest unavailable result and useful nearby matches, not invented help.
 

@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"io"
+	"os"
 	"strings"
 
 	"github.com/ninegene/shell-explain/internal/catalog"
@@ -42,23 +43,26 @@ func guideFlags(op options, allowSection bool) error {
 	return nil
 }
 
-// wantsPager reports whether the request prints long reading material that
-// should go through a pager on a terminal.
-func wantsPager(op options) bool {
-	if op.noPager || op.format != "text" || op.help || op.version || len(op.args) == 0 {
-		return false
-	}
-	switch op.args[0] {
-	case "learn":
-		return len(op.args) == 2
-	case "glossary":
-		return len(op.args) == 1
-	}
-	return false
+// NoPagerEnv is the environment variable that turns paging off everywhere,
+// like --no-pager. Any value except empty or "0" disables it.
+const NoPagerEnv = "EXPLAIN_NO_PAGER"
+
+func pagerDisabledByEnv() bool {
+	v := os.Getenv(NoPagerEnv)
+	return v != "" && v != "0"
 }
 
-// WantsPager reports whether args ask for long text output that should go
-// through a pager when standard output is a terminal.
+// wantsPager reports whether the request prints text that should go through a
+// pager on a terminal: all text output except --version, and never JSON, when
+// neither --no-pager nor EXPLAIN_NO_PAGER is set. Short output still prints
+// directly, because the default pager (less -FRX) exits when it fits on one
+// screen.
+func wantsPager(op options) bool {
+	return !op.noPager && !pagerDisabledByEnv() && op.format == "text" && !op.version
+}
+
+// WantsPager reports whether args ask for text output that should go through a
+// pager when standard output is a terminal.
 func WantsPager(args []string) bool {
 	op, err := parse(args, 0)
 	return err == nil && wantsPager(op)
