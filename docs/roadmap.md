@@ -84,6 +84,8 @@ Roadmap tasks do not themselves authorize a commit/push, the future public visib
 
 ## Future usability backlog (not stage 4 blockers)
 
+- Done 2026-11-20: example-level `explain search`, paging for all text output, and the `explain browse` terminal UI (also started by bare `explain` on a terminal). Website search does not yet search examples; add that for CLI/web parity.
+
 - Recruit beginners and experienced users for structured task sessions; record a feedback log for discovering commands, understanding/copying examples, looking up options, and selecting/comparing implementations.
 - Broaden manual offline/narrow-terminal, keyboard/mobile, assistive-technology, and mixed-installation usability testing beyond current automated checks.
 - Revisit search, explanations, metadata, implementation-comparison UX, and detection based on observed feedback. Return to stages 1–3 as needed and verify improvements in both consumers.

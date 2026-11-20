@@ -22,6 +22,7 @@ Usage:
   explain COMMAND [flags]
   explain list [--format json]
   explain search WORDS [--limit N] [--format json]   Commands, guides, words and examples
+  explain browse [WORDS]                       Interactive browser (also: explain with no arguments)
   explain learn [GUIDE] [--section NAME]       Beginner guides; GUIDE is a name or number
   explain glossary [WORD]                      Short definitions of words you will see
 
@@ -59,6 +60,9 @@ type Config struct {
 	// Zero means use the default of 80 columns.
 	GuideWidth int
 	Color      bool
+	// Browse starts the interactive browser with an initial query. It is nil
+	// unless standard input and output are terminals.
+	Browse func(query string) error
 }
 type options struct {
 	implementation, platform, option, format, color, section string
@@ -66,6 +70,8 @@ type options struct {
 	widthSet, limitSet                                       bool
 	noProbe, help, version, details, noPager                 bool
 	args                                                     []string
+	// heading, when set, styles headings instead of the default bold.
+	heading func(string) string
 }
 type response struct {
 	SchemaVersion   int               `json:"schema_version"`
@@ -95,6 +101,8 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 		return failure(out, errOut, op.format, fmt.Errorf("--limit applies to search only"))
 	}
 	switch op.args[0] {
+	case "browse":
+		return runBrowse(op, out, errOut, cfg)
 	case "learn":
 		return runLearn(c, op, out, errOut, cfg)
 	case "glossary":
@@ -167,7 +175,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 	if !ok {
 		return failure(out, errOut, op.format, fmt.Errorf("no reference for %q; try explain list or explain search", name))
 	}
-	sel, err := cfg.Detector.Select(ctx, detect.Request{Name: name, Command: e.ID, Implementation: op.implementation, Platform: op.platform, NoProbe: op.noProbe, ShellBuiltin: e.ShellOnly(), Shells: e.ShellImplementations(), Single: singleImplementation(e), GNUView: slices.Contains(e.Implementations, "gnu")})
+	sel, err := selectFor(ctx, cfg, e, op, name)
 	if err != nil {
 		return failure(out, errOut, op.format, err)
 	}
@@ -181,8 +189,18 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 		return encode(out, response{c.SchemaVersion, c.Revision, &meta, sel, sections})
 	}
 	color := op.color == "always" || (op.color == "auto" && cfg.Color)
+	writeLookup(out, c, e, sel, sections, op, color)
+	return 0
+}
+
+// writeLookup writes the text form of one command's selected sections: the
+// compact example view by default, the option view for --option, or the full
+// reference for --details.
+func writeLookup(out io.Writer, c *catalog.Catalog, e *catalog.Entry, sel detect.Selection, sections []catalog.Section, op options, color bool) {
 	heading := func(s string) {
-		if color {
+		if op.heading != nil {
+			fmt.Fprintln(out, op.heading(s))
+		} else if color {
 			fmt.Fprintln(out, paint(true, ansiHeading, s))
 		} else {
 			fmt.Fprintln(out, s)
@@ -195,7 +213,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 			fmt.Fprintln(out)
 			heading("Options")
 			fmt.Fprint(out, RenderOptions(sections, op.width, color))
-			return 0
+			return
 		}
 		heading(e.Title + " — " + e.Summary)
 		if !single {
@@ -209,7 +227,7 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 			}
 		}
 		writeLinks(out, e, sel.Implementation, single, color)
-		return 0
+		return
 	}
 	heading(e.Title + " — " + e.Summary)
 	meta := func(label, value string) {
@@ -253,7 +271,37 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 	}
 	fmt.Fprintln(out)
 	writeMore(out, e, sel.Implementation, single, color)
-	return 0
+}
+
+// LookupOptions selects how RenderLookup presents a command.
+type LookupOptions struct {
+	// Details shows the full reference (like --details) instead of examples.
+	Details bool
+	Width   int
+	Color   bool
+	// Heading, when set, styles every heading (the default is bold).
+	Heading func(string) string
+}
+
+// RenderLookup returns the same text `explain COMMAND` prints for the already
+// selected implementation, so other front ends share one renderer.
+func RenderLookup(c *catalog.Catalog, e *catalog.Entry, sel detect.Selection, opt LookupOptions) (string, error) {
+	sections, err := e.Select(sel.Implementation, "")
+	if err != nil {
+		return "", err
+	}
+	var b strings.Builder
+	writeLookup(&b, c, e, sel, sections, options{details: opt.Details, width: opt.Width, heading: opt.Heading}, opt.Color)
+	return b.String(), nil
+}
+
+// SelectImplementation picks the documentation for e as `explain e.ID` would.
+func SelectImplementation(ctx context.Context, cfg Config, e *catalog.Entry, noProbe bool) (detect.Selection, error) {
+	return selectFor(ctx, cfg, e, options{noProbe: noProbe}, e.ID)
+}
+
+func selectFor(ctx context.Context, cfg Config, e *catalog.Entry, op options, name string) (detect.Selection, error) {
+	return cfg.Detector.Select(ctx, detect.Request{Name: name, Command: e.ID, Implementation: op.implementation, Platform: op.platform, NoProbe: op.noProbe, ShellBuiltin: e.ShellOnly(), Shells: e.ShellImplementations(), Single: singleImplementation(e), GNUView: slices.Contains(e.Implementations, "gnu")})
 }
 
 // singleImplementation returns the only non-shell implementation an entry

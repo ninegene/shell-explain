@@ -29,6 +29,7 @@ Stages 1–4 are implemented locally: original content in content/en, Go parser/
 - Never execute example/input command lines to explain them. Any supported version probes must be explicit, bounded, command-specific, and documented.
 - A standalone binary cannot automatically inspect parent-shell aliases/functions; optional shell integration must remain separate.
 - Avoid AI/network dependencies in normal offline command lookup.
+- The terminal UI (`explain browse`; bare `explain` on a terminal) lives in `internal/tui` and `internal/startup`. It must reuse `cli.RenderLookup`, `Catalog.Search` and `Catalog.SearchExamples` rather than copy them, never run examples or detection probes, and never start when stdin or stdout is not a terminal. Its dependencies (Charm v2 modules) need Go 1.26+; add a license copy under `third-party/` and a row in `docs/third-party-notices.md` for any new module.
 
 ## Command content and output format
 
