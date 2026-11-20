@@ -36,15 +36,24 @@ func TestFirstRunAsksThenRemembersNo(t *testing.T) {
 	}
 }
 
-func TestDefaultAnswerKeepsShowingUsage(t *testing.T) {
+func TestYesKeepsAskingUntilNo(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "config")
-	f, _, _, _ := flow(t, path, "\n")
+	for _, answer := range []string{"\n", "y\n", "yes\n"} {
+		f, helps, browses, errOut := flow(t, path, answer)
+		if err := f.Run(); err != nil || *helps != 1 || *browses != 1 || !strings.Contains(errOut.String(), "[Y/n]") {
+			t.Fatalf("answer %q: helps=%d browses=%d out=%q", answer, *helps, *browses, errOut.String())
+		}
+		if _, known := Load(path); known {
+			t.Fatalf("answer %q must not be saved", answer)
+		}
+	}
+	f, _, _, _ := flow(t, path, "n\n")
 	if err := f.Run(); err != nil {
 		t.Fatal(err)
 	}
 	f, helps, browses, errOut := flow(t, path, "")
-	if err := f.Run(); err != nil || *helps != 1 || *browses != 1 || errOut.Len() != 0 {
-		t.Fatalf("after yes: helps=%d browses=%d out=%q", *helps, *browses, errOut.String())
+	if err := f.Run(); err != nil || *helps != 0 || *browses != 1 || errOut.Len() != 0 {
+		t.Fatalf("after no: helps=%d browses=%d out=%q", *helps, *browses, errOut.String())
 	}
 }
 
@@ -58,7 +67,7 @@ func TestUnsavablePreferenceIsReportedAndIgnored(t *testing.T) {
 	if err := f.Run(); err != nil || *browses != 1 || !strings.Contains(errOut.String(), "could not save") {
 		t.Fatalf("browses=%d err=%v out=%q", *browses, err, errOut.String())
 	}
-	f, _, browses, errOut = flow(t, "", "\n")
+	f, _, browses, errOut = flow(t, "", "n\n")
 	if err := f.Run(); err != nil || *browses != 1 || !strings.Contains(errOut.String(), "not saved") {
 		t.Fatalf("no config dir: browses=%d err=%v out=%q", *browses, err, errOut.String())
 	}

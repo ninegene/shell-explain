@@ -70,6 +70,8 @@ type options struct {
 	widthSet, limitSet                                       bool
 	noProbe, help, version, details, noPager                 bool
 	args                                                     []string
+	// heading, when set, styles headings instead of the default bold.
+	heading func(string) string
 }
 type response struct {
 	SchemaVersion   int               `json:"schema_version"`
@@ -196,7 +198,9 @@ func Run(ctx context.Context, c *catalog.Catalog, args []string, out, errOut io.
 // reference for --details.
 func writeLookup(out io.Writer, c *catalog.Catalog, e *catalog.Entry, sel detect.Selection, sections []catalog.Section, op options, color bool) {
 	heading := func(s string) {
-		if color {
+		if op.heading != nil {
+			fmt.Fprintln(out, op.heading(s))
+		} else if color {
 			fmt.Fprintln(out, paint(true, ansiHeading, s))
 		} else {
 			fmt.Fprintln(out, s)
@@ -275,6 +279,8 @@ type LookupOptions struct {
 	Details bool
 	Width   int
 	Color   bool
+	// Heading, when set, styles every heading (the default is bold).
+	Heading func(string) string
 }
 
 // RenderLookup returns the same text `explain COMMAND` prints for the already
@@ -285,7 +291,7 @@ func RenderLookup(c *catalog.Catalog, e *catalog.Entry, sel detect.Selection, op
 		return "", err
 	}
 	var b strings.Builder
-	writeLookup(&b, c, e, sel, sections, options{details: opt.Details, width: opt.Width}, opt.Color)
+	writeLookup(&b, c, e, sel, sections, options{details: opt.Details, width: opt.Width, heading: opt.Heading}, opt.Color)
 	return b.String(), nil
 }
 

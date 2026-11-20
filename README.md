@@ -98,22 +98,24 @@ explain glossary kernel
 
 ### Interactive browser
 
-On a terminal, `explain` with no arguments (or `explain browse [WORDS]`) opens a browser: a search box, a list of commands and a preview of the selected one. Typing filters the list the way `explain search` does, by command metadata or by a matching example, and the preview shows the matching examples first, then the same text `explain COMMAND` prints. It uses no network, starts no process to detect the implementation (like `--no-probe`), and never runs an example.
+On a terminal, `explain` with no arguments (or `explain browse [WORDS]`) opens a browser: a search box, a list of commands and a preview of the selected one. The two column titles (`Commands i/n`, `Examples i/n`) show your position, and the focused pane's title is bold. Typing filters the list the way `explain search` does, by command metadata or by a matching example, and the preview shows the matching examples (with a hint to press `enter` for the command's full reference). With no search, or a command that matched only by name, it shows the same text `explain COMMAND` prints. It uses no network, starts no process to detect the implementation (like `--no-probe`), and never runs an example.
 
 | Key | Action |
 | --- | --- |
 | type | Filter the list |
-| `↑` `↓`, `ctrl+p` `ctrl+n` | Move through the list (or through the examples while the preview is focused) |
-| `tab` | Focus the preview to step through its examples; `tab` or `esc` returns |
+| `↑` `↓`, `ctrl+p` `ctrl+n` | Move through the list |
+| `tab` | Focus the preview; `tab` or `esc` returns |
+| `↑` `↓` (or `←` `→`, `p` `n`) in the preview | Select the previous or next example; the preview scrolls to keep it in view |
+| `j` `k` in the preview | Scroll a line |
 | `ctrl+y`, or `y` in the preview | Copy the selected example's code |
-| `enter` | Toggle the full reference (like `--details`) |
+| `enter` | Toggle the full reference (like `--details`); the preview title then reads `Details · Examples` |
 | `pgup` `pgdn` | Scroll the preview |
 | `esc` | Clear the search; on an empty search, quit |
 | `ctrl+c` | Quit |
 
 Copying uses `pbcopy` on macOS and `wl-copy`, `xclip` or `xsel` on Linux, and falls back to the terminal's OSC 52 clipboard sequence when none is installed.
 
-The first time you run `explain` with no arguments on a terminal, it shows the usage (in the pager), then asks whether to show it every time. Answer `n` and later runs open the browser directly; the answer is kept in `explain/config` in your user config directory (on macOS, `~/Library/Application Support`; on Linux, `$XDG_CONFIG_HOME` or `~/.config`). Delete that file to be asked again; `explain --help` always shows the usage. When standard input or output is not a terminal, `explain` with no arguments just prints the usage, and `explain browse` exits with an error pointing to `explain search`.
+When you run `explain` with no arguments on a terminal, it shows the usage (in the pager), then asks whether to keep showing it. Answer `y` (or just press enter) and you are asked again next time; answer `n` and later runs open the browser directly. Only `n` is kept in `explain/config` in your user config directory (on macOS, `~/Library/Application Support`; on Linux, `$XDG_CONFIG_HOME` or `~/.config`). Delete that file to be asked again; `explain --help` always shows the usage. When standard input or output is not a terminal, `explain` with no arguments just prints the usage, and `explain browse` exits with an error pointing to `explain search`.
 
 `explain` provides information; it does not run the example command or install the command being explained. Full pipeline/script explanation is a possible later feature, not part of the first release.
 

@@ -1,6 +1,6 @@
 // Package startup decides what `explain` does when it is run with no
-// arguments on a terminal: show the usage once and ask whether to keep showing
-// it, then start the interactive browser.
+// arguments on a terminal: show the usage and ask whether to keep showing
+// it until the answer is no, then start the interactive browser.
 package startup
 
 import (
@@ -46,7 +46,7 @@ func Load(path string) (show, known bool) {
 	return false, false
 }
 
-// Save stores the answer, creating the directory if needed.
+// Save stores the answer (only "no" is ever saved), creating the directory if needed.
 func Save(path string, show bool) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
@@ -67,10 +67,11 @@ type Flow struct {
 	Browse func() error
 }
 
-// Run shows the usage when it is wanted, asks the first time, and starts the
-// browser. A preference that cannot be read or saved is reported and ignored.
+// Run shows the usage and asks whether to keep showing it, until the user
+// answers no; after that it only starts the browser. A preference that cannot
+// be read or saved is reported and ignored.
 func (f Flow) Run() error {
-	show, known := false, false
+	show, known := true, false
 	if f.ConfigPath != "" {
 		show, known = Load(f.ConfigPath)
 	}
@@ -78,15 +79,15 @@ func (f Flow) Run() error {
 		if err := f.ShowHelp(); err != nil {
 			return err
 		}
-	}
-	if !known {
-		answer := f.ask()
-		if f.ConfigPath != "" {
-			if err := Save(f.ConfigPath, answer); err != nil {
-				fmt.Fprintln(f.Err, "explain: could not save your choice:", err)
+		if !f.ask() {
+			switch {
+			case f.ConfigPath == "":
+				fmt.Fprintln(f.Err, "explain: no config directory; your choice is not saved")
+			default:
+				if err := Save(f.ConfigPath, false); err != nil {
+					fmt.Fprintln(f.Err, "explain: could not save your choice:", err)
+				}
 			}
-		} else {
-			fmt.Fprintln(f.Err, "explain: no config directory; your choice is not saved")
 		}
 	}
 	return f.Browse()
@@ -94,7 +95,7 @@ func (f Flow) Run() error {
 
 // ask returns true for yes (the default) and false for no.
 func (f Flow) ask() bool {
-	fmt.Fprint(f.Err, "Show this usage every time you run explain without arguments? [Y/n] ")
+	fmt.Fprint(f.Err, "\nShow this usage every time you run explain without arguments? [Y/n] ")
 	line, _ := bufio.NewReader(f.In).ReadString('\n')
 	switch strings.ToLower(strings.TrimSpace(line)) {
 	case "n", "no":

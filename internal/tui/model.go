@@ -5,6 +5,7 @@ package tui
 
 import (
 	"fmt"
+	"regexp"
 	"slices"
 	"strings"
 
@@ -51,6 +52,7 @@ type Model struct {
 	hits     map[string][]catalog.ExampleHit
 	sels     map[string]detect.Selection
 	examples []catalog.Example
+	exLine   []int // content line of each example
 	exIdx    int
 	status   string
 }
@@ -93,15 +95,19 @@ func (m *Model) Entries() []string {
 
 func (m *Model) Init() tea.Cmd { return textinput.Blink }
 
+// listWidth fits the longest command name plus the two-column marker.
 func (m *Model) listWidth() int {
-	w := m.width / 3
-	return min(max(w, 16), 30)
+	w := 0
+	for _, e := range m.env.Catalog.Entries {
+		w = max(w, len([]rune(e.ID)))
+	}
+	return min(max(w+3, 12), max(m.width/3, 12))
 }
 
 func (m *Model) layout() {
 	m.input.SetWidth(max(m.width-len(m.input.Prompt)-1, 10))
 	m.preview.SetWidth(max(m.width-m.listWidth()-3, 10))
-	m.preview.SetHeight(max(m.height-2, 3))
+	m.preview.SetHeight(max(m.height-4, 3))
 }
 
 // refilter lists the commands matching the query the way `explain search`
@@ -130,8 +136,27 @@ func (m *Model) refilter() {
 			}
 		}
 	}
+	// Command names come first: an exact name, then names that start with the
+	// query, then names that contain it, then everything else (still in
+	// catalog order).
+	q := strings.ToLower(query)
+	rank := func(e *catalog.Entry) int {
+		id := strings.ToLower(e.ID)
+		switch {
+		case q == "":
+			return 0
+		case id == q:
+			return 0
+		case strings.HasPrefix(id, q):
+			return 1
+		case strings.Contains(id, q):
+			return 2
+		}
+		return 3
+	}
+	slices.SortStableFunc(m.entries, func(a, b *catalog.Entry) int { return rank(a) - rank(b) })
 	m.cursor = 0
-	if keep != nil {
+	if keep != nil && query == "" {
 		if i := slices.IndexFunc(m.entries, func(e *catalog.Entry) bool { return e.ID == keep.ID }); i >= 0 {
 			m.cursor = i
 		}
@@ -170,15 +195,10 @@ func (m *Model) rebuildPreview(reset bool) {
 		m.preview.SetContent("Cannot select documentation for " + e.ID + ": " + err.Error())
 		return
 	}
-	text, err := cli.RenderLookup(m.env.Catalog, e, sel, cli.LookupOptions{Details: m.details, Width: m.preview.Width(), Color: m.env.Color})
-	if err != nil {
-		m.preview.SetContent(err.Error())
-		return
-	}
+	matched := len(m.hits[e.ID]) > 0
 	for _, h := range m.hits[e.ID] {
 		m.examples = append(m.examples, catalog.Example{Description: h.Description, Short: h.Short, Code: h.Code})
 	}
-	matched := len(m.examples) > 0
 	if !matched {
 		for _, s := range sectionsOf(e, sel) {
 			m.examples = append(m.examples, catalog.ParseExamples(s.Markdown)...)
@@ -188,24 +208,71 @@ func (m *Model) rebuildPreview(reset bool) {
 	if !reset {
 		m.exIdx = min(idx, max(len(m.examples)-1, 0))
 	}
-	var b strings.Builder
-	if matched {
-		b.WriteString(m.heading("Matching examples") + "\n")
-		for i, ex := range m.examples {
-			marker := "  "
-			if i == m.exIdx && m.focus == panePreview {
-				marker = "▸ "
-			}
-			b.WriteString(indent(cli.RenderExamples([]catalog.Example{ex}, m.preview.Width()-2, m.env.Color, true), marker))
-		}
-		b.WriteString("\n")
+	// Both parts are indented two columns so the marker of the selected
+	// example has room.
+	text, err := cli.RenderLookup(m.env.Catalog, e, sel, cli.LookupOptions{Details: m.details, Width: m.preview.Width() - 2, Color: m.env.Color, Heading: m.dim})
+	if err != nil {
+		m.preview.SetContent(err.Error())
+		return
 	}
-	b.WriteString(text)
-	m.preview.SetContent(b.String())
+	var lines []string
+	m.exLine = make([]int, len(m.examples))
+	if matched {
+		for i, ex := range m.examples {
+			m.exLine[i] = len(lines)
+			block := strings.Split(strings.TrimRight(cli.RenderExamples([]catalog.Example{ex}, m.preview.Width()-2, m.env.Color, true), "\n"), "\n")
+			lines = append(lines, block...)
+		}
+		lines = append(lines, "")
+	}
+	body := strings.Split(strings.TrimRight(text, "\n"), "\n")
+	if matched && !m.details {
+		// The matches are enough; the rest is one keypress away.
+		body = []string{m.dim("enter: the full reference for " + e.ID)}
+	}
+	if !matched {
+		from := 0
+		for i, ex := range m.examples {
+			m.exLine[i] = -1
+			want := strings.TrimSpace(firstLine(ex.Code))
+			for j := from; j < len(body); j++ {
+				if strings.Contains(ansiRE.ReplaceAllString(body[j], ""), want) {
+					m.exLine[i], from = len(lines)+j, j+1
+					break
+				}
+			}
+		}
+	}
+	lines = append(lines, body...)
+	for i, l := range lines {
+		marker := "  "
+		if m.focus == panePreview && slices.Contains(m.exLine, i) && m.exLine[m.exIdx] == i {
+			marker = "▸ "
+		}
+		lines[i] = marker + l
+	}
+	m.preview.SetContent(strings.Join(lines, "\n") + "\n")
 	if reset {
 		m.preview.GotoTop()
 	} else {
 		m.preview.SetYOffset(off)
+	}
+}
+
+var ansiRE = regexp.MustCompile("\x1b\\[[0-9;]*m")
+
+// showExample scrolls the preview just enough to bring the selected example's
+// first line into view.
+func (m *Model) showExample() {
+	if m.exIdx >= len(m.exLine) || m.exLine[m.exIdx] < 0 {
+		return
+	}
+	line, top, h := m.exLine[m.exIdx], m.preview.YOffset(), m.preview.Height()
+	switch {
+	case line < top:
+		m.preview.SetYOffset(line)
+	case line >= top+h:
+		m.preview.SetYOffset(line - h + 1)
 	}
 }
 
@@ -217,21 +284,9 @@ func sectionsOf(e *catalog.Entry, sel detect.Selection) []catalog.Section {
 	return slices.DeleteFunc(sections, func(s catalog.Section) bool { return !s.IsExamples() })
 }
 
-func indent(s, marker string) string {
-	lines := strings.Split(strings.TrimRight(s, "\n"), "\n")
-	for i, l := range lines {
-		if i == 0 {
-			lines[i] = marker + l
-		} else {
-			lines[i] = strings.Repeat(" ", len([]rune(marker))) + l
-		}
-	}
-	return strings.Join(lines, "\n") + "\n"
-}
-
-func (m *Model) heading(s string) string {
+func (m *Model) dim(s string) string {
 	if m.env.Color {
-		return lipgloss.NewStyle().Bold(true).Render(s)
+		return lipgloss.NewStyle().Faint(true).Render(s)
 	}
 	return s
 }
@@ -252,6 +307,7 @@ func (m *Model) step(delta int) {
 	m.exIdx = min(max(m.exIdx+delta, 0), len(m.examples)-1)
 	m.status = ""
 	m.rebuildPreview(false)
+	m.showExample()
 }
 
 func (m *Model) copySelected() tea.Cmd {
@@ -344,6 +400,14 @@ func (m *Model) key(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	}
 	if m.focus == panePreview {
 		switch k {
+		case "right", "n":
+			m.step(1)
+		case "left", "p":
+			m.step(-1)
+		case "j":
+			m.preview.ScrollDown(1)
+		case "k":
+			m.preview.ScrollUp(1)
 		case "y":
 			return m, m.copySelected()
 		case "q":
@@ -368,7 +432,7 @@ func (m *Model) View() tea.View {
 	faint := lipgloss.NewStyle().Faint(true)
 	bold := lipgloss.NewStyle().Bold(true)
 	lw := m.listWidth()
-	body := max(m.height-2, 3)
+	body := max(m.height-4, 3)
 	list := make([]string, body)
 	first := 0
 	if m.cursor >= body {
@@ -379,9 +443,9 @@ func (m *Model) View() tea.View {
 		line := ""
 		if idx < len(m.entries) {
 			e := m.entries[idx]
-			line = "  " + e.ID + " " + e.Summary
+			line = "  " + e.ID
 			if idx == m.cursor {
-				line = "▸ " + e.ID + " " + e.Summary
+				line = "▸ " + e.ID
 			}
 		}
 		line = fit(line, lw)
@@ -391,25 +455,47 @@ func (m *Model) View() tea.View {
 		list[i] = line
 	}
 	right := strings.Split(m.preview.View(), "\n")
+	sep := faint.Render(" │ ")
+	cmdTitle, exTitle := fmt.Sprintf("Commands %d/%d", min(m.cursor+1, len(m.entries)), len(m.entries)), "Examples 0/0"
+	if len(m.examples) > 0 {
+		exTitle = fmt.Sprintf("Examples %d/%d", m.exIdx+1, len(m.examples))
+	}
+	if m.details {
+		exTitle = "Details · " + exTitle
+	}
+	// The focused pane's title is bold; the other is dim.
+	active := bold
+	if m.focus == panePreview {
+		cmdTitle, exTitle = faint.Render(fit(cmdTitle, lw)), active.Render(exTitle)
+	} else {
+		cmdTitle, exTitle = active.Render(fit(cmdTitle, lw)), faint.Render(exTitle)
+	}
 	var rows []string
-	rows = append(rows, m.input.View())
+	rows = append(rows, m.input.View(), cmdTitle+sep+exTitle)
 	for i := 0; i < body; i++ {
 		r := ""
 		if i < len(right) {
 			r = right[i]
 		}
-		rows = append(rows, list[i]+faint.Render(" │ ")+r)
+		rows = append(rows, list[i]+sep+r)
 	}
-	footer := "↑/↓ list · tab examples · enter details · ctrl+y copy · esc clear/quit"
+	// The footer takes two rows: key hints (or a status message), then the
+	// selected example's command in color.
+	footer := faint.Render("↑/↓ list · tab commands · enter details · ctrl+y copy · esc clear/quit")
 	if m.focus == panePreview {
-		footer = "↑/↓ example · y copy · pgup/pgdn scroll · enter details · tab/esc back · q quit"
+		footer = faint.Render("↑/↓ example · j/k scroll · y copy · pgup/pgdn page · enter details · tab/esc back · q quit")
+	}
+	if m.details {
+		footer = strings.ReplaceAll(footer, "enter details", "enter hide details")
 	}
 	if m.status != "" {
 		footer = bold.Render(m.status)
-	} else if m.focus == panePreview && m.exIdx < len(m.examples) {
-		footer = fmt.Sprintf("example %d/%d: %s", m.exIdx+1, len(m.examples), firstLine(m.examples[m.exIdx].Code))
 	}
-	rows = append(rows, faint.Render(lipgloss.NewStyle().MaxWidth(m.width).Render(footer)))
+	second := ""
+	if m.exIdx < len(m.examples) {
+		second = strings.TrimRight(cli.RenderExamples([]catalog.Example{{Code: firstLine(m.examples[m.exIdx].Code)}}, m.width, m.env.Color, false), "\n")
+	}
+	rows = append(rows, lipgloss.NewStyle().MaxWidth(m.width).Render(footer), lipgloss.NewStyle().MaxWidth(m.width).Render(second))
 	v := tea.NewView(strings.Join(rows, "\n"))
 	v.AltScreen = true
 	return v
