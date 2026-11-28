@@ -47,6 +47,22 @@ def updated_formula(formula, tag, digest):
 
 
 def main():
+    def validate_formula_version(formula, release_tag):
+        match = re.search(r'(?m)^  url "https://github\.com/ninegene/shell-explain/archive/refs/tags/(v[0-9]+\.[0-9]+\.[0-9]+)\.tar\.gz"$', formula)
+        if not match or not TAG.fullmatch(match.group(1)):
+            raise ValueError("formula does not contain a recognized stable release tag")
+        if tuple(map(int, match.group(1)[1:].split("."))) > tuple(map(int, release_tag[1:].split("."))):
+            raise ValueError("latest GitHub release is older than the Homebrew formula; resolve the release mismatch")
+
+    def ensure_branch(token, branch, branch_ref, base):
+        try:
+            api(f"/repos/{TAP}/git/refs", token, {"ref": f"refs/heads/{branch}", "sha": base})
+        except urllib.error.HTTPError as exc:
+            if exc.code != 422:
+                raise
+            # A retry may reuse only our existing branch; never overwrite its contents.
+            api(f"/repos/{TAP}/git/ref/heads/{branch_ref}", token)
+
     tag, token = os.environ.get("RELEASE_TAG", ""), os.environ.get("GH_TOKEN", "")
     if not TAG.fullmatch(tag):
         raise ValueError("release tag must be a stable version such as v1.2.3")
@@ -67,23 +83,13 @@ def main():
     digest = hashlib.sha256(request(source_url)).hexdigest()
     current = api(f"/repos/{TAP}/contents/{FORMULA}?ref=main", token)
     original = base64.b64decode(current["content"]).decode("utf-8")
-    current_tag = re.search(r'(?m)^  url "https://github\.com/ninegene/shell-explain/archive/refs/tags/(v[0-9]+\.[0-9]+\.[0-9]+)\.tar\.gz"$', original)
-    if not current_tag or not TAG.fullmatch(current_tag.group(1)):
-        raise ValueError("formula does not contain a recognized stable release tag")
-    if tuple(map(int, current_tag.group(1)[1:].split("."))) > tuple(map(int, tag[1:].split("."))):
-        raise ValueError("latest GitHub release is older than the Homebrew formula; resolve the release mismatch")
+    validate_formula_version(original, tag)
     updated = updated_formula(original, tag, digest)
     if updated == original:
         print(f"Formula already points to {tag}")
         return
     base = api(f"/repos/{TAP}/git/ref/heads/main", token)["object"]["sha"]
-    try:
-        api(f"/repos/{TAP}/git/refs", token, {"ref": f"refs/heads/{branch}", "sha": base})
-    except urllib.error.HTTPError as exc:
-        if exc.code != 422:
-            raise
-        # A retry may reuse only our existing branch; never overwrite its contents.
-        api(f"/repos/{TAP}/git/ref/heads/{branch_ref}", token)
+    ensure_branch(token, branch, branch_ref, base)
     existing = api(f"/repos/{TAP}/contents/{FORMULA}?ref={branch_ref}", token)
     branch_formula = base64.b64decode(existing["content"]).decode("utf-8")
     if branch_formula != original and branch_formula != updated:
