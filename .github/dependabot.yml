@@ -1,4 +1,4 @@
-# Dependabot opens weekly PRs for npm packages and GitHub Actions. Go modules are
+# Dependabot opens monthly PRs for npm packages and GitHub Actions. Go modules are
 # vendored under third-party/ on purpose and are not covered here.
 # Node.js and the Pulumi CLI (mise.toml) are not covered either: update them by hand.
 version: 2
@@ -8,8 +8,7 @@ updates:
       - /web
       - /infra/pulumi
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: "05:00"
       timezone: America/Los_Angeles
     commit-message:
@@ -34,8 +33,7 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: "05:00"
       timezone: America/Los_Angeles
     commit-message:
