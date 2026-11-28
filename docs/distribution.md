@@ -23,7 +23,12 @@ Verify a download with `shasum -a 256 -c checksums.txt` (or `sha256sum -c`) and,
 1. Check the third-party notices against the toolchain and dependencies, and that `main` has passed CI.
 2. Tag the release commit on `main` (`git tag -a v0.1.0 -m v0.1.0 && git push origin v0.1.0`). Pushing a tag is the publishing decision and needs explicit authorization.
 3. Review the draft release: the archives, checksums, notes and provenance. Publish it.
-4. Test each install route from a clean environment (curl installer, mise, Homebrew), then update the Homebrew formula and the README install section.
+4. Publishing a stable release starts the Homebrew update job in `.github/workflows/release.yml`. Check that it opened a PR in `ninegene/homebrew-tap` for the same tag, review and test the formula, and merge it. The job only updates the latest stable release; prereleases and older releases do not change the stable formula. If the job fails, investigate and rerun it before treating the release as complete.
+5. Test curl, mise and Homebrew from clean environments, check `explain --version` matches the published tag in each, and verify their install documentation. The tap PR must be merged before the Homebrew check. Curl and mise use the release binaries; Homebrew builds from the source archive for the same tag.
+
+The Homebrew job needs a repository Actions secret named `HOMEBREW_TAP_TOKEN`. Use a fine-grained token limited to `ninegene/homebrew-tap` with contents and pull requests read/write permissions, and access to public repositories for the release lookup. Provisioning or changing repository secrets requires separate authorization; renew the token before it expires. The job opens a PR; it does not merge it or publish a release. A release published while the secret is missing fails visibly and must be retried after setup. GitHub Actions uses the workflow on the default branch for release events.
+
+GitHub's latest release is not necessarily the highest version number. If it points to a version older than the Homebrew formula, the job fails rather than proposing a downgrade. Resolve which release should be latest before completing the cross-channel checks.
 
 GoReleaser was considered and not adopted: it adds a tool and an action to pin and a token to store for tap updates, for no feature this project needs.
 
@@ -37,13 +42,13 @@ Do not overwrite an existing command or managed installation silently. Explain P
 
 ## Homebrew
 
-Start with an upstream-maintained tap and an open-source CLI formula. Proposed invocation: `brew install ninegene/tap/shell-explain`; the package name is shell-explain, while the installed executable is explain. A separate public tap repository would require its own creation later.
+The public `ninegene/homebrew-tap` maintains a source-built formula. Install it with `brew install ninegene/tap/shell-explain`; the package name is shell-explain, while the installed executable is explain. The stable formula is pinned to a release tag, and its update PR requires review and merge.
 
 Use immutable sources, declared build dependencies, meaningful tests, and checksums. Official Homebrew inclusion is a separate acceptance process; it is not required for initial availability. Follow current policy rather than assuming a generated binary-only cask is appropriate for an open-source CLI. References: [tap maintenance](https://docs.brew.sh/How-to-Create-and-Maintain-a-Tap), [adding software](https://docs.brew.sh/Adding-Software-to-Homebrew), and [acceptable formulae](https://docs.brew.sh/Acceptable-Formulae).
 
 ## mise
 
-Proposed invocation: `mise use -g github:ninegene/shell-explain`. Use consistent release asset naming so the backend selects the right executable/architecture. Verify real installation from a clean environment before advertising the command.
+Install with `mise use -g github:ninegene/shell-explain`. Use consistent release asset naming so the backend selects the right executable/architecture. Verify the release installation from a clean environment.
 
 A central registry entry is only a convenience shorthand and may require adoption evidence. Current guidance supports using the GitHub backend without one. Avoid designing new integration around the deprecated ubi backend. References: [GitHub backend](https://mise.jdx.dev/dev-tools/backends/github.html) and [registry policy](https://mise.jdx.dev/contributing/registry.html).
 
