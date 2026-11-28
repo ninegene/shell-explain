@@ -1,12 +1,27 @@
 # Release artifact and provenance review
 
-This is a preparation checklist, not release approval. Local candidate archives exist; no public release artifacts exist yet. Repeat the inspection for each exact release candidate and keep its evidence with the release record. The [third-party inventory](third-party-notices.md) is a starting point, not an exhaustive certification.
+This is a preparation checklist, not release approval. Version `v0.1.0` has been released; repeat the inspection for each exact release candidate and keep its evidence with the release record. The [third-party inventory](third-party-notices.md) is a starting point, not an exhaustive certification.
 
 ## Local candidate reviewed on 2026-11-15
 
 At commit `087a446c7a49ef09a6d638587851bfe94aa59dfe`, `just build` and `just web-build` produced local macOS ARM64 and static-site candidates. `go version -m bin/explain` identified Go 1.27.3, goldmark v1.8.6 and go.yaml.in/yaml/v3 v3.0.5. The checked-in Go runtime LICENSE/PATENTS and both module LICENSE files and yaml NOTICE matched the installed build inputs byte for byte. The checked-in Apache-2.0 text accompanies the yaml notice. The candidate binary was not a release archive and its toolchain settings do not establish compatibility with other release targets.
 
-The generated site contained 737 HTML files, one favicon, one CSS file and four JavaScript files. Inspection found one distinct inline catalog script and external scripts corresponding to the site's copy-button source and generated imports. This is an inspection of that build, not proof that future bundles contain no third-party code. The About page states the project licenses and attribution, but its requested source link and public release status need to be made accurate before deployment. No archive contents or released website were available to inspect.
+The generated site contained 737 HTML files, one favicon, one CSS file and four JavaScript files. Inspection found one distinct inline catalog script and external scripts corresponding to the site's copy-button source and generated imports. This is an inspection of that build, not proof that future bundles contain no third-party code. At that time, no archive contents or released website were available to inspect.
+
+## Candidate review on 2026-11-28
+
+At commit `d2878a0eb1ce0ecbe586ef002703b83c330f10c0`, the [release dry run](https://github.com/ninegene/shell-explain/actions/runs/46118292392) built `0.0.0-dispatch` archives using Go 1.27.3 and passed native smoke tests for macOS and Linux on AMD64 and ARM64. The four downloaded archives passed `shasum -a 256 -c checksums.txt`; each contained 29 notice and documentation files matching the source checkout. The 21 embedded Go module versions in each binary appeared in the CLI notice inventory. This verifies those dry-run files, not the future `v0.2.0` archives or their attestations.
+
+| Dry-run archive suffix | SHA-256 |
+| --- | --- |
+| `darwin_amd64` | `feec457b1530bb65fe4335268af1363e516a432d6785c30332dc892b403ceabd` |
+| `darwin_arm64` | `3de6730bffe991157be316e9e1cdfcad5b16e27ab190e9bc491ee9a16e77454a` |
+| `linux_amd64` | `bef3de17e06a4ae632886d07fd04df2ebf02fe751135039a8472492cdd5b96d8` |
+| `linux_arm64` | `41d38c3cf2a6473c6c2f0df1d7b1702a57067c470fae8e8eeb704a187e1d4cdd` |
+
+Separately, four local `v0.2.0`-labeled archives were cross-compiled in an ARM64 container with Go 1.27.3 from that commit's code and uncommitted release-documentation changes. Their checksums passed, and all 29 packaged notice and documentation files matched the working tree at build time. The macOS ARM64 archive passed the CLI smoke matrix natively; the Linux ARM64 archive passed version, lookup, search and guide checks in an ARM64 container. The local AMD64 archives were not executed on native AMD64. These are development candidates, not the final tagged artifacts, and their contents and checksums can change.
+
+An isolated Linux ARM64 build of that commit used Go 1.27.3, Node 26.13.1 and `npm ci` against `web/package-lock.json`. Its 738 HTML pages, one authored SVG, one CSS file and five JavaScript files were inspected. The SVG matched `web/public/favicon.svg`; the scripts corresponded to the project's catalog and copy-button sources and their generated imports. No third-party client code or font assets were identified in the inspected output. The generated About page included the source link, MIT and CC BY 4.0 references. This finding applies only to that build; review each future output and any redistributed third-party material separately.
 
 ## Exact artifact checklist
 

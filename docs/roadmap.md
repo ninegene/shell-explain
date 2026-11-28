@@ -15,7 +15,7 @@
 | Detection | Per-command implementation/version evidence plus explicit overrides |
 | Distribution | Release binaries, curl installer, Homebrew tap, mise GitHub backend |
 | Licensing | MIT for software and shell examples; CC BY 4.0 for original explanatory content |
-| Current status | Stages 1–4 implemented (194 command pages, checklist and exit review complete); all planned beginner guides are written; website deployed; repository public; no binary release yet |
+| Current status | Stages 1–4 implemented (194 command pages, checklist and exit review complete); all planned beginner guides are written; website deployed; repository public; CLI `v0.1.0` released |
 
 ## Implementation evidence
 
