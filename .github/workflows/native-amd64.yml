@@ -55,6 +55,7 @@ jobs:
           shellcheck -s sh scripts/install.sh
           bash scripts/test_release.sh
           bash scripts/test_install.sh
+          python3 -m unittest discover -s scripts -p 'test_update_homebrew.py'
       - name: Go tests
         if: ${{ !cancelled() }}
         run: go test ./...

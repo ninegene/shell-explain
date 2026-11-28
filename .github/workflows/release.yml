@@ -9,6 +9,8 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+  release:
+    types: [published]
 
 permissions:
   contents: read
@@ -19,6 +21,7 @@ concurrency:
 
 jobs:
   build:
+    if: ${{ github.event_name != 'release' }}
     runs-on: ubuntu-26.04
     timeout-minutes: 30
     steps:
@@ -48,6 +51,7 @@ jobs:
         run: |
           bash scripts/test_release.sh
           bash scripts/test_install.sh
+          python3 -m unittest discover -s scripts -p 'test_update_homebrew.py'
       - name: Build the archives
         env:
           TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'v0.0.0-dispatch' }}
@@ -128,3 +132,21 @@ jobs:
           flags=(--draft --verify-tag --generate-notes --title "$TAG")
           [[ "$TAG" == *-* ]] && flags+=(--prerelease)
           gh release create "$TAG" dist/* "${flags[@]}"
+
+  homebrew:
+    if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    concurrency:
+      group: homebrew-release-update
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Open Homebrew formula update
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: python3 scripts/update_homebrew.py
