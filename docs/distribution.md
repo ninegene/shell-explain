@@ -1,6 +1,6 @@
 # Distribution and release plan
 
-The CLI can be built locally with just build and the Astro site can be previewed locally. The website is live (see below). The release tooling described below exists in the repository; until a release has been published and each route tested from a clean environment, the install commands in this document are proposed interfaces, not instructions.
+The CLI can be built locally with just build and the Astro site can be previewed locally. The website is live, and `v0.1.0` has been published. Verify each install route for every new release; see the release procedure below.
 
 The repository was private through stages 1–4 and became public on 2026-11-17. Stage 5 continues with contribution guidance and publishing release artifacts. Development builds do not constitute a public release. Binary distributions must include the MIT and CC BY 4.0 license texts and applicable attribution for embedded content and third-party dependencies. See [third-party notices](third-party-notices.md) for the inventory and release checks, and the [roadmap](roadmap.md) for the sequence and authorization boundaries.
 
@@ -29,6 +29,8 @@ Verify a download with `shasum -a 256 -c checksums.txt` (or `sha256sum -c`) and,
 The Homebrew job needs a repository Actions secret named `HOMEBREW_TAP_TOKEN`. Use a fine-grained token limited to `ninegene/homebrew-tap` with contents and pull requests read/write permissions, and access to public repositories for the release lookup. Provisioning or changing repository secrets requires separate authorization; renew the token before it expires. The job opens a PR; it does not merge it or publish a release. A release published while the secret is missing fails visibly and must be retried after setup. GitHub Actions uses the workflow on the default branch for release events.
 
 Before each stable release, check the token's expiration in [GitHub's fine-grained token settings](https://github.com/settings/personal-access-tokens). GitHub's Actions secret page does not show the credential's value or expiration. If renewal is needed, create a replacement with the same limited repository access and permissions, update `HOMEBREW_TAP_TOKEN` in the [repository's Actions secrets](https://github.com/ninegene/shell-explain/settings/secrets/actions), and revoke the old token after verifying the replacement. Do not put token values in the repository, workflow logs, or chat. Treat secret changes as repository settings changes requiring explicit authorization.
+
+The Release workflow's manual `verify_homebrew` input runs a read-only check of the stored token against the latest published release, tap metadata and pull request list, and verifies the current formula's source archive checksum. It does not run the build or open a PR. GitHub's reported account push access is not proof of the token's fine-grained write permissions; the actual release-event update and PR creation still need verification on a published release.
 
 GitHub's latest release is not necessarily the highest version number. If it points to a version older than the Homebrew formula, the job fails rather than proposing a downgrade. Resolve which release should be latest before completing the cross-channel checks.
 
