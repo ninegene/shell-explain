@@ -28,6 +28,8 @@ Verify a download with `shasum -a 256 -c checksums.txt` (or `sha256sum -c`) and,
 
 The Homebrew job needs a repository Actions secret named `HOMEBREW_TAP_TOKEN`. Use a fine-grained token limited to `ninegene/homebrew-tap` with contents and pull requests read/write permissions, and access to public repositories for the release lookup. Provisioning or changing repository secrets requires separate authorization; renew the token before it expires. The job opens a PR; it does not merge it or publish a release. A release published while the secret is missing fails visibly and must be retried after setup. GitHub Actions uses the workflow on the default branch for release events.
 
+GitHub's latest release is not necessarily the highest version number. If it points to a version older than the Homebrew formula, the job fails rather than proposing a downgrade. Resolve which release should be latest before completing the cross-channel checks.
+
 GoReleaser was considered and not adopted: it adds a tool and an action to pin and a token to store for tap updates, for no feature this project needs.
 
 ## curl-based installer

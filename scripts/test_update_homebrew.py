@@ -35,6 +35,14 @@ class UpdateHomebrewTests(unittest.TestCase):
             updater.main()
         self.assertEqual(api.call_count, 2)
 
+    @patch.dict(os.environ, {"RELEASE_TAG": "v0.0.9", "GH_TOKEN": "test"})
+    def test_latest_github_release_cannot_downgrade_formula(self):
+        content = {"content": base64.b64encode(FORMULA.encode()).decode(), "sha": "file-sha"}
+        with patch.object(updater, "api", side_effect=[{"tag_name": "v0.0.9"}, [], content]) as api, patch.object(updater, "request", return_value=b"archive"):
+            with self.assertRaisesRegex(ValueError, "older than the Homebrew formula"):
+                updater.main()
+        self.assertEqual(api.call_count, 3)
+
     @patch.dict(os.environ, {"RELEASE_TAG": "v0.2.0", "GH_TOKEN": "test"})
     def test_new_release_creates_branch_formula_commit_and_pr(self):
         content = {"content": base64.b64encode(FORMULA.encode()).decode(), "sha": "file-sha"}

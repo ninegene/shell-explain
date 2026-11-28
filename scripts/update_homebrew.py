@@ -67,6 +67,11 @@ def main():
     digest = hashlib.sha256(request(source_url)).hexdigest()
     current = api(f"/repos/{TAP}/contents/{FORMULA}?ref=main", token)
     original = base64.b64decode(current["content"]).decode("utf-8")
+    current_tag = re.search(r'(?m)^  url "https://github\.com/ninegene/shell-explain/archive/refs/tags/(v[0-9]+\.[0-9]+\.[0-9]+)\.tar\.gz"$', original)
+    if not current_tag or not TAG.fullmatch(current_tag.group(1)):
+        raise ValueError("formula does not contain a recognized stable release tag")
+    if tuple(map(int, current_tag.group(1)[1:].split("."))) > tuple(map(int, tag[1:].split("."))):
+        raise ValueError("latest GitHub release is older than the Homebrew formula; resolve the release mismatch")
     updated = updated_formula(original, tag, digest)
     if updated == original:
         print(f"Formula already points to {tag}")
