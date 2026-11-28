@@ -50,6 +50,7 @@ Follow [docs/content-format.md](docs/content-format.md) when adding or updating 
 ## Publication and repository rules
 
 - For each stable CLI release, keep curl, mise and Homebrew on the same published tag: verify the release binaries and installer, confirm the automated tap PR updates the source formula to that tag, review and merge it, and test all three install routes and `explain --version`. A draft, prerelease, failed automation or unmerged tap PR does not complete this release check. See `docs/distribution.md`.
+- Before a stable release, check that the `HOMEBREW_TAP_TOKEN` credential has not expired and renew it when needed; follow `docs/distribution.md`. Never record its value in the repository or chat.
 - The repository is public, and `main` is protected by a ruleset: changes go through pull requests. Do not publish a release, deploy the website, or change DNS or repository visibility merely because these actions appear in the roadmap; each needs explicit authorization.
 - Never add secrets, personal data, cloud account IDs or keys, machine names, or private project names/details. Resource names that grant no access (the Pulumi state bucket, KMS alias, site bucket) and GitHub repository IDs may appear in `infra/`; the AWS account ID stays a GitHub environment secret.
 - Keep sample paths and values generic; use example.org and synthetic fixtures.
